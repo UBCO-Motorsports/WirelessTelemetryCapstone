@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='TelemetryViewerSetup',
+    name='TelemetryViewer',
     version='',
     packages=[''],
     url='',
