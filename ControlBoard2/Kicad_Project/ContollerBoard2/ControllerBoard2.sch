@@ -1167,14 +1167,20 @@ Connection ~ 1750 5750
 Wire Wire Line
 	2250 5600 2450 5600
 $Comp
-L power:GND #PWR?
+L power:GND #PWR0103
 U 1 1 5F8A4D51
 P 4650 7350
-F 0 "#PWR?" H 4650 7100 50  0001 C CNN
+F 0 "#PWR0103" H 4650 7100 50  0001 C CNN
 F 1 "GND" V 4650 7150 50  0000 C CNN
 F 2 "" H 4650 7350 50  0001 C CNN
 F 3 "" H 4650 7350 50  0001 C CNN
 	1    4650 7350
 	0    1    1    0   
 $EndComp
+Text GLabel 4650 6550 0    50   Input ~ 0
+PB1
+Text GLabel 4650 6450 0    50   Input ~ 0
+PB0
+Text GLabel 4650 6650 0    50   Input ~ 0
+PA8
 $EndSCHEMATC
