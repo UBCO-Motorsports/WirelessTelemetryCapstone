@@ -372,17 +372,6 @@ Text GLabel 9700 1550 2    50   Input ~ 0
 SWDCLK
 Text Notes 4750 5500 0    50   ~ 0
 Header
-$Comp
-L power:+5V #PWR0106
-U 1 1 5DA640C3
-P 5100 6100
-F 0 "#PWR0106" H 5100 5950 50  0001 C CNN
-F 1 "+5V" V 5100 6300 50  0000 C CNN
-F 2 "" H 5100 6100 50  0001 C CNN
-F 3 "" H 5100 6100 50  0001 C CNN
-	1    5100 6100
-	0    1    1    0   
-$EndComp
 Text GLabel 4600 6200 0    50   Input ~ 0
 SCK
 Text GLabel 4600 6000 0    50   Input ~ 0
@@ -1155,4 +1144,15 @@ Wire Wire Line
 	2050 1800 2050 2100
 Wire Wire Line
 	2050 1800 2050 1600
+$Comp
+L power:+3.3V #PWR?
+U 1 1 5F87CD82
+P 5100 6100
+F 0 "#PWR?" H 5100 5950 50  0001 C CNN
+F 1 "+3.3V" V 5100 6350 50  0000 C CNN
+F 2 "" H 5100 6100 50  0001 C CNN
+F 3 "" H 5100 6100 50  0001 C CNN
+	1    5100 6100
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC

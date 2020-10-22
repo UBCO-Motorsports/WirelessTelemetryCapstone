@@ -370,90 +370,90 @@ Text GLabel 9700 1450 2    50   Input ~ 0
 SWDIO
 Text GLabel 9700 1550 2    50   Input ~ 0
 SWDCLK
-Text Notes 4800 5550 0    50   ~ 0
+Text Notes 4750 5500 0    50   ~ 0
 Header
 $Comp
 L power:+5V #PWR0106
 U 1 1 5DA640C3
-P 5150 6150
-F 0 "#PWR0106" H 5150 6000 50  0001 C CNN
-F 1 "+5V" V 5150 6350 50  0000 C CNN
-F 2 "" H 5150 6150 50  0001 C CNN
-F 3 "" H 5150 6150 50  0001 C CNN
-	1    5150 6150
+P 5100 6100
+F 0 "#PWR0106" H 5100 5950 50  0001 C CNN
+F 1 "+5V" V 5100 6300 50  0000 C CNN
+F 2 "" H 5100 6100 50  0001 C CNN
+F 3 "" H 5100 6100 50  0001 C CNN
+	1    5100 6100
 	0    1    1    0   
 $EndComp
-Text GLabel 4650 6250 0    50   Input ~ 0
+Text GLabel 4600 6200 0    50   Input ~ 0
 SCK
-Text GLabel 4650 6050 0    50   Input ~ 0
+Text GLabel 4600 6000 0    50   Input ~ 0
 MOSI
-Text GLabel 4650 6150 0    50   Input ~ 0
+Text GLabel 4600 6100 0    50   Input ~ 0
 MISO
-Text GLabel 5150 5850 2    50   Input ~ 0
+Text GLabel 5100 5800 2    50   Input ~ 0
 CANL
-Text GLabel 5150 5950 2    50   Input ~ 0
+Text GLabel 5100 5900 2    50   Input ~ 0
 CANH
 $Comp
 L power:+12V #PWR0114
 U 1 1 5DA36AAA
-P 4650 5950
-F 0 "#PWR0114" H 4650 5800 50  0001 C CNN
-F 1 "+12V" V 4650 6150 50  0000 C CNN
-F 2 "" H 4650 5950 50  0001 C CNN
-F 3 "" H 4650 5950 50  0001 C CNN
-	1    4650 5950
+P 4600 5900
+F 0 "#PWR0114" H 4600 5750 50  0001 C CNN
+F 1 "+12V" V 4600 6100 50  0000 C CNN
+F 2 "" H 4600 5900 50  0001 C CNN
+F 3 "" H 4600 5900 50  0001 C CNN
+	1    4600 5900
 	0    -1   -1   0   
 $EndComp
 Wire Notes Line
-	4200 5550 4200 7550
+	4150 5500 4150 7500
 Wire Notes Line
-	5600 7550 4200 7550
+	5550 7500 4150 7500
 Wire Notes Line
-	5600 5550 5600 7550
+	5550 5500 5550 7500
 Wire Notes Line
-	4200 5550 5600 5550
+	4150 5500 5550 5500
 $Comp
 L power:GND #PWR03
 U 1 1 5DA39F4D
-P 5150 6050
-F 0 "#PWR03" H 5150 5800 50  0001 C CNN
-F 1 "GND" V 5150 5850 50  0000 C CNN
-F 2 "" H 5150 6050 50  0001 C CNN
-F 3 "" H 5150 6050 50  0001 C CNN
-	1    5150 6050
+P 5100 6000
+F 0 "#PWR03" H 5100 5750 50  0001 C CNN
+F 1 "GND" V 5100 5800 50  0000 C CNN
+F 2 "" H 5100 6000 50  0001 C CNN
+F 3 "" H 5100 6000 50  0001 C CNN
+	1    5100 6000
 	0    -1   -1   0   
 $EndComp
 $Comp
 L power:GND #PWR02
 U 1 1 5DA39A49
-P 4650 5850
-F 0 "#PWR02" H 4650 5600 50  0001 C CNN
-F 1 "GND" V 4650 5650 50  0000 C CNN
-F 2 "" H 4650 5850 50  0001 C CNN
-F 3 "" H 4650 5850 50  0001 C CNN
-	1    4650 5850
+P 4600 5800
+F 0 "#PWR02" H 4600 5550 50  0001 C CNN
+F 1 "GND" V 4600 5600 50  0000 C CNN
+F 2 "" H 4600 5800 50  0001 C CNN
+F 3 "" H 4600 5800 50  0001 C CNN
+	1    4600 5800
 	0    1    1    0   
 $EndComp
 $Comp
 L power:GND #PWR04
 U 1 1 5DA38E13
-P 5150 7350
-F 0 "#PWR04" H 5150 7100 50  0001 C CNN
-F 1 "GND" V 5150 7150 50  0000 C CNN
-F 2 "" H 5150 7350 50  0001 C CNN
-F 3 "" H 5150 7350 50  0001 C CNN
-	1    5150 7350
+P 5100 7300
+F 0 "#PWR04" H 5100 7050 50  0001 C CNN
+F 1 "GND" V 5100 7100 50  0000 C CNN
+F 2 "" H 5100 7300 50  0001 C CNN
+F 3 "" H 5100 7300 50  0001 C CNN
+	1    5100 7300
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Connector_Generic:Conn_02x16_Top_Bottom J1
 U 1 1 5DA324C1
-P 4850 6550
-F 0 "J1" H 4900 7467 50  0000 C CNN
-F 1 "Main Header" H 4900 7376 50  0000 C CNN
-F 2 "Lukas_Library:Breadboard_Center_32pin" H 4850 6550 50  0001 C CNN
-F 3 "~" H 4850 6550 50  0001 C CNN
-	1    4850 6550
+P 4800 6500
+F 0 "J1" H 4850 7417 50  0000 C CNN
+F 1 "Main Header" H 4850 7326 50  0000 C CNN
+F 2 "Lukas_Library:Breadboard_Center_32pin" H 4800 6500 50  0001 C CNN
+F 3 "~" H 4800 6500 50  0001 C CNN
+	1    4800 6500
 	1    0    0    -1  
 $EndComp
 Connection ~ 9550 3850
@@ -1047,26 +1047,26 @@ Text GLabel 1450 3700 0    50   Input ~ 0
 PB6
 Text GLabel 1450 3800 0    50   Input ~ 0
 PB7
-Text GLabel 5150 7250 2    50   Input ~ 0
+Text GLabel 5100 7200 2    50   Input ~ 0
 PB4
-Text GLabel 5150 7150 2    50   Input ~ 0
+Text GLabel 5100 7100 2    50   Input ~ 0
 PB5
-Text GLabel 5150 7050 2    50   Input ~ 0
+Text GLabel 5100 7000 2    50   Input ~ 0
 PB6
-Text GLabel 5150 6950 2    50   Input ~ 0
+Text GLabel 5100 6900 2    50   Input ~ 0
 PB7
 NoConn ~ 1450 2500
-Text GLabel 5150 6850 2    50   Input ~ 0
+Text GLabel 5100 6800 2    50   Input ~ 0
 PF0
-Text GLabel 5150 6750 2    50   Input ~ 0
+Text GLabel 5100 6700 2    50   Input ~ 0
 PF1
-Text GLabel 5150 6650 2    50   Input ~ 0
+Text GLabel 5100 6600 2    50   Input ~ 0
 PA0
-Text GLabel 5150 6550 2    50   Input ~ 0
+Text GLabel 5100 6500 2    50   Input ~ 0
 PA1
-Text GLabel 5150 6450 2    50   Input ~ 0
+Text GLabel 5100 6400 2    50   Input ~ 0
 PA2
-Text GLabel 5150 6350 2    50   Input ~ 0
+Text GLabel 5100 6300 2    50   Input ~ 0
 PA3
 $Comp
 L Device:Crystal Y1
@@ -1136,19 +1136,19 @@ Wire Wire Line
 $Comp
 L power:GND #PWR0103
 U 1 1 5F8A4D51
-P 4650 7350
-F 0 "#PWR0103" H 4650 7100 50  0001 C CNN
-F 1 "GND" V 4650 7150 50  0000 C CNN
-F 2 "" H 4650 7350 50  0001 C CNN
-F 3 "" H 4650 7350 50  0001 C CNN
-	1    4650 7350
+P 4600 7300
+F 0 "#PWR0103" H 4600 7050 50  0001 C CNN
+F 1 "GND" V 4600 7100 50  0000 C CNN
+F 2 "" H 4600 7300 50  0001 C CNN
+F 3 "" H 4600 7300 50  0001 C CNN
+	1    4600 7300
 	0    1    1    0   
 $EndComp
-Text GLabel 4650 6550 0    50   Input ~ 0
+Text GLabel 4600 6500 0    50   Input ~ 0
 PB1
-Text GLabel 4650 6450 0    50   Input ~ 0
+Text GLabel 4600 6400 0    50   Input ~ 0
 PB0
-Text GLabel 4650 6650 0    50   Input ~ 0
+Text GLabel 4600 6600 0    50   Input ~ 0
 PA8
 Connection ~ 2050 1800
 Wire Wire Line

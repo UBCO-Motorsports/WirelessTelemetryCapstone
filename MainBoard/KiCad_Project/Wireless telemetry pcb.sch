@@ -14,19 +14,17 @@ Comment2 ""
 Comment3 ""
 Comment4 ""
 $EndDescr
-Text GLabel 8850 3650 0    50   Input ~ 0
+Text GLabel 8850 3800 0    50   Input ~ 0
 ASSOC
-Text GLabel 9000 4200 0    50   Input ~ 0
-CMSN
 $Comp
 L Device:LED D2
 U 1 1 5DD49A97
-P 9300 3100
-F 0 "D2" H 9350 2900 50  0000 R CNN
-F 1 "LED" H 9350 3000 50  0000 R CNN
-F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 9300 3100 50  0001 C CNN
-F 3 "~" H 9300 3100 50  0001 C CNN
-	1    9300 3100
+P 9300 3150
+F 0 "D2" H 9350 2950 50  0000 R CNN
+F 1 "LED" H 9350 3050 50  0000 R CNN
+F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 9300 3150 50  0001 C CNN
+F 3 "~" H 9300 3150 50  0001 C CNN
+	1    9300 3150
 	-1   0    0    1   
 $EndComp
 $Comp
@@ -48,65 +46,32 @@ Vcc3.3V
 $Comp
 L Device:LED D3
 U 1 1 5DD678C5
-P 9300 3650
-F 0 "D3" H 9293 3395 50  0000 C CNN
-F 1 "LED" H 9293 3486 50  0000 C CNN
-F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 9300 3650 50  0001 C CNN
-F 3 "~" H 9300 3650 50  0001 C CNN
-	1    9300 3650
+P 9300 3800
+F 0 "D3" H 9293 3545 50  0000 C CNN
+F 1 "LED" H 9293 3636 50  0000 C CNN
+F 2 "LED_SMD:LED_0603_1608Metric_Pad1.05x0.95mm_HandSolder" H 9300 3800 50  0001 C CNN
+F 3 "~" H 9300 3800 50  0001 C CNN
+	1    9300 3800
 	-1   0    0    1   
 $EndComp
 $Comp
 L power:GND #PWR08
 U 1 1 5DD68484
-P 9450 3650
-F 0 "#PWR08" H 9450 3400 50  0001 C CNN
-F 1 "GND" H 9455 3477 50  0000 C CNN
-F 2 "" H 9450 3650 50  0001 C CNN
-F 3 "" H 9450 3650 50  0001 C CNN
-	1    9450 3650
-	1    0    0    -1  
-$EndComp
-$Comp
-L Switch:SW_Push SW1
-U 1 1 5DD6D1CB
-P 9200 4200
-F 0 "SW1" H 9200 4485 50  0000 C CNN
-F 1 "SW_Push" H 9200 4394 50  0000 C CNN
-F 2 "Lukas_Library:PTS636 SK25F SMTR LFS" H 9200 4400 50  0001 C CNN
-F 3 "~" H 9200 4400 50  0001 C CNN
-	1    9200 4200
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GND #PWR07
-U 1 1 5DD6DD18
-P 9400 4200
-F 0 "#PWR07" H 9400 3950 50  0001 C CNN
-F 1 "GND" H 9405 4027 50  0000 C CNN
-F 2 "" H 9400 4200 50  0001 C CNN
-F 3 "" H 9400 4200 50  0001 C CNN
-	1    9400 4200
+P 9450 3800
+F 0 "#PWR08" H 9450 3550 50  0001 C CNN
+F 1 "GND" H 9455 3627 50  0000 C CNN
+F 2 "" H 9450 3800 50  0001 C CNN
+F 3 "" H 9450 3800 50  0001 C CNN
+	1    9450 3800
 	1    0    0    -1  
 $EndComp
 Text GLabel 2250 2300 0    50   Input ~ 0
 OUT
 Text GLabel 2250 2400 0    50   Input ~ 0
 IN
-$Comp
-L Lukas_Library:ControllerBoardV1 U2
-U 1 1 5DD490B1
-P 6250 3150
-F 0 "U2" H 6500 4115 50  0000 C CNN
-F 1 "ControllerBoardV1" H 6500 4024 50  0000 C CNN
-F 2 "Lukas_Library:Breadboard_Center_32pin" H 6250 3850 50  0001 C CNN
-F 3 "" H 6250 3850 50  0001 C CNN
-	1    6250 3150
-	1    0    0    -1  
-$EndComp
-Text GLabel 7150 4000 2    50   Input ~ 0
+Text GLabel 7150 3550 2    50   Input ~ 0
 IN
-Text GLabel 7150 3850 2    50   Input ~ 0
+Text GLabel 7150 3400 2    50   Input ~ 0
 OUT
 $Comp
 L power:GND #PWR04
@@ -288,7 +253,7 @@ L dk_PMIC-Voltage-Regulators-Linear:LD1117V33 U1
 U 1 1 5DD4C875
 P 2950 4300
 F 0 "U1" H 2950 4587 60  0000 C CNN
-F 1 "LD1117V33" H 2950 4481 60  0000 C CNN
+F 1 "NCV1117ST33" H 2950 4481 60  0000 C CNN
 F 2 "digikey-footprints:SOT-223" H 3150 4500 60  0001 L CNN
 F 3 "http://www.st.com/content/ccc/resource/technical/document/datasheet/99/3b/7d/91/91/51/4b/be/CD00000544.pdf/files/CD00000544.pdf/jcr:content/translations/en.CD00000544.pdf" H 3150 4600 60  0001 L CNN
 F 4 "497-1491-5-ND" H 3150 4700 60  0001 L CNN "Digi-Key_PN"
@@ -328,12 +293,12 @@ $EndComp
 $Comp
 L power:GND #PWR0103
 U 1 1 5DD8F6EF
-P 9450 3100
-F 0 "#PWR0103" H 9450 2850 50  0001 C CNN
-F 1 "GND" H 9455 2927 50  0000 C CNN
-F 2 "" H 9450 3100 50  0001 C CNN
-F 3 "" H 9450 3100 50  0001 C CNN
-	1    9450 3100
+P 9450 3150
+F 0 "#PWR0103" H 9450 2900 50  0001 C CNN
+F 1 "GND" H 9455 2977 50  0000 C CNN
+F 2 "" H 9450 3150 50  0001 C CNN
+F 3 "" H 9450 3150 50  0001 C CNN
+	1    9450 3150
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -380,7 +345,7 @@ F 3 "" H 1900 4300 50  0001 C CNN
 	1    1900 4300
 	0    -1   -1   0   
 $EndComp
-Text GLabel 8850 3100 0    50   Input ~ 0
+Text GLabel 8850 3150 0    50   Input ~ 0
 Vcc3.3V
 Wire Wire Line
 	2000 4300 2450 4300
@@ -396,12 +361,12 @@ Wire Wire Line
 $Comp
 L Device:R_US R1
 U 1 1 5F88CC05
-P 9000 3100
-F 0 "R1" V 8795 3100 50  0000 C CNN
-F 1 "220" V 8886 3100 50  0000 C CNN
-F 2 "" V 9040 3090 50  0001 C CNN
-F 3 "~" H 9000 3100 50  0001 C CNN
-	1    9000 3100
+P 9000 3150
+F 0 "R1" V 8795 3150 50  0000 C CNN
+F 1 "220" V 8886 3150 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9040 3140 50  0001 C CNN
+F 3 "~" H 9000 3150 50  0001 C CNN
+	1    9000 3150
 	0    1    1    0   
 $EndComp
 Wire Notes Line
@@ -425,18 +390,14 @@ CANH
 $Comp
 L Device:R_US R2
 U 1 1 5F8AAAC2
-P 9000 3650
-F 0 "R2" V 8795 3650 50  0000 C CNN
-F 1 "220" V 8886 3650 50  0000 C CNN
-F 2 "" V 9040 3640 50  0001 C CNN
-F 3 "~" H 9000 3650 50  0001 C CNN
-	1    9000 3650
+P 9000 3800
+F 0 "R2" V 8795 3800 50  0000 C CNN
+F 1 "220" V 8886 3800 50  0000 C CNN
+F 2 "Resistor_SMD:R_0603_1608Metric_Pad1.05x0.95mm_HandSolder" V 9040 3790 50  0001 C CNN
+F 3 "~" H 9000 3800 50  0001 C CNN
+	1    9000 3800
 	0    1    1    0   
 $EndComp
-Text GLabel 2750 2200 2    50   Input ~ 0
-CMSN
-Text GLabel 2750 2700 2    50   Input ~ 0
-ASSOC
 NoConn ~ 4250 2750
 NoConn ~ 4250 2850
 NoConn ~ 4250 2950
@@ -466,8 +427,6 @@ NoConn ~ 7150 4150
 NoConn ~ 7150 4000
 NoConn ~ 7150 3850
 NoConn ~ 7150 3700
-NoConn ~ 7150 3550
-NoConn ~ 7150 3400
 NoConn ~ 7150 3250
 NoConn ~ 7150 3100
 NoConn ~ 7150 2950
@@ -525,4 +484,18 @@ Text Notes 2850 3850 0    50   ~ 0
 VREG
 Text Notes 6250 2000 0    50   ~ 0
 ControlBoard
+$Comp
+L Lukas_Library:ControllerBoardV2 U2
+U 1 1 5F91E2E7
+P 6250 3150
+F 0 "U2" H 6500 4115 50  0000 C CNN
+F 1 "ControllerBoardV2" H 6500 4024 50  0000 C CNN
+F 2 "Lukas_Library:Breadboard_Center_32pin" H 6250 3850 50  0001 C CNN
+F 3 "" H 6250 3850 50  0001 C CNN
+	1    6250 3150
+	1    0    0    -1  
+$EndComp
+Text GLabel 2750 2700 2    50   Input ~ 0
+ASSOC
+NoConn ~ 2750 2200
 $EndSCHEMATC
