@@ -10,6 +10,7 @@ import os
 from random import randint
 import numpy as np
 
+
 class MainWindow(QtWidgets.QMainWindow):
 
     def __init__(self, *args, **kwargs):
