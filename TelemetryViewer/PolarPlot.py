@@ -13,8 +13,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.graphWidget = pg.PlotWidget()
         self.graphWidget.showGrid(x=True, y=True)
-        self.graphWidget.setXRange(-5,5)
-        self.graphWidget.setYRange(-5,5)
+        self.set_bounds(10)
         self.setCentralWidget(self.graphWidget)
 
         self.x = [randint(0, 10) for _ in range(5)]  # 100 data points
@@ -29,6 +28,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.setInterval(20)
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
+
+    def set_bounds(self, value):
+        self.graphWidget.setXRange(-value, value)
+        self.graphWidget.setYRange(-value, value)
 
     def update_plot_data(self):
         self.x = self.x[1:]  # Remove the first
