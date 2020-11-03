@@ -49,14 +49,30 @@ class MainWindow(QtWidgets.QMainWindow):
         # Init home widget
         self.homeText = QLabel()
         self.homeText.setText("Welcome to the Telemetry Viewer")
-        self.homeText.setAlignment(Qt.AlignHCenter)
+        self.homeText.setAlignment(Qt.AlignCenter)
         self.homeFont = QFont('Monospace', 20, QFont.Bold)
         self.homeText.setFont(self.homeFont)
         self.homeLayout.addWidget(self.homeText)
 
         self.homePicture = QtGui.QLabel(self)
         self.homePicture.setPixmap(QtGui.QPixmap("TelemetryLogo.png"))
-        self.homeLayout.addWidget(self.homePicture, 1, 0, Qt.AlignHCenter)
+        self.homeLayout.addWidget(self.homePicture, 1, 0, Qt.AlignCenter)
+
+        # ---------------Testing plot stuff-----------------
+        self.test_graph_widget = QtGui.QWidget()
+        self.Stack.addWidget(self.test_graph_widget)
+        self.test_graph_layout = QtGui.QGridLayout()
+        self.test_graph_widget.setLayout(self.test_graph_layout)
+        self.graph_list = []
+        j = 0
+        for i in range(16):
+            self.graph_list.append(pg.PlotWidget())
+            self.graph_list[i].showGrid(x=True, y=True)
+            self.test_graph_layout.addWidget(self.graph_list[i], i%4, j)
+            # self.test_graph_layout.setColumnStretch(j, 1)
+            # self.test_graph_layout.setRowStretch(j, 1)
+            if i%4 == 3:
+                j+=1
 
         # Init plot widgets
         self.graphWidget = pg.PlotWidget()
@@ -81,15 +97,19 @@ class MainWindow(QtWidgets.QMainWindow):
         self.z = [randint(0, 100) for _ in range(200)]  # 100 data points
         self.sin = []
         for i in range(200):
-            self.sin.append(20*np.sin(self.x[i]) + 50)
+            self.sin.append(np.sin(self.x[i]) + 50)
 
-        pen = pg.mkPen(color=(255,0,0),width=2)
+        self.pen = pg.mkPen(color=(255,0,0),width=2)
 
         # Initial plot
-        self.data_line1 = self.graphWidget.plot(self.x, self.y,pen=pen)
+        self.data_line1 = self.graphWidget.plot(self.x, self.y,pen=self.pen)
         self.data_line2 = self.graphWidget2.plot(self.x, self.z,pen=pg.mkPen(color=(0,255,0),width=2))
-        self.data_line3 = self.graphWidget3.plot(self.x, self.z,pen=pg.mkPen(color=(0,255,0),width=2))
+        self.data_line3 = self.graphWidget3.plot(self.x, self.z,pen=pg.mkPen(color=(0,0,255),width=2))
         self.sinwave = self.graphWidget4.plot(self.x, self.sin, pen=pg.mkPen(color=(0,255,0),width=2))
+
+        self.line_plots = []
+        for i in self.graph_list:
+            self.line_plots.append(i.plot(self.x, self.y,pen=self.pen))
 
         # Set refresh rate for graph
         self.timer = QtCore.QTimer()
@@ -99,21 +119,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initDockButtons(self):
         # Init buttons
-        self.button = QtWidgets.QPushButton(self)
-        self.button.setText("Green")
-        self.button.clicked.connect(self.colour_green)
+        # self.button = QtWidgets.QPushButton(self)
+        # self.button.setText("Green")
+        # self.button.clicked.connect(self.colour_green)
+        #
+        # self.button2 = QtWidgets.QPushButton(self)
+        # self.button2.setText("Random Test")
+        # self.button2.clicked.connect(self.sineoff)
+        #
+        # self.button3 = QtWidgets.QPushButton(self)
+        # self.button3.setText("Sine Test")
+        # self.button3.clicked.connect(self.sineon)
 
-        self.button2 = QtWidgets.QPushButton(self)
-        self.button2.setText("Random Test")
-        self.button2.clicked.connect(self.sineoff)
-
-        self.button3 = QtWidgets.QPushButton(self)
-        self.button3.setText("Sine Test")
-        self.button3.clicked.connect(self.sineon)
-
-        # Init selection menu
+        # Init number of graph selection menu
         self.numGraphs = QtGui.QWidget()
         self.numGraphsLayout = QtGui.QVBoxLayout()
+
         self.numGraphLabel = QLabel('Select # of Graphs')
         self.numGraphLabel.setFixedHeight(20)
         self.comboBox = QComboBox()
@@ -121,6 +142,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.comboBox.addItem('1')
         self.comboBox.addItem('2')
         self.comboBox.addItem('4')
+        self.comboBox.addItem('16')
         self.comboBox.setCurrentIndex(2)
         self.comboBox.currentIndexChanged.connect(self.graphshift)
 
@@ -128,18 +150,34 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numGraphsLayout.addWidget(self.comboBox)
         self.numGraphs.setLayout(self.numGraphsLayout)
 
+        # Init display list
+        # self.data_selection_widget = QtGui.QWidget()
+        self.data_selection_box = QComboBox()
+        self.data_selection_box.setToolTip('Graph selection')
+        for i in range(4):
+            for j in range(4):
+                self.data_selection_box.addItem('(%s, %s)' % (str(i), str(j)))
+        self.numGraphsLayout.addWidget(self.data_selection_box)
+
+        self.plot_selection_box = QComboBox()
+        self.plot_selection_box.setToolTip('Which data to show')
+        self.plot_selection_box.addItem('Y')
+        self.plot_selection_box.addItem('Z')
+        self.numGraphsLayout.addWidget(self.plot_selection_box)
+
         # Place buttons in dock widget section
-        self.dock = QDockWidget("Dock", self)
+        self.dock = QDockWidget("Graph Options", self)
         self.buttons = QtGui.QWidget() # Set up widget to put buttons in
         self.btn_layout = QtGui.QVBoxLayout() # Layout for buttons
-        self.btn_layout.addWidget(self.button)
-        self.btn_layout.addWidget(self.button2)
-        self.btn_layout.addWidget(self.button3)
+        # self.btn_layout.addWidget(self.button)
+        # self.btn_layout.addWidget(self.button2)
+        # self.btn_layout.addWidget(self.button3)
         self.btn_layout.addWidget(self.numGraphs)
         self.buttons.setLayout(self.btn_layout) # Apply button layout to button widget
         self.dock.setWidget(self.buttons) # Set dock widget to contain buttons
         self.addDockWidget(Qt.RightDockWidgetArea, self.dock) # Place button dock widget in window
         self.dock.setFloating(False)
+        self.dock.setFeatures(QDockWidget.NoDockWidgetFeatures)
         self.dock.hide() # Hide dock widget from home screen
 
     def initToolbar(self):
@@ -155,6 +193,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toolGraph.setCheckable(True)
         self.toolGraph.triggered.connect(self.displayGraph)
 
+        self.toolTestGraph = QAction(QIcon('icons/graphic-card.png'), 'Graph', self)
+        self.toolTestGraph.setStatusTip('Graphs')
+        self.toolTestGraph.setCheckable(True)
+        self.toolTestGraph.triggered.connect(self.displayTestGraph)
+
         # Add toolbar to left side
         self.toolbar = QtWidgets.QToolBar('Red')
         self.toolbar.setIconSize(QSize(32, 32))
@@ -162,6 +205,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.toolbar.addAction(self.toolHome)
         self.toolbar.addAction(self.toolGraph)
+        self.toolbar.addAction(self.toolTestGraph)
+
 
     def initMenuBar(self):
         # Init a menu bar
@@ -219,19 +264,49 @@ class MainWindow(QtWidgets.QMainWindow):
         self.data_line3.setData(self.x, self.z)  # Update the data.
         self.sinwave.setData(self.x, self.sin)
 
+        for i in self.line_plots:
+            i.setData(self.x, self.y)
+
     def graphshift(self):
         if self.comboBox.currentText() == '1':
+            for i in range(15):
+                self.graph_list[i].hide()
+                self.test_graph_layout.setColumnStretch(i, 0)
+                self.test_graph_layout.setRowStretch(i, 0)
             self.graphWidget2.hide()
             self.graphWidget3.hide()
             self.graphWidget4.hide()
+
         elif self.comboBox.currentText() == '2':
+            for i in range(14):
+                self.graph_list[i].hide()
+                self.test_graph_layout.setRowStretch(i, 0)
+                self.test_graph_layout.setColumnStretch(i, 0)
+            self.graph_list[14].show()
             self.graphWidget2.show()
             self.graphWidget3.hide()
             self.graphWidget4.hide()
+
         elif self.comboBox.currentText() == '4':
+            for i in range(14, 11, -1):
+                self.graph_list[i].show()
+            for i in range(12):
+                self.graph_list[i].hide()
+                self.test_graph_layout.setRowStretch(i, 0)
+                self.test_graph_layout.setColumnStretch(i, 0)
             self.graphWidget2.show()
             self.graphWidget3.show()
             self.graphWidget4.show()
+
+        elif self.comboBox.currentText() == '16':
+            self.graphWidget2.show()
+            self.graphWidget3.show()
+            self.graphWidget4.show()
+            for j in range(4):
+                self.test_graph_layout.setColumnStretch(j, 1)
+                self.test_graph_layout.setRowStretch(j, 1)
+            for i in self.graph_list:
+                i.show()
 
     def colour_green(self):
         self.data_line1.setData(pen = pg.mkPen(color=(0,255,0),width=2))
@@ -258,17 +333,28 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dock.hide()
         self.toolHome.setChecked(True)
         self.toolGraph.setChecked(False)
+        self.toolTestGraph.setChecked(False)
 
     def displayGraph(self):
         self.Stack.setCurrentIndex(1)
         self.dock.show()
         self.toolHome.setChecked(False)
         self.toolGraph.setChecked(True)
+        self.toolTestGraph.setChecked(False)
 
 
+    def displayTestGraph(self):
+        self.Stack.setCurrentIndex(2)
+        self.dock.show()
+        self.toolHome.setChecked(False)
+        self.toolGraph.setChecked(False)
+        self.toolTestGraph.setChecked(True)
 
 app = QtWidgets.QApplication(sys.argv)
+l = SplashScreen()
+l.show()
 w = MainWindow()
 w.show()
+# Helps with window alignments
 app.setAttribute(QtCore.Qt.AA_Use96Dpi)
 sys.exit(app.exec_())
