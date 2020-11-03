@@ -69,5 +69,6 @@ class SplashScreen(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    app.setAttribute(QtCore.Qt.AA_Use96Dpi)
     window = SplashScreen()
     sys.exit(app.exec_())

@@ -10,6 +10,7 @@ import os
 from random import randint
 import numpy as np
 from Loader import SplashScreen
+from GraphManager import GraphManager
 
 class MainWindow(QtWidgets.QMainWindow):
 
@@ -59,20 +60,25 @@ class MainWindow(QtWidgets.QMainWindow):
         self.homeLayout.addWidget(self.homePicture, 1, 0, Qt.AlignCenter)
 
         # ---------------Testing plot stuff-----------------
-        self.test_graph_widget = QtGui.QWidget()
-        self.Stack.addWidget(self.test_graph_widget)
-        self.test_graph_layout = QtGui.QGridLayout()
-        self.test_graph_widget.setLayout(self.test_graph_layout)
-        self.graph_list = []
-        j = 0
-        for i in range(16):
-            self.graph_list.append(pg.PlotWidget())
-            self.graph_list[i].showGrid(x=True, y=True)
-            self.test_graph_layout.addWidget(self.graph_list[i], i%4, j)
-            # self.test_graph_layout.setColumnStretch(j, 1)
-            # self.test_graph_layout.setRowStretch(j, 1)
-            if i%4 == 3:
-                j+=1
+        # self.test_graph_widget = QtGui.QWidget()
+        # self.Stack.addWidget(self.test_graph_widget)
+        # self.test_graph_layout = QtGui.QGridLayout()
+        # self.test_graph_widget.setLayout(self.test_graph_layout)
+        # self.graph_list = []
+        # j = 0
+        # for i in range(16):
+        #     self.graph_list.append(pg.PlotWidget())
+        #     self.graph_list[i].showGrid(x=True, y=True)
+        #     self.test_graph_layout.addWidget(self.graph_list[i], i%4, j)
+        #     # self.test_graph_layout.setColumnStretch(j, 1)
+        #     # self.test_graph_layout.setRowStretch(j, 1)
+        #     if i%4 == 3:
+        #         j+=1
+
+        # Init graphs using graphing class
+        self.GraphClass = GraphManager()
+        self.Stack.addWidget(self.GraphClass)
+        # self.Stack.setCurrentIndex(3)
 
         # Init plot widgets
         self.graphWidget = pg.PlotWidget()
@@ -107,9 +113,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.data_line3 = self.graphWidget3.plot(self.x, self.z,pen=pg.mkPen(color=(0,0,255),width=2))
         self.sinwave = self.graphWidget4.plot(self.x, self.sin, pen=pg.mkPen(color=(0,255,0),width=2))
 
-        self.line_plots = []
-        for i in self.graph_list:
-            self.line_plots.append(i.plot(self.x, self.y,pen=self.pen))
+        # self.line_plots = []
+        # for i in self.graph_list:
+        #     self.line_plots.append(i.plot(self.x, self.y,pen=self.pen))
+
+        for row in self.GraphClass.graph_array:
+            for graph in row:
+                graph.plot(self.x, self.y, pen=self.pen)
 
         # Set refresh rate for graph
         self.timer = QtCore.QTimer()
@@ -143,27 +153,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.comboBox.addItem('2')
         self.comboBox.addItem('4')
         self.comboBox.addItem('16')
-        self.comboBox.setCurrentIndex(2)
+        self.comboBox.setCurrentIndex(3)
         self.comboBox.currentIndexChanged.connect(self.graphshift)
 
         self.numGraphsLayout.addWidget(self.numGraphLabel)
         self.numGraphsLayout.addWidget(self.comboBox)
         self.numGraphs.setLayout(self.numGraphsLayout)
 
-        # Init display list
-        # self.data_selection_widget = QtGui.QWidget()
-        self.data_selection_box = QComboBox()
-        self.data_selection_box.setToolTip('Graph selection')
-        for i in range(4):
-            for j in range(4):
-                self.data_selection_box.addItem('(%s, %s)' % (str(i), str(j)))
-        self.numGraphsLayout.addWidget(self.data_selection_box)
-
-        self.plot_selection_box = QComboBox()
-        self.plot_selection_box.setToolTip('Which data to show')
-        self.plot_selection_box.addItem('Y')
-        self.plot_selection_box.addItem('Z')
-        self.numGraphsLayout.addWidget(self.plot_selection_box)
+        # # Init display list
+        # # self.data_selection_widget = QtGui.QWidget()
+        # self.data_selection_box = QComboBox()
+        # self.data_selection_box.setToolTip('Graph selection')
+        # for i in range(4):
+        #     for j in range(4):
+        #         self.data_selection_box.addItem('(%s, %s)' % (str(i), str(j)))
+        # self.numGraphsLayout.addWidget(self.data_selection_box)
+        #
+        # self.plot_selection_box = QComboBox()
+        # self.plot_selection_box.setToolTip('Which data to show')
+        # self.plot_selection_box.addItem('Y')
+        # self.plot_selection_box.addItem('Z')
+        # self.numGraphsLayout.addWidget(self.plot_selection_box)
 
         # Place buttons in dock widget section
         self.dock = QDockWidget("Graph Options", self)
@@ -206,7 +216,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.toolHome)
         self.toolbar.addAction(self.toolGraph)
         self.toolbar.addAction(self.toolTestGraph)
-
 
     def initMenuBar(self):
         # Init a menu bar
@@ -264,49 +273,34 @@ class MainWindow(QtWidgets.QMainWindow):
         self.data_line3.setData(self.x, self.z)  # Update the data.
         self.sinwave.setData(self.x, self.sin)
 
-        for i in self.line_plots:
-            i.setData(self.x, self.y)
+        for row in self.GraphClass.graph_array:
+            for graph in row:
+                graph.plot(self.x, self.y, pen=self.pen, clear=True)
 
     def graphshift(self):
         if self.comboBox.currentText() == '1':
-            for i in range(15):
-                self.graph_list[i].hide()
-                self.test_graph_layout.setColumnStretch(i, 0)
-                self.test_graph_layout.setRowStretch(i, 0)
+            self.GraphClass.showGraphs(self.comboBox.currentText())
             self.graphWidget2.hide()
             self.graphWidget3.hide()
             self.graphWidget4.hide()
 
         elif self.comboBox.currentText() == '2':
-            for i in range(14):
-                self.graph_list[i].hide()
-                self.test_graph_layout.setRowStretch(i, 0)
-                self.test_graph_layout.setColumnStretch(i, 0)
-            self.graph_list[14].show()
+            self.GraphClass.showGraphs(self.comboBox.currentText())
             self.graphWidget2.show()
             self.graphWidget3.hide()
             self.graphWidget4.hide()
 
         elif self.comboBox.currentText() == '4':
-            for i in range(14, 11, -1):
-                self.graph_list[i].show()
-            for i in range(12):
-                self.graph_list[i].hide()
-                self.test_graph_layout.setRowStretch(i, 0)
-                self.test_graph_layout.setColumnStretch(i, 0)
+            self.GraphClass.showGraphs(self.comboBox.currentText())
             self.graphWidget2.show()
             self.graphWidget3.show()
             self.graphWidget4.show()
 
         elif self.comboBox.currentText() == '16':
+            self.GraphClass.showGraphs(self.comboBox.currentText())
             self.graphWidget2.show()
             self.graphWidget3.show()
             self.graphWidget4.show()
-            for j in range(4):
-                self.test_graph_layout.setColumnStretch(j, 1)
-                self.test_graph_layout.setRowStretch(j, 1)
-            for i in self.graph_list:
-                i.show()
 
     def colour_green(self):
         self.data_line1.setData(pen = pg.mkPen(color=(0,255,0),width=2))
@@ -355,6 +349,5 @@ l = SplashScreen()
 l.show()
 w = MainWindow()
 w.show()
-# Helps with window alignments
-app.setAttribute(QtCore.Qt.AA_Use96Dpi)
+app.setAttribute(QtCore.Qt.AA_Use96Dpi) # Helps with window alignments
 sys.exit(app.exec_())
