@@ -75,11 +75,10 @@ class GraphManager(QtGui.QWidget):
                 for j in range(4):
                     self.graph_array[i][j].show()
 
-            #TODO
-            # Still bugged for showing 8 graphs
             for i in range(2):
                 for j in range(4):
-                    self.graph_array[i][j].resize(self.width()/4, self.height()/2)
+                    self.graph_array[i][j].setGeometry(j * self.width()/4, i * self.height()/2, self.width()/4, self.height()/2)
+                    print(self.graph_array[i][j].frameGeometry())
 
         elif num_shown == '16':
             for i in range(4):
