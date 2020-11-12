@@ -11,7 +11,6 @@ from PySide2.QtWidgets import *
 
 from TelemetryLoader import Ui_SplashScreen
 
-counter=0
 
 class SplashScreen(QMainWindow):
     def __init__(self):
@@ -31,22 +30,16 @@ class SplashScreen(QMainWindow):
         self.shadow.setColor(QColor(0,0,0,100))
         self.ui.Circularvaluebg.setGraphicsEffect(self.shadow)
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.progress)
-        self.timer.start(15)
-
-
         self.show()
+        self.counter = 0
+
     def progress (self):
-        global counter
-        value=counter
+        self.progressbarVal(self.counter)
 
-        self.progressbarVal(value)
-        if counter > 100:
-            self.timer.stop()
-
+        if self.counter > 100:
             self.close()
-        counter += 0.5
+
+        self.counter += 0.5
 
     def progressbarVal(self,value):
         styleSheet = """

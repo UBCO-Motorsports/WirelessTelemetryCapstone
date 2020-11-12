@@ -90,17 +90,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
 
+    def graphSelect(self):
+        print(self.graph_select_buttons.checkedId())
+
     def initDockButtons(self):
 
-        self.graph_select_widget = QtGui.QWidget()
-        self.graph_select_layout = QtGui.QGridLayout()
-        for i in range(4):
-            for j in range(4):
-                self.button = QPushButton(checkable=True)
-                # self.button.setText("%s, %s" % (i, j))
-                self.graph_select_layout.addWidget(self.button, i, j)
-                # self.button.clicked.connect(self.GraphClass.graphSelect)
-        self.graph_select_widget.setLayout(self.graph_select_layout)
 
         # Init number of graph selection menu
         self.numGraphs = QtGui.QWidget()
@@ -119,6 +113,33 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numGraphsLayout.addWidget(self.comboBox)
         self.numGraphs.setLayout(self.numGraphsLayout)
 
+        # Graph selection button array
+        self.graph_select_widget = QtGui.QWidget()
+        self.graph_select_layout = QtGui.QGridLayout()
+        self.graph_select_buttons = QButtonGroup()
+        self.buttonID = 0
+        for i in range(4):
+            for j in range(4):
+                self.button = QPushButton(checkable=True)
+                self.graph_select_buttons.addButton(self.button)
+                self.graph_select_buttons.setId(self.button, self.buttonID)
+                self.buttonID +=1
+                # self.button.setText("%s, %s" % (i, j))
+                self.graph_select_layout.addWidget(self.button, i, j)
+                self.button.clicked.connect(self.graphSelect)
+        self.graph_select_buttons.button(0).toggle()
+        self.graph_select_widget.setLayout(self.graph_select_layout)
+
+        # Data selection menu
+        self.data_list = QtGui.QWidget()
+        self.data_list_layout = QVBoxLayout()
+
+        sensor_list = ('RPM', 'Speed')
+        for data_type in sensor_list:
+            item = QCheckBox(data_type)
+            self.data_list_layout.addWidget(item)
+        self.data_list.setLayout(self.data_list_layout)
+
         # # Init display list
         # # self.data_selection_widget = QtGui.QWidget()
         # self.data_selection_box = QComboBox()
@@ -132,8 +153,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dock = QDockWidget("Graph Options", self)
         self.dock_widget = QtGui.QWidget() # Set up widget to put buttons in
         self.dock_layout = QtGui.QVBoxLayout() # Layout for buttons
+
         self.dock_layout.addWidget(self.numGraphs)
         self.dock_layout.addWidget(self.graph_select_widget)
+        self.dock_layout.addWidget(self.data_list)
         self.dock_widget.setLayout(self.dock_layout) # Apply button layout to button widget
         self.dock.setWidget(self.dock_widget) # Set dock widget to contain buttons
 
@@ -231,10 +254,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toolHome.setChecked(False)
         self.toolTestGraph.setChecked(True)
 
+
 app = QtWidgets.QApplication(sys.argv)
 l = SplashScreen()
 l.show()
 w = MainWindow()
-w.show()
+
+
+# Progresses loading bar and shows main app once complete
+def showViewer():
+    if l.counter == 100:
+        w.showMaximized()
+    l.progress()
+
+# Sets a timer to check loading progress
+timer = QtCore.QTimer()
+timer.timeout.connect(showViewer)
+timer.start(15)
+
 app.setAttribute(QtCore.Qt.AA_Use96Dpi) # Helps with window alignments
 sys.exit(app.exec_())
