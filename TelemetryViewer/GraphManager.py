@@ -3,6 +3,9 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
 
+from PyQt5.QtWidgets import QSplitter
+
+
 class GraphManager(QtGui.QWidget):
 
     def __init__(self):
@@ -21,7 +24,15 @@ class GraphManager(QtGui.QWidget):
                 self.graph_array[i][j].showGrid(x=True, y=True)
                 self.graph_array[i][j].setBackground('w')
 
+    def graphSelect(self):
+        return
+        #TODO
+
     def showGraphs(self, num_shown):
+        # Reset formats to better align widgets
+        for i in range(4):
+            self.graph_layout.setColumnStretch(i, 0)
+            self.graph_layout.setRowStretch(i, 0)
 
         if num_shown == '1':
             for i in range(1, 4):
@@ -29,9 +40,6 @@ class GraphManager(QtGui.QWidget):
             for i in range(1, 4):
                 for j in range(4):
                     self.graph_array[i][j].hide()
-            for i in range(4):
-                self.graph_layout.setColumnStretch(i, 0)
-                self.graph_layout.setRowStretch(i, 0)
 
         elif num_shown == '2':
             self.graph_array[1][0].show()
@@ -41,9 +49,8 @@ class GraphManager(QtGui.QWidget):
             for i in range(2, 4):
                 for j in range(4):
                     self.graph_array[i][j].hide()
-            for i in range(4):
-                self.graph_layout.setColumnStretch(i, 0)
-                self.graph_layout.setRowStretch(i, 0)
+            self.graph_array[0][0].resize(self.width(), self.height()/2)
+            self.graph_array[1][0].resize(self.width(), self.height()/2)
 
         elif num_shown == '4':
             for i in range(2):
@@ -55,9 +62,24 @@ class GraphManager(QtGui.QWidget):
             for i in range(2, 4):
                 for j in range(4):
                     self.graph_array[i][j].hide()
-            for i in range(4):
-                self.graph_layout.setColumnStretch(i, 0)
-                self.graph_layout.setRowStretch(i, 0)
+            self.graph_array[0][0].resize(self.width()/2, self.height()/2)
+            self.graph_array[1][0].resize(self.width()/2, self.height()/2)
+            self.graph_array[0][1].resize(self.width()/2, self.height()/2)
+            self.graph_array[1][1].resize(self.width()/2, self.height()/2)
+
+        elif num_shown == '8':
+            for i in range(2,4):
+                for j in range(4):
+                    self.graph_array[i][j].hide()
+            for i in range(2):
+                for j in range(4):
+                    self.graph_array[i][j].show()
+
+            #TODO
+            # Still bugged for showing 8 graphs
+            for i in range(2):
+                for j in range(4):
+                    self.graph_array[i][j].resize(self.width()/4, self.height()/2)
 
         elif num_shown == '16':
             for i in range(4):
