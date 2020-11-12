@@ -21,10 +21,7 @@ _autosave-*
 *.dsn
 *.ses
 
-# Exported BOM files
-*.xml
-*.csv
-
+.idea
 *.DS_Store
 # User-specific stuff
 .idea/**/workspace.xml
@@ -53,14 +50,14 @@ _autosave-*
 # When using Gradle or Maven with auto-import, you should exclude module files,
 # since they will be recreated, and may cause churn.  Uncomment if using
 # auto-import.
-# .idea/artifacts
-# .idea/compiler.xml
-# .idea/jarRepositories.xml
-# .idea/modules.xml
+.idea/artifacts
+.idea/compiler.xml
+.idea/jarRepositories.xml
+.idea/modules.xml
 .idea/*.iml
-# .idea/modules
+.idea/modules
 *.iml
-# *.ipr
+*.ipr
 
 # CMake
 cmake-build-*/

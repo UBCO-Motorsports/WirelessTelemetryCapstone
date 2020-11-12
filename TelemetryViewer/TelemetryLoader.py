@@ -14,6 +14,7 @@ from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont,
     QRadialGradient)
 from PySide2.QtWidgets import *
 
+
 class Ui_SplashScreen(object):
     def setupUi(self, SplashScreen):
         SplashScreen.setObjectName("SplashScreen")
