@@ -156,7 +156,7 @@ background-color: rgb(216, 216, 216);
       <enum>Qt::RichText</enum>
      </property>
      <property name="pixmap">
-      <pixmap>needle2.png</pixmap>
+      <pixmap>needle3.png</pixmap>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -189,6 +189,25 @@ background-color: rgb(216, 216, 216);
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
+    <widget class="QLabel" name="label_3">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>300</width>
+       <height>300</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap>Pointer2.png</pixmap>
+     </property>
+    </widget>
     <zorder>frame_4</zorder>
     <zorder>frame_3</zorder>
     <zorder>frame_2</zorder>
@@ -196,6 +215,7 @@ background-color: rgb(216, 216, 216);
     <zorder>label_2</zorder>
     <zorder>Needle</zorder>
     <zorder>RPMtext</zorder>
+    <zorder>label_3</zorder>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

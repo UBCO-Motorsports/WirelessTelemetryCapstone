@@ -35,7 +35,7 @@ class SplashScreen(QMainWindow):
             self.timer.stop()
 
             self.close()
-        RPM += 10
+        RPM += 30
 
 
     def animate(self,value):
@@ -51,10 +51,10 @@ class SplashScreen(QMainWindow):
             value=16000
         if value<0:
             value=0
-        value=reMap(RPM,16000,0,45,-222)
+        value=reMap(RPM,16000,0,253,-15)
         t.rotate(value)
         # load your image
-        image = QtGui.QImage("needle2.png")
+        image = QtGui.QImage("needle3.png")
         pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
