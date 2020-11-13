@@ -71,7 +71,6 @@ class RPMQT(object):
         self.Needle = QLabel(self.frame)
         self.Needle.setGeometry(QRect(10, 10, 300, 300))
         self.Needle.setStyleSheet("")
-        self.Needle.setAlignment(Qt.AlignCenter)
         self.Needle.setText("")
         self.Needle.setTextFormat(Qt.RichText)
         self.Needle.setPixmap(QPixmap("needle3.png"))

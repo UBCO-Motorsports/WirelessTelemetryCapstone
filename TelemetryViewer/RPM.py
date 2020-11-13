@@ -59,7 +59,6 @@ class SplashScreen(QMainWindow):
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
         self.ui.Needle.setPixmap(rotated_pixmap)
-        self.ui.Needle.raise_()
 
 
 def reMap(value, maxInput, minInput, maxOutput, minOutput):
