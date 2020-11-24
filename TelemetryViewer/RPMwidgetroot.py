@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'RPM.ui'
+# Form implementation generated from reading ui file 'RPMwidget.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.1
 #
@@ -15,12 +15,10 @@ from PySide2.QtWidgets import *
 
 
 class RPMQT(object):
-    def setupUi(self, Splashscreen):
-        Splashscreen.setObjectName("Splashscreen")
-        Splashscreen.resize(800, 600)
-        self.centralwidget = QWidget(Splashscreen)
-        self.centralwidget.setObjectName("centralwidget")
-        self.frame = QFrame(self.centralwidget)
+    def setupUi(self, Form):
+        Form.setObjectName("Form")
+        Form.resize(609, 455)
+        self.frame = QFrame(Form)
         self.frame.setGeometry(QRect(10, 10, 320, 320))
         self.frame.setFrameShape(QFrame.NoFrame)
         self.frame.setFrameShadow(QFrame.Raised)
@@ -101,19 +99,11 @@ class RPMQT(object):
         self.Needle.raise_()
         self.RPMtext.raise_()
         self.label_3.raise_()
-        Splashscreen.setCentralWidget(self.centralwidget)
-        self.menubar = QMenuBar(Splashscreen)
-        self.menubar.setGeometry(QRect(0, 0, 800, 21))
-        self.menubar.setObjectName("menubar")
-        Splashscreen.setMenuBar(self.menubar)
-        self.statusbar = QStatusBar(Splashscreen)
-        self.statusbar.setObjectName("statusbar")
-        Splashscreen.setStatusBar(self.statusbar)
 
-        self.retranslateUi(Splashscreen)
-        QMetaObject.connectSlotsByName(Splashscreen)
+        self.retranslateUi(Form)
+        QMetaObject.connectSlotsByName(Form)
 
-    def retranslateUi(self, Splashscreen):
+    def retranslateUi(self, Form):
         _translate = QCoreApplication.translate
-        Splashscreen.setWindowTitle(_translate("Splashscreen", "MainWindow"))
-        self.RPMtext.setText(_translate("Splashscreen", "13000"))
+        Form.setWindowTitle(_translate("Form", "Form"))
+        self.RPMtext.setText(_translate("Form", "13000"))

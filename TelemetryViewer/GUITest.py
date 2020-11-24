@@ -5,12 +5,14 @@ from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
+import pyqtgraph.widgets.RemoteGraphicsView
 import sys  # We need sys so that we can pass argv to QApplication
 import os
 from random import randint
 import numpy as np
 from Loader import SplashScreen
 from GraphManager import GraphManager
+
 
 class MainWindow(QtWidgets.QMainWindow):
 

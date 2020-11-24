@@ -9,7 +9,7 @@ from PySide2.QtWidgets import *
 
 # GUI File
 
-from RPMroot import RPMQT
+from RPMwidgetroot import RPMQT
 
 RPM = 0
 
