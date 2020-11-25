@@ -97,7 +97,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initDockButtons(self):
 
-
         # Init number of graph selection menu
         self.numGraphs = QtGui.QWidget()
         self.numGraphsLayout = QtGui.QVBoxLayout()
@@ -238,11 +237,18 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.sin.append(np.sin(self.x[-1]) + 50)
 
         for row in self.GraphClass.graph_array:
+            # Process events from OS to reduce input lag
+            QApplication.processEvents()
             for graph in row:
                 graph.plot(self.x, self.y, pen=self.pen, clear=True)
 
     def graphshift(self):
         self.GraphClass.showGraphs(self.comboBox.currentText())
+        self.graphs_shown = int(self.comboBox.currentText())
+        if self.graphs_shown == 1:
+            for i in range(1,16):
+                self.graph_select_buttons.button(i).setEnabled(False)
+
 
     def displayHome(self):
         self.Stack.setCurrentIndex(0)
@@ -256,23 +262,23 @@ class MainWindow(QtWidgets.QMainWindow):
         self.toolHome.setChecked(False)
         self.toolTestGraph.setChecked(True)
 
+if __name__ == "__main__":
+    app = QtWidgets.QApplication(sys.argv)
+    l = SplashScreen()
+    l.show()
+    w = MainWindow()
 
-app = QtWidgets.QApplication(sys.argv)
-l = SplashScreen()
-l.show()
-w = MainWindow()
 
+    # Progresses loading bar and shows main app once complete
+    def showViewer():
+        if l.counter == 100:
+            w.showMaximized()
+        l.progress()
 
-# Progresses loading bar and shows main app once complete
-def showViewer():
-    if l.counter == 100:
-        w.showMaximized()
-    l.progress()
+    # Sets a timer to check loading progress
+    timer = QtCore.QTimer()
+    timer.timeout.connect(showViewer)
+    timer.start(5)
 
-# Sets a timer to check loading progress
-timer = QtCore.QTimer()
-timer.timeout.connect(showViewer)
-timer.start(15)
-
-app.setAttribute(QtCore.Qt.AA_Use96Dpi) # Helps with window alignments
-sys.exit(app.exec_())
+    app.setAttribute(QtCore.Qt.AA_Use96Dpi) # Helps with window alignments
+    sys.exit(app.exec_())

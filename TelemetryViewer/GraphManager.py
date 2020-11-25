@@ -2,6 +2,8 @@ import pyqtgraph as pg
 import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
+from RPM import SplashScreen
+from Speedo import splashScreen
 
 from PyQt5.QtWidgets import QSplitter
 
@@ -23,6 +25,23 @@ class GraphManager(QtGui.QWidget):
                 self.graph_layout.addWidget(self.graph_array[i][j], i, j)
                 self.graph_array[i][j].showGrid(x=True, y=True)
                 self.graph_array[i][j].setBackground('w')
+
+        self.dial = SplashScreen()
+        self.graph_layout.removeWidget(self.graph_array[0][0])
+        self.graph_array[0][0].hide()
+        self.graph_layout.addWidget(self.dial, 0, 0)
+
+        self.dial.dial_size.setGeometry(-10,-10,320,320)
+
+        self.speed = splashScreen()
+        self.graph_layout.removeWidget(self.graph_array[0][1])
+        self.graph_array[0][1].hide()
+        self.graph_layout.addWidget(self.speed, 0, 1)
+
+        self.speed.frame_size.setGeometry(-10,-10,320,320)
+
+
+
 
     def graphSelect(self):
         return
@@ -62,10 +81,12 @@ class GraphManager(QtGui.QWidget):
             for i in range(2, 4):
                 for j in range(4):
                     self.graph_array[i][j].hide()
-            self.graph_array[0][0].resize(self.width()/2, self.height()/2)
-            self.graph_array[1][0].resize(self.width()/2, self.height()/2)
-            self.graph_array[0][1].resize(self.width()/2, self.height()/2)
-            self.graph_array[1][1].resize(self.width()/2, self.height()/2)
+
+            for i in range(2):
+                for j in range(2):
+                    self.graph_array[i][j].setGeometry(j * self.width() / 2, i * self.height() / 2, self.width() / 2, self.height() / 2)
+                    print(self.graph_array[i][j].frameGeometry())
+
 
         elif num_shown == '8':
             for i in range(2,4):
@@ -78,7 +99,6 @@ class GraphManager(QtGui.QWidget):
             for i in range(2):
                 for j in range(4):
                     self.graph_array[i][j].setGeometry(j * self.width()/4, i * self.height()/2, self.width()/4, self.height()/2)
-                    print(self.graph_array[i][j].frameGeometry())
 
         elif num_shown == '16':
             for i in range(4):

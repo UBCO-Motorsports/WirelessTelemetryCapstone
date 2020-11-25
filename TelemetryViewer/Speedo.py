@@ -9,12 +9,14 @@ from Speedoroot import Ui_Form
 Speed = 0
 
 
-class SplashScreen(QtWidgets.QWidget):
+class splashScreen(QtWidgets.QWidget):
     def __init__(self):
         QtWidgets.QWidget.__init__(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.animate(0)
+
+        self.frame_size = self.ui.frame
 
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.accellerate)
@@ -30,7 +32,7 @@ class SplashScreen(QtWidgets.QWidget):
             self.timer.stop()
 
             self.close()
-        Speed += 0.25
+        Speed += 0
 
 
     def animate(self,value):

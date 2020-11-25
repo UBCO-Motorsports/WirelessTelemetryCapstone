@@ -15,6 +15,8 @@ class SplashScreen(QtWidgets.QWidget):
         self.ui.setupUi(self)
         self.animate(0)
 
+        self.dial_size = self.ui.frame
+
         self.timer = QtCore.QTimer()
         self.timer.timeout.connect(self.accellerate)
         self.timer.start(15)
@@ -29,7 +31,7 @@ class SplashScreen(QtWidgets.QWidget):
             self.timer.stop()
 
             self.close()
-        RPM += 30
+        RPM += 0
 
 
     def animate(self,value):
