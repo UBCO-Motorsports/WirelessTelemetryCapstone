@@ -93,27 +93,33 @@ struct message {
 	double offset;
 };
 
-volatile struct message messageArray[] = {
+struct message messageArray[16];
 
-		{ 0x360,  0,   0,  1,      0 },  //Engine RPM
-		{ 0x360,  4,   0,  1,      0 },  //Throttle Position
+struct message defaultMessageArray[16] = {
 
-		{ 0x361,  2,   0,  1,  -1013 },  //Oil Pressure
+		{ 0x360,  0,   0,  1,      0,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  4,   0,  1,      0,  MSG_ENABLED  },  //Throttle Position
 
-		{ 0x3E0,  0,   0,  1,  -2730 },  //Coolant Temperature
+		{ 0x361,  2,   0,  1,  -1013,  MSG_ENABLED  },  //Oil Pressure
 
-		{ 0x390,  0,  10,  1,      0 },  //Brake Pressure
-		{ 0x390,  0,  10,  1,      0 },  //Brake Bias
-		{ 0x390,  0,  10,  1,      0 },  //Lat Accel
-		{ 0x390,  0,  10,  1,      0 },  //Long Accel
-		{ 0x390,  0,  10,  1,      0 },  //GPS Speed
-		{ 0x390,  0,  10,  1,      0 },  //Oil Temperature
+		{ 0x3E0,  0,   0,  1,  -2730,  MSG_ENABLED  },  //Coolant Temperature
 
-		{ 0x373,  0,  10,  1,  -2730 },  //EGT 1
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Oil Temperature
 
-		{ 0x368,  0,   0,  1,      0 },  //Wideband
+		{ 0x373,  0,  10,  1,  -2730,  MSG_ENABLED  },  //EGT 1
 
-		{ 0x3EB,  4,   0,  1,      0 },  //Ignition Angle
+		{ 0x368,  0,   0,  1,      0,  MSG_ENABLED  },  //Wideband
+
+		{ 0x3EB,  4,   0,  1,      0,  MSG_ENABLED  },  //Ignition Angle
+
+		{     0,  0,   0,  0,      0,  MSG_DISABLED },  //Disabled
+		{     0,  0,   0,  0,      0,  MSG_DISABLED },  //Disabled
+		{     0,  0,   0,  0,      0,  MSG_DISABLED }   //Disabled
 };
 
 
@@ -168,7 +174,7 @@ void Init_SBC(void) {
 
 
 
-//This function is one of my proudest achievements. Procedurally generates and sets CAN Filter configurations from the message[] struct array config
+//Procedurally generates and sets CAN Filter configurations from the message[] struct array config
 void ConfigureCANFilters(volatile struct message * messageArray, uint8_t size) {
 	uint32_t configuredIDs[size];
 	int uniques = 0;
@@ -264,6 +270,8 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
+  //Load default message configuration
+  memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
   Init_CAN();
 
