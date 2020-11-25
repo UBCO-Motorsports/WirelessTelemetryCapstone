@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Speedometerwidget.ui'
+# Form implementation generated from reading ui file 'UIFiles\Speedometerwidget.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.1
 #
@@ -52,23 +52,24 @@ class Ui_Form(object):
         self.label.setGeometry(QtCore.QRect(10, 10, 300, 300))
         self.label.setText("")
         self.label.setTextFormat(QtCore.Qt.RichText)
-        self.label.setPixmap(QtGui.QPixmap("QT Images/speedolines2.png"))
+        self.label.setPixmap(QtGui.QPixmap("UIFiles\\../QT Images/speedolines2.png"))
         self.label.setObjectName("label")
         self.label_2 = QtWidgets.QLabel(self.frame)
         self.label_2.setGeometry(QtCore.QRect(10, -25, 300, 300))
         self.label_2.setText("")
-        self.label_2.setPixmap(QtGui.QPixmap("QT Images/Speedometer2.png"))
+        self.label_2.setPixmap(QtGui.QPixmap("UIFiles\\../QT Images/Speedometer2.png"))
         self.label_2.setObjectName("label_2")
         self.Needle = QtWidgets.QLabel(self.frame)
         self.Needle.setGeometry(QtCore.QRect(60, 60, 200, 200))
         self.Needle.setText("")
-        self.Needle.setPixmap(QtGui.QPixmap("QT Images/needle3.png"))
+        self.Needle.setPixmap(QtGui.QPixmap("UIFiles\\../QT Images/needle3.png"))
+        self.Needle.setScaledContents(False)
         self.Needle.setAlignment(QtCore.Qt.AlignCenter)
         self.Needle.setObjectName("Needle")
         self.label_4 = QtWidgets.QLabel(self.frame)
         self.label_4.setGeometry(QtCore.QRect(10, 60, 200, 200))
         self.label_4.setText("")
-        self.label_4.setPixmap(QtGui.QPixmap("QT Images/Pointer2.png"))
+        self.label_4.setPixmap(QtGui.QPixmap("UIFiles\\../QT Images/Pointer2.png"))
         self.label_4.setObjectName("label_4")
         self.label_3 = QtWidgets.QLabel(self.frame)
         self.label_3.setGeometry(QtCore.QRect(100, 225, 125, 50))
@@ -76,6 +77,8 @@ class Ui_Form(object):
         font.setFamily("Bahnschrift SemiCondensed")
         font.setPointSize(26)
         self.label_3.setFont(font)
+        self.label_3.setStyleSheet("color: rgb(255, 255, 255)\n"
+"")
         self.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.label_3.setObjectName("label_3")
         self.frame_2.raise_()
@@ -93,8 +96,4 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.label_3.setText(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'Bahnschrift SemiCondensed\'; font-size:24pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" color:#ffffff;\">100 kph</span></p></body></html>"))
+        self.label_3.setText(_translate("Form", "100 kph"))
