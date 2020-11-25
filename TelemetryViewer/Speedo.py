@@ -30,13 +30,13 @@ class SplashScreen(QtWidgets.QWidget):
             self.timer.stop()
 
             self.close()
-        Speed += 0.5
+        Speed += 0.25
 
 
     def animate(self,value):
         global Speed
-        value=Speed
-        htmlText=" "
+        value=int(Speed)
+        htmlText= "{Value} kph"
         newHtml=htmlText.replace("{Value}",str(value))
         self.ui.label_3.setText(newHtml)
 
