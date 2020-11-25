@@ -24,7 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
-
+#include "math.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,48 +85,51 @@ const osSemaphoreAttr_t ProcessCommandSem_attributes = {
 /* USER CODE BEGIN PV */
 
 
+#define MSG_ENABLED 1
+#define MSG_DISABLED 0
+
 struct message {
 	uint32_t id;
 	uint8_t  bit;
-	uint16_t value;
+	uint8_t length;
+	uint32_t value;
 	double scaling;
 	double offset;
+	uint8_t enabled;
 };
 
 struct message messageArray[16];
 
 struct message defaultMessageArray[16] = {
 
-		{ 0x360,  0,   0,  1,      0,  MSG_ENABLED  },  //Engine RPM
-		{ 0x360,  4,   0,  1,      0,  MSG_ENABLED  },  //Throttle Position
+		{ 0x360,   0,  16,   0,  1,      0,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  32,  16,   0,  1,      0,  MSG_ENABLED  },  //Throttle Position
 
-		{ 0x361,  2,   0,  1,  -1013,  MSG_ENABLED  },  //Oil Pressure
+		{ 0x361,  16,  16,   0,  1,  -1013,  MSG_ENABLED  },  //Oil Pressure
 
-		{ 0x3E0,  0,   0,  1,  -2730,  MSG_ENABLED  },  //Coolant Temperature
+		{ 0x3E0,   0,  16,   0,  1,  -2730,  MSG_ENABLED  },  //Coolant Temperature
 
-		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Brake Pressure
-		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Brake Bias
-		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Lat Accel
-		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Long Accel
-		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //GPS Speed
-		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Oil Temperature
+		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Oil Temperature
 
-		{ 0x373,  0,  10,  1,  -2730,  MSG_ENABLED  },  //EGT 1
+		{ 0x373,   0,  16,  10,  1,  -2730,  MSG_ENABLED  },  //EGT 1
 
-		{ 0x368,  0,   0,  1,      0,  MSG_ENABLED  },  //Wideband
+		{ 0x368,   0,  16,   0,  1,      0,  MSG_ENABLED  },  //Wideband
 
-		{ 0x3EB,  4,   0,  1,      0,  MSG_ENABLED  },  //Ignition Angle
+		{ 0x3EB,  32,  16,   0,  1,      0,  MSG_ENABLED  },  //Ignition Angle
 
-		{     0,  0,   0,  0,      0,  MSG_DISABLED },  //Disabled
-		{     0,  0,   0,  0,      0,  MSG_DISABLED },  //Disabled
-		{     0,  0,   0,  0,      0,  MSG_DISABLED }   //Disabled
+		{     0,   0,   0,   0,  0,      0,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   0,  0,      0,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   0,  0,      0,  MSG_DISABLED }   //Disabled
 };
 
 
-uint8_t canData0[32];
-uint8_t canData1[32];
+uint8_t canData0[8];
 CAN_RxHeaderTypeDef canHeader0;
-CAN_RxHeaderTypeDef canHeader1;
 
 uint8_t uart_rec_buff[16];
 
@@ -611,8 +614,46 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-	print("Received a message on fifo0\r\n");
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &canHeader0, canData0);
+
+	//Parse received bytes using message array
+	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
+		if(messageArray[i].id == canHeader0.StdId){
+
+			int bytepos = messageArray[i].bit / 8;
+
+			//Round up number of bytes
+			int bytes = ceil(messageArray[i].length / (float)8);
+
+			uint32_t finalval = 0;
+			int j = 0;
+			//Iterate through all bytes that must be read for this message
+			for (int b = bytepos; b < bytepos + bytes; b++) {
+				uint8_t tempval;
+				//If on last byte we may need to truncate unneeded parts dependent on length of data
+				if (b == bytepos + bytes - 1) {
+					//We need a left shift and a right shift to extract the bits we want
+					uint8_t byteoffset = (messageArray[i].length - ((bytes-1) * 8));
+					uint8_t leftshift = 8 - (messageArray[i].bit - (bytepos * 8)) - byteoffset;
+					uint8_t rightshift = 8 - byteoffset;
+					tempval = (canData0[b] << leftshift) >>  rightshift;
+				} else {
+					//Use the whole byte
+					tempval = canData0[b];
+				}
+				//Calculate the size of the next data section to find the required shift
+				int nextsize = messageArray[i].length - ((j+1) * 8);
+				//Limit it to 0
+				if (nextsize < 0) {
+					nextsize = 0;
+				}
+				finalval += tempval << nextsize;
+				j++;
+			}
+			//Finally set final value into message array struct
+			messageArray[i].value = finalval;
+		}
+	}
 }
 
 
