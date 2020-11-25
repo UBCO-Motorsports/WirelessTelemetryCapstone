@@ -14,9 +14,9 @@ from Speedometerwidgetroot import SpeedoQT
 Speed = 0
 
 
-class SplashScreen(QMainWindow):
+class SplashScreen(QWidget):
     def __init__(self):
-        QMainWindow.__init__(self)
+        QWidget.__init__(self)
         self.ui = SpeedoQT()
         self.ui.setupUi(self)
         self.animate(0)
