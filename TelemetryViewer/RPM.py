@@ -1,23 +1,17 @@
+
 import sys
-import platform
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect,
-                            QSize, QTime, QUrl, Qt, QEvent)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence,
-                           QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient)
-from PySide2.QtWidgets import *
+from PyQt5 import QtWidgets, QtCore,QtGui
 
-# GUI File
 
-from RPMwidgetroot import RPMQT
+from RPMroot import Ui_Form
 
 RPM = 0
 
 
-class SplashScreen(QMainWindow):
+class SplashScreen(QtWidgets.QWidget):
     def __init__(self):
-        QMainWindow.__init__(self)
-        self.ui = RPMQT()
+        QtWidgets.QWidget.__init__(self)
+        self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.animate(0)
 
@@ -54,7 +48,7 @@ class SplashScreen(QMainWindow):
         value=reMap(RPM,16000,0,253,-15)
         t.rotate(value)
         # load your image
-        image = QtGui.QImage("needle3.png")
+        image = QtGui.QImage("QT Images/needle3.png")
         pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
@@ -74,6 +68,6 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = SplashScreen()
     sys.exit(app.exec_())
