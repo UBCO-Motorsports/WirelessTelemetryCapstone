@@ -9,15 +9,15 @@ from PySide2.QtWidgets import *
 
 # GUI File
 
-from RPMwidgetroot import RPMQT
+from Speedometerwidgetroot import SpeedoQT
 
-RPM = 0
+Speed = 0
 
 
 class SplashScreen(QMainWindow):
     def __init__(self):
         QMainWindow.__init__(self)
-        self.ui = RPMQT()
+        self.ui = SpeedoQT()
         self.ui.setupUi(self)
         self.animate(0)
 
@@ -27,31 +27,31 @@ class SplashScreen(QMainWindow):
 
         self.show()
     def accellerate (self):
-        global RPM
-        value=RPM
+        global Speed
+        value=Speed
 
         self.animate(value)
-        if RPM > 17000:
+        if Speed > 150:
             self.timer.stop()
 
             self.close()
-        RPM += 30
+        Speed += 0.5
 
 
     def animate(self,value):
-        global RPM
-        value=RPM
-        htmlText="{Value}"
+        global Speed
+        value=Speed
+        htmlText=" "
         newHtml=htmlText.replace("{Value}",str(value))
-        self.ui.RPMtext.setText(newHtml)
+        self.ui.label_3.setText(newHtml)
 
         t = QtGui.QTransform()
         # -222 and 45
-        if value>16000:
-            value=16000
+        if value>120:
+            value=120
         if value<0:
             value=0
-        value=reMap(RPM,16000,0,253,-15)
+        value=reMap(Speed,120, 0,239,0)
         t.rotate(value)
         # load your image
         image = QtGui.QImage("needle3.png")

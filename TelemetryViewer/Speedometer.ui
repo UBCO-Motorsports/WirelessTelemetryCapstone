@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Splashscreen</class>
- <widget class="QMainWindow" name="Splashscreen">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -32,19 +32,14 @@
     <widget class="QFrame" name="frame_2">
      <property name="geometry">
       <rect>
-       <x>15</x>
-       <y>15</y>
-       <width>290</width>
-       <height>290</height>
+       <x>10</x>
+       <y>10</y>
+       <width>300</width>
+       <height>300</height>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">QFrame{
-
-border-radius: 145px;
-	background-color: rgb(247, 247, 247);
-
-}</string>
+      <string notr="true">background-color: rgb(216, 216, 216);</string>
      </property>
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
@@ -66,7 +61,7 @@ border-radius: 145px;
       <string notr="true">QFrame{
 
 border-radius: 150px;
-	background-color: rgb(0, 0, 0);
+	background-color: rgb(247, 247, 247);
 
 }</string>
      </property>
@@ -80,15 +75,17 @@ border-radius: 150px;
     <widget class="QFrame" name="frame_4">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>300</width>
-       <height>300</height>
+       <x>15</x>
+       <y>15</y>
+       <width>290</width>
+       <height>290</height>
       </rect>
      </property>
      <property name="styleSheet">
       <string notr="true">QFrame{
-background-color: rgb(216, 216, 216);
+
+border-radius: 145px;
+	background-color: rgb(0,0,0);
 
 }</string>
      </property>
@@ -115,14 +112,14 @@ background-color: rgb(216, 216, 216);
       <enum>Qt::RichText</enum>
      </property>
      <property name="pixmap">
-      <pixmap>Tachlinesr.png</pixmap>
+      <pixmap>speedolines2.png</pixmap>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>-15</y>
+       <y>-25</y>
        <width>300</width>
        <height>300</height>
       </rect>
@@ -130,30 +127,21 @@ background-color: rgb(216, 216, 216);
      <property name="text">
       <string/>
      </property>
-     <property name="textFormat">
-      <enum>Qt::RichText</enum>
-     </property>
      <property name="pixmap">
-      <pixmap>RPM numbers resize.png</pixmap>
+      <pixmap>Speedometer2.png</pixmap>
      </property>
     </widget>
     <widget class="QLabel" name="Needle">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>300</width>
-       <height>300</height>
+       <x>60</x>
+       <y>60</y>
+       <width>200</width>
+       <height>200</height>
       </rect>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
      </property>
      <property name="text">
       <string/>
-     </property>
-     <property name="textFormat">
-      <enum>Qt::RichText</enum>
      </property>
      <property name="pixmap">
       <pixmap>needle3.png</pixmap>
@@ -162,43 +150,13 @@ background-color: rgb(216, 216, 216);
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="RPMtext">
-     <property name="geometry">
-      <rect>
-       <x>105</x>
-       <y>250</y>
-       <width>100</width>
-       <height>50</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <family>Arial</family>
-       <pointsize>20</pointsize>
-       <weight>75</weight>
-       <bold>true</bold>
-      </font>
-     </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
-     <property name="text">
-      <string>13000</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_3">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
+    <widget class="QLabel" name="label_4">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>10</y>
-       <width>300</width>
-       <height>300</height>
+       <y>60</y>
+       <width>200</width>
+       <height>200</height>
       </rect>
      </property>
      <property name="text">
@@ -208,14 +166,32 @@ background-color: rgb(216, 216, 216);
       <pixmap>Pointer2.png</pixmap>
      </property>
     </widget>
-    <zorder>frame_4</zorder>
-    <zorder>frame_3</zorder>
-    <zorder>frame_2</zorder>
-    <zorder>label</zorder>
-    <zorder>label_2</zorder>
-    <zorder>Needle</zorder>
-    <zorder>RPMtext</zorder>
-    <zorder>label_3</zorder>
+    <widget class="QLabel" name="label_3">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>225</y>
+       <width>125</width>
+       <height>50</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Bahnschrift SemiCondensed</family>
+       <pointsize>26</pointsize>
+      </font>
+     </property>
+     <property name="text">
+      <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Bahnschrift SemiCondensed'; font-size:24pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;100 kph&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
