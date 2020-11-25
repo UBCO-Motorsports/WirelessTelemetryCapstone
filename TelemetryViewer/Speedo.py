@@ -1,23 +1,18 @@
 import sys
-import platform
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect,
-                            QSize, QTime, QUrl, Qt, QEvent)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence,
-                           QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient)
-from PySide2.QtWidgets import *
+from PyQt5 import QtWidgets, QtCore,QtGui
+
 
 # GUI File
 
-from Speedometerwidgetroot import SpeedoQT
+from Speedoroot import Ui_Form
 
 Speed = 0
 
 
-class SplashScreen(QWidget):
+class SplashScreen(QtWidgets.QWidget):
     def __init__(self):
-        QWidget.__init__(self)
-        self.ui = SpeedoQT()
+        QtWidgets.QWidget.__init__(self)
+        self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.animate(0)
 
@@ -54,7 +49,7 @@ class SplashScreen(QWidget):
         value=reMap(Speed,120, 0,239,0)
         t.rotate(value)
         # load your image
-        image = QtGui.QImage("needle3.png")
+        image = QtGui.QImage("QT Images/needle3.png")
         pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
@@ -74,6 +69,6 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = SplashScreen()
     sys.exit(app.exec_())

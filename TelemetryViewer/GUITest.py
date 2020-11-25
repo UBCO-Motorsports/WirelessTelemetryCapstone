@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.homeLayout.addWidget(self.homeText)
 
         self.homePicture = QtGui.QLabel(self)
-        self.homePicture.setPixmap(QtGui.QPixmap("TelemetryLogo.png"))
+        self.homePicture.setPixmap(QtGui.QPixmap("QT Images/TelemetryLogo.png"))
         self.homeLayout.addWidget(self.homePicture, 1, 0, Qt.AlignCenter)
 
         # ---------------Testing plot stuff-----------------
