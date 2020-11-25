@@ -93,27 +93,33 @@ struct message {
 	double offset;
 };
 
-volatile struct message messageArray[] = {
+struct message messageArray[16];
 
-		{ 0x360,  0,   0,  1,      0 },  //Engine RPM
-		{ 0x360,  4,   0,  1,      0 },  //Throttle Position
+struct message defaultMessageArray[16] = {
 
-		{ 0x361,  2,   0,  1,  -1013 },  //Oil Pressure
+		{ 0x360,  0,   0,  1,      0,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  4,   0,  1,      0,  MSG_ENABLED  },  //Throttle Position
 
-		{ 0x3E0,  0,   0,  1,  -2730 },  //Coolant Temperature
+		{ 0x361,  2,   0,  1,  -1013,  MSG_ENABLED  },  //Oil Pressure
 
-		{ 0x390,  0,  10,  1,      0 },  //Brake Pressure
-		{ 0x390,  0,  10,  1,      0 },  //Brake Bias
-		{ 0x390,  0,  10,  1,      0 },  //Lat Accel
-		{ 0x390,  0,  10,  1,      0 },  //Long Accel
-		{ 0x390,  0,  10,  1,      0 },  //GPS Speed
-		{ 0x390,  0,  10,  1,      0 },  //Oil Temperature
+		{ 0x3E0,  0,   0,  1,  -2730,  MSG_ENABLED  },  //Coolant Temperature
 
-		{ 0x373,  0,  10,  1,  -2730 },  //EGT 1
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,  0,  10,  1,      0,  MSG_ENABLED  },  //Oil Temperature
 
-		{ 0x368,  0,   0,  1,      0 },  //Wideband
+		{ 0x373,  0,  10,  1,  -2730,  MSG_ENABLED  },  //EGT 1
 
-		{ 0x3EB,  4,   0,  1,      0 },  //Ignition Angle
+		{ 0x368,  0,   0,  1,      0,  MSG_ENABLED  },  //Wideband
+
+		{ 0x3EB,  4,   0,  1,      0,  MSG_ENABLED  },  //Ignition Angle
+
+		{     0,  0,   0,  0,      0,  MSG_DISABLED },  //Disabled
+		{     0,  0,   0,  0,      0,  MSG_DISABLED },  //Disabled
+		{     0,  0,   0,  0,      0,  MSG_DISABLED }   //Disabled
 };
 
 
@@ -167,41 +173,61 @@ void Init_SBC(void) {
 }
 
 
-uint32_t filterScale = CAN_FILTERSCALE_32BIT;
 
+//Procedurally generates and sets CAN Filter configurations from the message[] struct array config
+void ConfigureCANFilters(volatile struct message * messageArray, uint8_t size) {
+	uint32_t configuredIDs[size];
+	int uniques = 0;
+	for (int i = 0; i < size; i++) {
+		struct message thismessage = messageArray[i];
+		int create = 1;
+		for (int j = 0; j < size; j++) {
+			if (configuredIDs[j] == thismessage.id) {
+				create = 0;
+			}
+		}
+		if (create == 1) {
+			//Add this ID to the list of already configured ID's to skip duplicates
+			configuredIDs[uniques] = thismessage.id;
+			print("Creating new filter\r\n");
+			CAN_FilterTypeDef filter;
+
+			//This bit shifting was a massive PITA to figure out... see page 1092 of the RM for reasoning
+			filter.FilterIdHigh = ((thismessage.id << 5)  | (thismessage.id >> (32 - 5))) & 0xFFFF;
+			filter.FilterIdLow = (thismessage.id >> (11 - 3)) & 0xFFF8;
+
+			//Masks set to full rank to check every bit
+			filter.FilterMaskIdHigh = 0xFFFF;
+			filter.FilterMaskIdLow = 0xFFFF;
+
+			//Filter options
+			filter.FilterScale = CAN_FILTERSCALE_32BIT;
+			filter.FilterActivation = ENABLE;
+			filter.FilterMode = CAN_FILTERMODE_IDMASK;
+			filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+
+			//Set filter bank to the current count of uniques
+			filter.FilterBank = uniques;
+
+			//Finally pass filter to HAL
+			HAL_CAN_ConfigFilter(&hcan, &filter);
+			uniques++;
+		}
+	}
+}
 
 void Init_CAN(void) {
-	//CAN initialization
-	CAN_FilterTypeDef filter;
-	filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
-	filter.FilterIdHigh = 0;
-	filter.FilterIdLow = 0;
-	filter.FilterMaskIdHigh = 0;
-	filter.FilterMaskIdLow = 0;
-	filter.FilterScale = filterScale;
-	filter.FilterActivation = ENABLE;
+	//Configure all receive filters from the config array
+	ConfigureCANFilters(messageArray, sizeof(messageArray) / sizeof(struct message));
 
-	HAL_CAN_ConfigFilter(&hcan, &filter);
-
-	CAN_FilterTypeDef filter2;
-	filter2.FilterFIFOAssignment = CAN_FILTER_FIFO1;
-	filter2.FilterIdHigh = 0;
-	filter2.FilterIdLow = 1;
-	filter2.FilterMaskIdHigh = 0;
-	filter2.FilterMaskIdLow = 0;
-	filter2.FilterScale = filterScale;
-	filter2.FilterActivation = ENABLE;
-
-	HAL_CAN_ConfigFilter(&hcan, &filter2);
-
+	//Start CAN operation
 	HAL_CAN_Start(&hcan);
-	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING | CAN_IT_RX_FIFO1_MSG_PENDING);
 
+	//Enable IRQ's
+	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
-	//HAL CAN busy bug requires 200ms delay between starting RX on two different FIFO's
+	//Start receiving
 	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canHeader0, canData0);
-	HAL_Delay(200);
-	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO1, &canHeader1, canData1);
 }
 
 
@@ -244,12 +270,14 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
+  //Load default message configuration
+  memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
   Init_CAN();
 
   Init_SBC();
 
-  //Start receiving UART
+  //Start receiving UART 1 char at a time
 	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
 
 
@@ -585,13 +613,6 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	print("Received a message on fifo0\r\n");
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &canHeader0, canData0);
-}
-
-
-void HAL_CAN_RxFifo1MsgPendingCallback(CAN_HandleTypeDef *hcan)
-{
-	print("Received a message on fifo1\r\n");
-	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO1, &canHeader1, canData1);
 }
 
 
