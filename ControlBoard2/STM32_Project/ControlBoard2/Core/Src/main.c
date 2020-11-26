@@ -174,7 +174,7 @@ void Init_SBC(void) {
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
 
 
-	//Force normal mode and enable v2 for CAN transceiver
+	//Set normal mode and enable vreg2 for CAN transceiver
 	SBC_Setup[0] = 0x0;
 	SBC_Setup[1] = 0x2E;
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
