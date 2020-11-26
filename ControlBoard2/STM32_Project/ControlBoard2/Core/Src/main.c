@@ -24,6 +24,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "string.h"
+#include "stdlib.h"
 #include "math.h"
 /* USER CODE END Includes */
 
@@ -93,45 +94,49 @@ struct message {
 	uint8_t  bit;
 	uint8_t length;
 	uint32_t value;
-	double scaling;
-	double offset;
+	int16_t offset;
 	uint8_t enabled;
 };
+
 
 struct message messageArray[16];
 
 struct message defaultMessageArray[16] = {
 
-		{ 0x360,   0,  16,   0,  1,      0,  MSG_ENABLED  },  //Engine RPM
-		{ 0x360,  32,  16,   0,  1,      0,  MSG_ENABLED  },  //Throttle Position
+		{ 0x360,   0,  16,   0,      0,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  32,  16,   0,      0,  MSG_ENABLED  },  //Throttle Position
 
-		{ 0x361,  16,  16,   0,  1,  -1013,  MSG_ENABLED  },  //Oil Pressure
+		{ 0x361,  16,  16,   0,  -1013,  MSG_ENABLED  },  //Oil Pressure
 
-		{ 0x3E0,   0,  16,   0,  1,  -2730,  MSG_ENABLED  },  //Coolant Temperature
+		{ 0x3E0,   0,  16,   0,  -2730,  MSG_ENABLED  },  //Coolant Temperature
 
-		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Brake Pressure
-		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Brake Bias
-		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Lat Accel
-		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Long Accel
-		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //GPS Speed
-		{ 0x390,   0,  16,  10,  1,      0,  MSG_ENABLED  },  //Oil Temperature
+		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Oil Temperature
 
-		{ 0x373,   0,  16,  10,  1,  -2730,  MSG_ENABLED  },  //EGT 1
+		{ 0x373,   0,  16,  10,  -2730,  MSG_ENABLED  },  //EGT 1
 
-		{ 0x368,   0,  16,   0,  1,      0,  MSG_ENABLED  },  //Wideband
+		{ 0x368,   0,  16,   0,      0,  MSG_ENABLED  },  //Wideband
 
-		{ 0x3EB,  32,  16,   0,  1,      0,  MSG_ENABLED  },  //Ignition Angle
+		{ 0x3EB,  32,  16,   0,      0,  MSG_ENABLED  },  //Ignition Angle
 
-		{     0,   0,   0,   0,  0,      0,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   0,  0,      0,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   0,  0,      0,  MSG_DISABLED }   //Disabled
+		{     0,   0,   0,   0,      0,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   0,      0,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   0,      0,  MSG_DISABLED }   //Disabled
 };
 
 
 uint8_t canData0[8];
 CAN_RxHeaderTypeDef canHeader0;
 
-uint8_t uart_rec_buff[16];
+uint8_t uart_rec_buff[24];
+char uart_tx_buff[128];
+
+uint8_t cmdbuff[24];
+int8_t cmdbuffind = 0;
 
 /* USER CODE END PV */
 
@@ -586,7 +591,6 @@ static void MX_GPIO_Init(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
-	/*Some code for receieving commands from UART from a past project
 	//Check if delete received and only delete if theres entered characters
 	if (uart_rec_buff[0] == (uint8_t)127) {
 		if (cmdbuffind > 0) {
@@ -597,16 +601,14 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		//Send char back to console
 		HAL_UART_Transmit(huart, uart_rec_buff, 1, HAL_MAX_DELAY);
 		//Check if enter or cmdbuff reaches its limit (prevents overflow)
-		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdbuffind > 14) {
+		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdbuffind > 23) {
 			HAL_UART_Transmit(huart, (uint8_t *)(char *)"\n>", 1, HAL_MAX_DELAY);
-			osSemaphoreRelease(CommandReadySemHandle);
+			osSemaphoreRelease(ProcessCommandSemHandle);
 		} else {
 			cmdbuff[cmdbuffind] = uart_rec_buff[0];
 			cmdbuffind++;
 		}
 	}
-	*/
-
 	//Start receiving again
 	HAL_UART_Receive_IT(huart, uart_rec_buff, 1);
 }
@@ -672,7 +674,7 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(1000);
   }
   /* USER CODE END 5 */
 }
@@ -691,6 +693,37 @@ void StartProcessCommand(void *argument)
   for(;;)
   {
     osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
+    char *msg = "";
+		if (cmdbuff[0] == *(uint8_t *)"r") {
+			HAL_UART_Transmit(&huart2, (uint8_t *)(char *)"Rebooting...\r\n\r\n", 16, HAL_MAX_DELAY);
+			NVIC_SystemReset();
+
+		} else if (cmdbuff[0] == *(uint8_t *)"d") {
+			int filter = atoi((char *)&cmdbuff[1]);
+			char msg[32] = "";
+			sprintf(msg, "%x: %u\r\n>", messageArray[filter].id, messageArray[filter].value);
+			print(msg);
+		} else if (cmdbuff[0] == *(uint8_t *)"f") {
+			int filter = atoi((char *)&cmdbuff[1]);
+			uint16_t id = atoi((char *)&cmdbuff[3]);
+			uint8_t bit = atoi((char *)&cmdbuff[8]);
+			uint8_t size = atoi((char *)&cmdbuff[11]);
+			int16_t offset = atoi((char* )&cmdbuff[14]);
+			messageArray[filter].id = id;
+			messageArray[filter].bit = bit;
+			messageArray[filter].value = 0;
+			messageArray[filter].length = size;
+			messageArray[filter].enabled = MSG_ENABLED;
+			messageArray[filter].offset = offset;
+			ConfigureCANFilters(messageArray, 16);
+
+			msg = "\r\n>";
+		} else {
+
+			msg = "DNE\r\n>";
+		}
+
+		cmdbuffind = 0;
   }
   /* USER CODE END StartProcessCommand */
 }
@@ -710,6 +743,24 @@ void StartSendTelemetry(void *argument)
   {
     osDelay(100);
     HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+    sprintf(&uart_tx_buff, "%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l\r\n",
+        		messageArray[0].value + messageArray[0].offset,
+    				messageArray[1].value + messageArray[1].offset,
+    				messageArray[2].value + messageArray[2].offset,
+    				messageArray[3].value + messageArray[3].offset,
+    				messageArray[4].value + messageArray[4].offset,
+    				messageArray[5].value + messageArray[5].offset,
+    				messageArray[6].value + messageArray[6].offset,
+    				messageArray[7].value + messageArray[7].offset,
+    				messageArray[8].value + messageArray[8].offset,
+    				messageArray[9].value + messageArray[9].offset,
+    				messageArray[10].value + messageArray[10].offset,
+    				messageArray[11].value + messageArray[11].offset,
+    				messageArray[12].value + messageArray[12].offset,
+    				messageArray[13].value + messageArray[13].offset,
+    				messageArray[14].value + messageArray[14].offset,
+    				messageArray[15].value + messageArray[15].offset);
+		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
   }
   /* USER CODE END StartSendTelemetry */
 }
