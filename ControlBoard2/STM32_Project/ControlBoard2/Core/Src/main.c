@@ -23,9 +23,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+//For sprintf and memcpy
 #include "string.h"
+//For atoi
 #include "stdlib.h"
+//For ceil()
 #include "math.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -35,6 +40,46 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+//UJA Register Definitions
+
+#define UJA_REG_WDGANDSTATUS 0
+#define UJA_REG_MODECONTROL 1
+#define UJA_REG_INTCON 2
+#define UJA_REG_INTREAD 3
+
+//WD_and_Status register
+//RO
+#define UJA_RO_RW 0
+#define UJA_RO_R 1
+
+//WMC
+#define UJA_WMC_WND 0
+#define UJA_WMC_TO 1
+
+//NWP
+#define UJA_NWP_8 0
+#define UJA_NWP_16 1
+#define UJA_NWP_32 2
+#define UJA_NWP_64 3
+#define UJA_NWP_128 4
+#define UJA_NWP_256 5
+
+//Mode_Control register
+#define UJA_MC_STBY 0
+#define UJA_MC_SLP 1
+#define UJA_MC_V2OFF 2
+#define UJA_MC_V2ON 3
+
+//Int_Control register
+#define UJA_V1UIE_OFF 0
+#define UJA_V1UIE_ON 1
+
+#define UJA_V2UIE_OFF 0
+#define UJA_V2UIE_ON 1
+
+
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -94,38 +139,37 @@ struct message {
 	uint8_t  bit;
 	uint8_t length;
 	uint32_t value;
-	int16_t offset;
 	uint8_t enabled;
 };
 
 
 struct message messageArray[16];
 
-struct message defaultMessageArray[16] = {
+const struct message defaultMessageArray[16] = {
 
-		{ 0x360,   0,  16,   0,      0,  MSG_ENABLED  },  //Engine RPM
-		{ 0x360,  32,  16,   0,      0,  MSG_ENABLED  },  //Throttle Position
+		{ 0x360,   0,  16,   0,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  32,  16,   0,  MSG_ENABLED  },  //Throttle Position
 
-		{ 0x361,  16,  16,   0,  -1013,  MSG_ENABLED  },  //Oil Pressure
+		{ 0x361,  16,  16,   0,  MSG_ENABLED  },  //Oil Pressure
 
-		{ 0x3E0,   0,  16,   0,  -2730,  MSG_ENABLED  },  //Coolant Temperature
+		{ 0x3E0,   0,  16,   0,  MSG_ENABLED  },  //Coolant Temperature
 
-		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Brake Pressure
-		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Brake Bias
-		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Lat Accel
-		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Long Accel
-		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //GPS Speed
-		{ 0x390,   0,  16,  10,      0,  MSG_ENABLED  },  //Oil Temperature
+		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Oil Temperature
 
-		{ 0x373,   0,  16,  10,  -2730,  MSG_ENABLED  },  //EGT 1
+		{ 0x373,   0,  16,   0,  MSG_ENABLED  },  //EGT 1
 
-		{ 0x368,   0,  16,   0,      0,  MSG_ENABLED  },  //Wideband
+		{ 0x368,   0,  16,   0,  MSG_ENABLED  },  //Wideband
 
-		{ 0x3EB,  32,  16,   0,      0,  MSG_ENABLED  },  //Ignition Angle
+		{ 0x3EB,  32,  16,   0,  MSG_ENABLED  },  //Ignition Angle
 
-		{     0,   0,   0,   0,      0,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   0,      0,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   0,      0,  MSG_DISABLED }   //Disabled
+		{     0,   0,   0,   0,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   0,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   0,  MSG_DISABLED }   //Disabled
 };
 
 
@@ -160,7 +204,8 @@ static void MX_NVIC_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-void print(char *msg) {
+//Prints message to UART1 for debugging
+void DebugPrint(char *msg) {
 	HAL_UART_Transmit(&huart1, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 }
 
@@ -170,13 +215,12 @@ void Init_SBC(void) {
 
 	//Setup watchdog
 	SBC_Setup[0] = 0x0;
-	SBC_Setup[1] = 0xE;
+	SBC_Setup[1] = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_128);
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
-
 
 	//Set normal mode and enable vreg2 for CAN transceiver
 	SBC_Setup[0] = 0x0;
-	SBC_Setup[1] = 0x2E;
+	SBC_Setup[1] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_V2ON << 2);
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
 }
 
@@ -194,17 +238,17 @@ void ConfigureCANFilters(volatile struct message * messageArray, uint8_t size) {
 				create = 0;
 			}
 		}
-		if (create == 1) {
+		if (create == 1 && thismessage.enabled) {
 			//Add this ID to the list of already configured ID's to skip duplicates
 			configuredIDs[uniques] = thismessage.id;
-			print("Creating new filter\r\n");
+			DebugPrint("Creating new filter\r\n");
 			CAN_FilterTypeDef filter;
 
 			//This bit shifting was a massive PITA to figure out... see page 1092 of the RM for reasoning
 			filter.FilterIdHigh = ((thismessage.id << 5)  | (thismessage.id >> (32 - 5))) & 0xFFFF;
 			filter.FilterIdLow = (thismessage.id >> (11 - 3)) & 0xFFF8;
 
-			//Masks set to full rank to check every bit
+			//Masks set to full rank to check every bit against ID
 			filter.FilterMaskIdHigh = 0xFFFF;
 			filter.FilterMaskIdLow = 0xFFFF;
 
@@ -285,7 +329,7 @@ int main(void)
 
   Init_SBC();
 
-  //Start receiving UART 1 char at a time
+  //Start receiving UART
 	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
 
 
@@ -591,19 +635,22 @@ static void MX_GPIO_Init(void)
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
-	//Check if delete received and only delete if theres entered characters
-	if (uart_rec_buff[0] == (uint8_t)127) {
+	//Check if delete received from debug uart and only delete if theres entered characters
+	if (uart_rec_buff[0] == (uint8_t)127 && huart == &huart1) {
 		if (cmdbuffind > 0) {
-			HAL_UART_Transmit(huart, uart_rec_buff, 1, HAL_MAX_DELAY);
+			DebugPrint((char *)uart_rec_buff);
 			cmdbuffind--;
 		}
 	} else {
-		//Send char back to console
-		HAL_UART_Transmit(huart, uart_rec_buff, 1, HAL_MAX_DELAY);
+		//Send char to debug console
+		DebugPrint((char *)uart_rec_buff);
+
 		//Check if enter or cmdbuff reaches its limit (prevents overflow)
 		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdbuffind > 23) {
-			HAL_UART_Transmit(huart, (uint8_t *)(char *)"\n>", 1, HAL_MAX_DELAY);
+			DebugPrint("\n>");
+			//Pass command onto task
 			osSemaphoreRelease(ProcessCommandSemHandle);
+
 		} else {
 			cmdbuff[cmdbuffind] = uart_rec_buff[0];
 			cmdbuffind++;
@@ -693,34 +740,27 @@ void StartProcessCommand(void *argument)
   for(;;)
   {
     osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
-    char *msg = "";
 		if (cmdbuff[0] == *(uint8_t *)"r") {
-			HAL_UART_Transmit(&huart2, (uint8_t *)(char *)"Rebooting...\r\n\r\n", 16, HAL_MAX_DELAY);
+			DebugPrint("Rebooting...\r\n\r\n");
 			NVIC_SystemReset();
 
 		} else if (cmdbuff[0] == *(uint8_t *)"d") {
 			int filter = atoi((char *)&cmdbuff[1]);
 			char msg[32] = "";
-			sprintf(msg, "%x: %u\r\n>", messageArray[filter].id, messageArray[filter].value);
-			print(msg);
+			sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
+			DebugPrint(msg);
 		} else if (cmdbuff[0] == *(uint8_t *)"f") {
+			//Command f can set a CAN filter and
 			int filter = atoi((char *)&cmdbuff[1]);
 			uint16_t id = atoi((char *)&cmdbuff[3]);
 			uint8_t bit = atoi((char *)&cmdbuff[8]);
 			uint8_t size = atoi((char *)&cmdbuff[11]);
-			int16_t offset = atoi((char* )&cmdbuff[14]);
 			messageArray[filter].id = id;
 			messageArray[filter].bit = bit;
 			messageArray[filter].value = 0;
 			messageArray[filter].length = size;
 			messageArray[filter].enabled = MSG_ENABLED;
-			messageArray[filter].offset = offset;
 			ConfigureCANFilters(messageArray, 16);
-
-			msg = "\r\n>";
-		} else {
-
-			msg = "DNE\r\n>";
 		}
 
 		cmdbuffind = 0;
@@ -741,25 +781,26 @@ void StartSendTelemetry(void *argument)
   /* Infinite loop */
   for(;;)
   {
+  	//Transmit at 10hz
     osDelay(100);
     HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
     sprintf(&uart_tx_buff, "%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l\r\n",
-        		messageArray[0].value + messageArray[0].offset,
-    				messageArray[1].value + messageArray[1].offset,
-    				messageArray[2].value + messageArray[2].offset,
-    				messageArray[3].value + messageArray[3].offset,
-    				messageArray[4].value + messageArray[4].offset,
-    				messageArray[5].value + messageArray[5].offset,
-    				messageArray[6].value + messageArray[6].offset,
-    				messageArray[7].value + messageArray[7].offset,
-    				messageArray[8].value + messageArray[8].offset,
-    				messageArray[9].value + messageArray[9].offset,
-    				messageArray[10].value + messageArray[10].offset,
-    				messageArray[11].value + messageArray[11].offset,
-    				messageArray[12].value + messageArray[12].offset,
-    				messageArray[13].value + messageArray[13].offset,
-    				messageArray[14].value + messageArray[14].offset,
-    				messageArray[15].value + messageArray[15].offset);
+        		messageArray[0].value,
+    				messageArray[1].value,
+    				messageArray[2].value,
+    				messageArray[3].value,
+    				messageArray[4].value,
+    				messageArray[5].value,
+    				messageArray[6].value,
+    				messageArray[7].value,
+    				messageArray[8].value,
+    				messageArray[9].value,
+    				messageArray[10].value,
+    				messageArray[11].value,
+    				messageArray[12].value,
+    				messageArray[13].value,
+    				messageArray[14].value,
+    				messageArray[15].value);
 		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
   }
   /* USER CODE END StartSendTelemetry */
