@@ -138,7 +138,7 @@ struct message {
 	uint32_t id;
 	uint8_t  bit;
 	uint8_t length;
-	uint32_t value;
+	int32_t value;
 	uint8_t enabled;
 };
 
@@ -147,29 +147,29 @@ struct message messageArray[16];
 
 const struct message defaultMessageArray[16] = {
 
-		{ 0x360,   0,  16,   0,  MSG_ENABLED  },  //Engine RPM
-		{ 0x360,  32,  16,   0,  MSG_ENABLED  },  //Throttle Position
+		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
 
-		{ 0x361,  16,  16,   0,  MSG_ENABLED  },  //Oil Pressure
+		{ 0x361,  16,  16,   -1,  MSG_ENABLED  },  //Oil Pressure
 
-		{ 0x3E0,   0,  16,   0,  MSG_ENABLED  },  //Coolant Temperature
+		{ 0x3E0,   0,  16,   -1,  MSG_ENABLED  },  //Coolant Temperature
 
-		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Brake Pressure
-		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Brake Bias
-		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Lat Accel
-		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Long Accel
-		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //GPS Speed
-		{ 0x390,   0,  16,   0,  MSG_ENABLED  },  //Oil Temperature
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Oil Temperature
 
-		{ 0x373,   0,  16,   0,  MSG_ENABLED  },  //EGT 1
+		{ 0x373,   0,  16,   -1,  MSG_ENABLED  },  //EGT 1
 
-		{ 0x368,   0,  16,   0,  MSG_ENABLED  },  //Wideband
+		{ 0x368,   0,  16,   -1,  MSG_ENABLED  },  //Wideband
 
-		{ 0x3EB,  32,  16,   0,  MSG_ENABLED  },  //Ignition Angle
+		{ 0x3EB,  32,  16,   -1,  MSG_ENABLED  },  //Ignition Angle
 
-		{     0,   0,   0,   0,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   0,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   0,  MSG_DISABLED }   //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED }   //Disabled
 };
 
 
@@ -213,12 +213,12 @@ void DebugPrint(char *msg) {
 void Init_SBC(void) {
 	uint8_t SBC_Setup[2];
 
-	//Setup watchdog
+	//Setup WDG and Status register
 	SBC_Setup[0] = 0x0;
 	SBC_Setup[1] = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_128);
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
 
-	//Set normal mode and enable vreg2 for CAN transceiver
+	//Setup Mode Control register
 	SBC_Setup[0] = 0x0;
 	SBC_Setup[1] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_V2ON << 2);
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
@@ -757,7 +757,7 @@ void StartProcessCommand(void *argument)
 			uint8_t size = atoi((char *)&cmdbuff[11]);
 			messageArray[filter].id = id;
 			messageArray[filter].bit = bit;
-			messageArray[filter].value = 0;
+			messageArray[filter].value = -1;
 			messageArray[filter].length = size;
 			messageArray[filter].enabled = MSG_ENABLED;
 			ConfigureCANFilters(messageArray, 16);
