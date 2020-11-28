@@ -79,6 +79,11 @@
 #define UJA_V2UIE_ON 1
 
 
+//Message struct parameter
+#define MSG_ENABLED 1
+#define MSG_DISABLED 0
+
+
 
 /* USER CODE END PD */
 
@@ -128,11 +133,9 @@ osSemaphoreId_t ProcessCommandSemHandle;
 const osSemaphoreAttr_t ProcessCommandSem_attributes = {
   .name = "ProcessCommandSem"
 };
+
+
 /* USER CODE BEGIN PV */
-
-
-#define MSG_ENABLED 1
-#define MSG_DISABLED 0
 
 struct message {
 	uint32_t id;
@@ -182,6 +185,8 @@ char uart_tx_buff[128];
 uint8_t cmdbuff[24];
 int8_t cmdbuffind = 0;
 
+const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_128);
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -199,6 +204,11 @@ void StartFeedWDG(void *argument);
 static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 
+void DebugPrint(char *msg);
+void Init_SBC(void);
+void ConfigureCANFilters(struct message * messageArray, uint8_t size);
+void Init_CAN(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -210,12 +220,13 @@ void DebugPrint(char *msg) {
 }
 
 
+//Initializes UJA SBC
 void Init_SBC(void) {
 	uint8_t SBC_Setup[2];
 
 	//Setup WDG and Status register
 	SBC_Setup[0] = 0x0;
-	SBC_Setup[1] = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_128);
+	SBC_Setup[1] = WD_SETUP;
 	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
 
 	//Setup Mode Control register
@@ -227,7 +238,7 @@ void Init_SBC(void) {
 
 
 //Procedurally generates and sets CAN Filter configurations from the message[] struct array config
-void ConfigureCANFilters(volatile struct message * messageArray, uint8_t size) {
+void ConfigureCANFilters(struct message * messageArray, uint8_t size) {
 	uint32_t configuredIDs[size];
 	int uniques = 0;
 	for (int i = 0; i < size; i++) {
@@ -278,7 +289,7 @@ void Init_CAN(void) {
 	//Enable IRQ's
 	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
-	//Start receiving
+	//Start receiving - don't think we need this here
 	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canHeader0, canData0);
 }
 
@@ -668,10 +679,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	//Parse received bytes using message array
 	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
 		if(messageArray[i].id == canHeader0.StdId){
-
+			//Calculate which byte position to start at
 			int bytepos = messageArray[i].bit / 8;
 
-			//Round up number of bytes
+			//Calculate number of bytes that need to be checked
 			int bytes = ceil(messageArray[i].length / (float)8);
 
 			uint32_t finalval = 0;
@@ -739,16 +750,22 @@ void StartProcessCommand(void *argument)
   /* Infinite loop */
   for(;;)
   {
+  	//Wait for semaphore passed by UART IRQ when the command buffer is ready for processing
     osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
+
+    //Evaluate first char of the command buffer to determine command
 		if (cmdbuff[0] == *(uint8_t *)"r") {
+			//Restart command
 			DebugPrint("Rebooting...\r\n\r\n");
 			NVIC_SystemReset();
 
 		} else if (cmdbuff[0] == *(uint8_t *)"d") {
+			//Retreives the last value in message buffer for corrosponding ID
 			int filter = atoi((char *)&cmdbuff[1]);
 			char msg[32] = "";
 			sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
 			DebugPrint(msg);
+
 		} else if (cmdbuff[0] == *(uint8_t *)"f") {
 			//Command f can set a CAN filter and
 			int filter = atoi((char *)&cmdbuff[1]);
@@ -762,7 +779,7 @@ void StartProcessCommand(void *argument)
 			messageArray[filter].enabled = MSG_ENABLED;
 			ConfigureCANFilters(messageArray, 16);
 		}
-
+		//Resets cmdbuff index
 		cmdbuffind = 0;
   }
   /* USER CODE END StartProcessCommand */
@@ -822,8 +839,8 @@ void StartFeedWDG(void *argument)
     osDelay(100);
     uint8_t WD_Data[2];
     WD_Data[0] = 0x0;
-    WD_Data[1] = 0xE;
-    HAL_SPI_Transmit(&hspi1, WD_Data, 2, 50);
+    WD_Data[1] = WD_SETUP;
+    HAL_SPI_Transmit_IT(&hspi1, WD_Data, 2);
   }
   /* USER CODE END StartFeedWDG */
 }
