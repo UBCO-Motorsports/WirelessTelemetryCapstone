@@ -133,8 +133,6 @@ osSemaphoreId_t ProcessCommandSemHandle;
 const osSemaphoreAttr_t ProcessCommandSem_attributes = {
   .name = "ProcessCommandSem"
 };
-
-
 /* USER CODE BEGIN PV */
 
 struct message {
@@ -222,17 +220,28 @@ void DebugPrint(char *msg) {
 
 //Initializes UJA SBC
 void Init_SBC(void) {
+
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+
 	uint8_t SBC_Setup[2];
 
 	//Setup WDG and Status register
 	SBC_Setup[0] = 0x0;
 	SBC_Setup[1] = WD_SETUP;
-	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
+
+
+	//data[0] = WD_SETUP << 8;
+
+	//result = HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 2, 100);
 
 	//Setup Mode Control register
 	SBC_Setup[0] = 0x0;
 	SBC_Setup[1] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_V2ON << 2);
-	HAL_SPI_Transmit(&hspi1, SBC_Setup, 2, 50);
+
+	uint16_t data[] = {0b0010110000000000};
+	HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
+
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
 }
 
 
@@ -483,13 +492,13 @@ static void MX_CAN_Init(void)
 
   /* USER CODE END CAN_Init 1 */
   hcan.Instance = CAN;
-  hcan.Init.Prescaler = 8;
-  hcan.Init.Mode = CAN_MODE_LOOPBACK;
+  hcan.Init.Prescaler = 4;
+  hcan.Init.Mode = CAN_MODE_NORMAL;
   hcan.Init.SyncJumpWidth = CAN_SJW_2TQ;
-  hcan.Init.TimeSeg1 = CAN_BS1_1TQ;
+  hcan.Init.TimeSeg1 = CAN_BS1_5TQ;
   hcan.Init.TimeSeg2 = CAN_BS2_2TQ;
   hcan.Init.TimeTriggeredMode = DISABLE;
-  hcan.Init.AutoBusOff = DISABLE;
+  hcan.Init.AutoBusOff = ENABLE;
   hcan.Init.AutoWakeUp = DISABLE;
   hcan.Init.AutoRetransmission = DISABLE;
   hcan.Init.ReceiveFifoLocked = DISABLE;
@@ -523,8 +532,8 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_4BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
   hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
@@ -629,10 +638,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|LD1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, UJA_CS_Pin|LD2_Pin|LD1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LD2_Pin LD1_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|LD1_Pin;
+  /*Configure GPIO pins : UJA_CS_Pin LD2_Pin LD1_Pin */
+  GPIO_InitStruct.Pin = UJA_CS_Pin|LD2_Pin|LD1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -675,7 +684,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &canHeader0, canData0);
-
+	HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
 	//Parse received bytes using message array
 	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
 		if(messageArray[i].id == canHeader0.StdId){
@@ -732,7 +741,17 @@ void StartDefaultTask(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1000);
+    osDelay(500);
+    CAN_TxHeaderTypeDef header;
+		header.StdId = 0x400;
+		header.DLC = 2;
+		header.IDE = CAN_ID_STD;
+		header.RTR = CAN_RTR_DATA;
+
+		uint32_t mailbox;
+		uint8_t senddata[2] = {0, 100};
+
+		HAL_CAN_AddTxMessage(&hcan, &header, senddata, &mailbox);
   }
   /* USER CODE END 5 */
 }
@@ -800,7 +819,8 @@ void StartSendTelemetry(void *argument)
   {
   	//Transmit at 10hz
     osDelay(100);
-    HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+    //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+  	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     sprintf(&uart_tx_buff, "%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l\r\n",
         		messageArray[0].value,
     				messageArray[1].value,
@@ -836,11 +856,11 @@ void StartFeedWDG(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(100);
+    osDelay(1000);
     uint8_t WD_Data[2];
     WD_Data[0] = 0x0;
     WD_Data[1] = WD_SETUP;
-    HAL_SPI_Transmit_IT(&hspi1, WD_Data, 2);
+    //HAL_SPI_Transmit_IT(&hspi1, WD_Data, 2);
   }
   /* USER CODE END StartFeedWDG */
 }
