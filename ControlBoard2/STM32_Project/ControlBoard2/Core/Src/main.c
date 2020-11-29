@@ -220,25 +220,17 @@ void DebugPrint(char *msg) {
 
 //Initializes UJA SBC
 void Init_SBC(void) {
-
+	//Chip select
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
 
-	uint8_t SBC_Setup[2];
+	uint16_t data[1];
 
 	//Setup WDG and Status register
-	SBC_Setup[0] = 0x0;
-	SBC_Setup[1] = WD_SETUP;
-
-
-	//data[0] = WD_SETUP << 8;
-
-	//result = HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 2, 100);
+	data[0] = WD_SETUP << 8;
+	//HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
 
 	//Setup Mode Control register
-	SBC_Setup[0] = 0x0;
-	SBC_Setup[1] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_V2ON << 2);
-
-	uint16_t data[] = {0b0010110000000000};
+	data[0] = (UJA_REG_MODECONTROL << 13) | (UJA_RO_RW << 12) | (UJA_MC_V2ON << 10);
 	HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
 
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
@@ -604,7 +596,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 38400;
+  huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -821,7 +813,7 @@ void StartSendTelemetry(void *argument)
     osDelay(100);
     //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
   	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-    sprintf(&uart_tx_buff, "%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l,%l\r\n",
+    sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
         		messageArray[0].value,
     				messageArray[1].value,
     				messageArray[2].value,
@@ -856,11 +848,12 @@ void StartFeedWDG(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1000);
-    uint8_t WD_Data[2];
-    WD_Data[0] = 0x0;
-    WD_Data[1] = WD_SETUP;
-    //HAL_SPI_Transmit_IT(&hspi1, WD_Data, 2);
+    osDelay(100);
+    HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+    uint16_t data[1];
+    data[0] = WD_SETUP << 8;
+    //HAL_SPI_Transmit_IT(&hspi1, (uint8_t *)data, 1);
+    HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
   }
   /* USER CODE END StartFeedWDG */
 }
