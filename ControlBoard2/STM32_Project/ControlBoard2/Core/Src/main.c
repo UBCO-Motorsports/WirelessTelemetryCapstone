@@ -84,6 +84,10 @@
 #define MSG_DISABLED 0
 
 
+//CAN Output Frame bits
+#define CAN_TXFRAME0_SHUTDOWN 1
+#define CAN_TXFRAME0_BIT2 1<<1
+
 
 /* USER CODE END PD */
 
@@ -100,11 +104,11 @@ SPI_HandleTypeDef hspi1;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityNormal,
+/* Definitions for SendCANFrame */
+osThreadId_t SendCANFrameHandle;
+const osThreadAttr_t SendCANFrame_attributes = {
+  .name = "SendCANFrame",
+  .priority = (osPriority_t) osPriorityHigh,
   .stack_size = 128 * 4
 };
 /* Definitions for ProcessCommand */
@@ -174,8 +178,12 @@ const struct message defaultMessageArray[16] = {
 };
 
 
-uint8_t canData0[8];
-CAN_RxHeaderTypeDef canHeader0;
+uint8_t can_rx_data[8];
+CAN_RxHeaderTypeDef can_rx_header;
+
+uint8_t can_tx_data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+CAN_TxHeaderTypeDef can_tx_header = {0x200, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
 
 uint8_t uart_rec_buff[24];
 char uart_tx_buff[128];
@@ -194,7 +202,7 @@ static void MX_CAN_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART1_UART_Init(void);
-void StartDefaultTask(void *argument);
+void StartSendCANFrame(void *argument);
 void StartProcessCommand(void *argument);
 void StartSendTelemetry(void *argument);
 void StartFeedWDG(void *argument);
@@ -221,19 +229,24 @@ void DebugPrint(char *msg) {
 //Initializes UJA SBC
 void Init_SBC(void) {
 	//Chip select
-	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+
 
 	uint16_t data[1];
 
 	//Setup WDG and Status register
-	data[0] = WD_SETUP << 8;
+	//data[0] = WD_SETUP << 8;
+	data[0] = 0b0000111000000000;
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
 	//HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+
 
 	//Setup Mode Control register
 	data[0] = (UJA_REG_MODECONTROL << 13) | (UJA_RO_RW << 12) | (UJA_MC_V2ON << 10);
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
 	HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
-
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+
 }
 
 
@@ -291,7 +304,7 @@ void Init_CAN(void) {
 	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
 	//Start receiving - don't think we need this here
-	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &canHeader0, canData0);
+	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
 }
 
 
@@ -371,8 +384,8 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(StartDefaultTask, NULL, &defaultTask_attributes);
+  /* creation of SendCANFrame */
+  SendCANFrameHandle = osThreadNew(StartSendCANFrame, NULL, &SendCANFrame_attributes);
 
   /* creation of ProcessCommand */
   ProcessCommandHandle = osThreadNew(StartProcessCommand, NULL, &ProcessCommand_attributes);
@@ -675,11 +688,11 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &canHeader0, canData0);
+	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
 	HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
 	//Parse received bytes using message array
 	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
-		if(messageArray[i].id == canHeader0.StdId){
+		if(messageArray[i].id == can_rx_header.StdId){
 			//Calculate which byte position to start at
 			int bytepos = messageArray[i].bit / 8;
 
@@ -697,10 +710,10 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 					uint8_t byteoffset = (messageArray[i].length - ((bytes-1) * 8));
 					uint8_t leftshift = 8 - (messageArray[i].bit - (bytepos * 8)) - byteoffset;
 					uint8_t rightshift = 8 - byteoffset;
-					tempval = (canData0[b] << leftshift) >>  rightshift;
+					tempval = (can_rx_data[b] << leftshift) >>  rightshift;
 				} else {
 					//Use the whole byte
-					tempval = canData0[b];
+					tempval = can_rx_data[b];
 				}
 				//Calculate the size of the next data section to find the required shift
 				int nextsize = messageArray[i].length - ((j+1) * 8);
@@ -717,33 +730,24 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	}
 }
 
-
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_StartSendCANFrame */
 /**
-  * @brief  Function implementing the defaultTask thread.
-  * @param  argument: Not used 
+  * @brief  Function implementing the SendCANFrame thread.
+  * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void *argument)
+/* USER CODE END Header_StartSendCANFrame */
+void StartSendCANFrame(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)
   {
-    osDelay(500);
-    CAN_TxHeaderTypeDef header;
-		header.StdId = 0x400;
-		header.DLC = 2;
-		header.IDE = CAN_ID_STD;
-		header.RTR = CAN_RTR_DATA;
-
+    osDelay(100);
 		uint32_t mailbox;
-		uint8_t senddata[2] = {0, 100};
-
-		HAL_CAN_AddTxMessage(&hcan, &header, senddata, &mailbox);
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header, can_tx_data, &mailbox);
   }
   /* USER CODE END 5 */
 }
@@ -789,6 +793,11 @@ void StartProcessCommand(void *argument)
 			messageArray[filter].length = size;
 			messageArray[filter].enabled = MSG_ENABLED;
 			ConfigureCANFilters(messageArray, 16);
+
+		} else if (cmdbuff[0] == *(uint8_t *)"s") {
+			//Shutdown
+			//Set can_tx frame shutdown bit to 1
+			can_tx_data[0] |= CAN_TXFRAME0_SHUTDOWN;
 		}
 		//Resets cmdbuff index
 		cmdbuffind = 0;
