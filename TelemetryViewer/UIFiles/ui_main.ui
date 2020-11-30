@@ -233,7 +233,7 @@ QPushButton:hover {
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="page_1">
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -400,7 +400,7 @@ border-radius: 125px;
                          <string/>
                         </property>
                         <property name="pixmap">
-                         <pixmap>../../Documents/GitHub/WirelessTemetryCapstone/TelemetryViewer/InstagramLogor.png</pixmap>
+                         <pixmap>../InstagramLogor.png</pixmap>
                         </property>
                        </widget>
                       </widget>
