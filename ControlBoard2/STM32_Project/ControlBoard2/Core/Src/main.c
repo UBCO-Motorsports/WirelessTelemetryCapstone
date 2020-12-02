@@ -246,7 +246,6 @@ void Init_SBC(void) {
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
 	HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
-
 }
 
 
@@ -342,6 +341,9 @@ int main(void)
   MX_SPI1_Init();
   MX_USART2_UART_Init();
   MX_USART1_UART_Init();
+
+  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 1);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
 
   /* Initialize interrupts */
   MX_NVIC_Init();
@@ -689,7 +691,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
-	HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+	//HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
 	//Parse received bytes using message array
 	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
 		if(messageArray[i].id == can_rx_header.StdId){
@@ -821,7 +823,7 @@ void StartSendTelemetry(void *argument)
   	//Transmit at 10hz
     osDelay(100);
     //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
-  	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+  	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
         		messageArray[0].value,
     				messageArray[1].value,
