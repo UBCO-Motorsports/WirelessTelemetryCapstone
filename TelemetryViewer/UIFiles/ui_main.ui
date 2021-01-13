@@ -233,9 +233,9 @@ QPushButton:hover {
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>0</number>
+             <number>2</number>
             </property>
-            <widget class="QWidget" name="page_1">
+            <widget class="QWidget" name="home_page">
              <layout class="QVBoxLayout" name="verticalLayout_7">
               <item>
                <widget class="QFrame" name="frame">
@@ -414,7 +414,7 @@ border-radius: 125px;
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="page_2">
+            <widget class="QWidget" name="setup_page">
              <layout class="QVBoxLayout" name="verticalLayout_6">
               <item>
                <widget class="QLabel" name="label_2">
@@ -905,6 +905,36 @@ background-color: rgb(60, 60, 60);</string>
                   </widget>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="import_btn">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>25</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	color: rgb(0, 0, 0);
+	border-color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+
+}
+QPushButton:hover {
+	background-color: rgb(0, 85, 255);
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Import CAN</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="default_btn">
                    <property name="minimumSize">
                     <size>
@@ -969,7 +999,7 @@ QPushButton:hover {
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="page_3">
+            <widget class="QWidget" name="graph_page">
              <layout class="QVBoxLayout" name="verticalLayout_8">
               <item>
                <widget class="QLabel" name="label">
@@ -998,16 +1028,250 @@ QPushButton:hover {
               <item>
                <widget class="QFrame" name="frame_10">
                 <property name="frameShape">
+                 <enum>QFrame::NoFrame</enum>
+                </property>
+                <property name="frameShadow">
+                 <enum>QFrame::Plain</enum>
+                </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_7">
+                 <item>
+                  <widget class="QFrame" name="graph_frame">
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_15">
+                   <property name="maximumSize">
+                    <size>
+                     <width>225</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(100, 100, 100);</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::NoFrame</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                   <layout class="QVBoxLayout" name="verticalLayout_13">
+                    <item>
+                     <widget class="QLabel" name="label_10">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>25</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                      <property name="font">
+                       <font>
+                        <pointsize>16</pointsize>
+                       </font>
+                      </property>
+                      <property name="text">
+                       <string>Configuration Menu</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QComboBox" name="comboBox">
+                      <property name="font">
+                       <font>
+                        <pointsize>10</pointsize>
+                       </font>
+                      </property>
+                      <property name="styleSheet">
+                       <string notr="true">background-color: rgb(255, 255, 255);</string>
+                      </property>
+                      <item>
+                       <property name="text">
+                        <string>Time Domain</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Polar Plot</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>RPM Gauge</string>
+                       </property>
+                      </item>
+                      <item>
+                       <property name="text">
+                        <string>Speedo Gauge</string>
+                       </property>
+                      </item>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_16">
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>50</height>
+                       </size>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_8">
+                       <item>
+                        <widget class="QLineEdit" name="lineEdit">
+                         <property name="autoFillBackground">
+                          <bool>false</bool>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
+                         <property name="text">
+                          <string>1000</string>
+                         </property>
+                         <property name="maxLength">
+                          <number>4</number>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="comboBox_2">
+                         <property name="styleSheet">
+                          <string notr="true">background-color: rgb(255, 255, 255);</string>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Seconds</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Minutes</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Samples</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_17">
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <widget class="QFrame" name="frame_14">
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>40</height>
+                 </size>
+                </property>
+                <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>
                 <property name="frameShadow">
                  <enum>QFrame::Raised</enum>
                 </property>
+                <layout class="QHBoxLayout" name="horizontalLayout_9">
+                 <item>
+                  <widget class="QFrame" name="frame_18">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="savelayout_btn">
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	color: rgb(0, 0, 0);
+	border-color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+
+}
+QPushButton:hover {
+	background-color: rgb(0, 85, 255);
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Save Layout</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="importlayout_btn">
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	color: rgb(0, 0, 0);
+	border-color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+
+}
+QPushButton:hover {
+	background-color: rgb(0, 85, 255);
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Import Layout</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>
             </widget>
-            <widget class="QWidget" name="page_5">
+            <widget class="QWidget" name="command_page">
              <layout class="QVBoxLayout" name="verticalLayout_9">
               <item>
                <widget class="QLabel" name="label_4">

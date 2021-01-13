@@ -6,7 +6,7 @@ from PyQt5 import QtWidgets, QtCore,QtGui
 
 from Speedoroot import Ui_Form
 
-Speed = 0
+Speed = 60
 
 
 class splashScreen(QtWidgets.QWidget):
@@ -72,5 +72,5 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = SplashScreen()
+    window = splashScreen()
     sys.exit(app.exec_())
