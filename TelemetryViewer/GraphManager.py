@@ -42,10 +42,11 @@ class GraphManager(QtGui.QWidget):
 
 
 
-
-    def graphSelect(self):
+    def update(self):
         return
         #TODO
+        # Call update for element in graph_array, if graph_array[i][j] == [polar]: update_polar()
+        # Graph -> Update Graph, Dial -> Update Dial, Polar -> Update Polar
 
     def showGraphs(self, num_shown):
         # Reset formats to better align widgets

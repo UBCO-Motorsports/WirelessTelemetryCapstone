@@ -51,22 +51,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.homePicture.setPixmap(QtGui.QPixmap("QT Images/TelemetryLogo.png"))
         self.homeLayout.addWidget(self.homePicture, 1, 0, Qt.AlignCenter)
 
-        # ---------------Testing plot stuff-----------------
-        # self.test_graph_widget = QtGui.QWidget()
-        # self.Stack.addWidget(self.test_graph_widget)
-        # self.test_graph_layout = QtGui.QGridLayout()
-        # self.test_graph_widget.setLayout(self.test_graph_layout)
-        # self.graph_list = []
-        # j = 0
-        # for i in range(16):
-        #     self.graph_list.append(pg.PlotWidget())
-        #     self.graph_list[i].showGrid(x=True, y=True)
-        #     self.test_graph_layout.addWidget(self.graph_list[i], i%4, j)
-        #     # self.test_graph_layout.setColumnStretch(j, 1)
-        #     # self.test_graph_layout.setRowStretch(j, 1)
-        #     if i%4 == 3:
-        #         j+=1
-
         # Init graphs using graphing class
         self.GraphClass = GraphManager()
         self.Stack.addWidget(self.GraphClass)
@@ -92,9 +76,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.update_plot_data)
         self.timer.start()
 
-    def graphSelect(self):
-        print(self.graph_select_buttons.checkedId())
-
     def initDockButtons(self):
 
         # Init number of graph selection menu
@@ -114,23 +95,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numGraphsLayout.addWidget(self.comboBox)
         self.numGraphs.setLayout(self.numGraphsLayout)
 
-        # Graph selection button array
-        self.graph_select_widget = QtGui.QWidget()
-        self.graph_select_layout = QtGui.QGridLayout()
-        self.graph_select_buttons = QButtonGroup()
-        self.buttonID = 0
-        for i in range(4):
-            for j in range(4):
-                self.button = QPushButton(checkable=True)
-                self.graph_select_buttons.addButton(self.button)
-                self.graph_select_buttons.setId(self.button, self.buttonID)
-                self.buttonID +=1
-                # self.button.setText("%s, %s" % (i, j))
-                self.graph_select_layout.addWidget(self.button, i, j)
-                self.button.clicked.connect(self.graphSelect)
-        self.graph_select_buttons.button(0).toggle()
-        self.graph_select_widget.setLayout(self.graph_select_layout)
-
         # Data selection menu
         self.data_list = QtGui.QWidget()
         self.data_list_layout = QVBoxLayout()
@@ -141,22 +105,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.data_list_layout.addWidget(item)
         self.data_list.setLayout(self.data_list_layout)
 
-        # # Init display list
-        # # self.data_selection_widget = QtGui.QWidget()
-        # self.data_selection_box = QComboBox()
-        # self.data_selection_box.setToolTip('Graph selection')
-        # for i in range(4):
-        #     for j in range(4):
-        #         self.data_selection_box.addItem('(%s, %s)' % (str(i), str(j)))
-        # self.numGraphsLayout.addWidget(self.data_selection_box)
-
         # Place buttons in dock widget section
         self.dock = QDockWidget("Graph Options", self)
         self.dock_widget = QtGui.QWidget() # Set up widget to put buttons in
         self.dock_layout = QtGui.QVBoxLayout() # Layout for buttons
 
         self.dock_layout.addWidget(self.numGraphs)
-        self.dock_layout.addWidget(self.graph_select_widget)
         self.dock_layout.addWidget(self.data_list)
         self.dock_widget.setLayout(self.dock_layout) # Apply button layout to button widget
         self.dock.setWidget(self.dock_widget) # Set dock widget to contain buttons
