@@ -1,6 +1,6 @@
 import sys
 from PyQt5 import QtWidgets, QtCore,QtGui
-
+from PyQt5.QtWidgets import QColorDialog
 
 from MainWindowroot import Ui_MainWindow
 from FileBrowser import Open
@@ -18,6 +18,9 @@ class SplashScreen(QtWidgets.QMainWindow):
     ##Setup Page
         self.ui.btn_page_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.setup_page))
         self.ui.import_btn.clicked.connect(Open)
+
+        #####color = QColorDialog.getColor()##### sets up color opening window
+
     ##Graph Page
         self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
         self.ui.importlayout_btn.clicked.connect(Open)

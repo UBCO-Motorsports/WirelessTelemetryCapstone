@@ -1,7 +1,7 @@
 
 import sys
 from PyQt5 import QtWidgets, QtCore,QtGui
-
+from PyQt5.QtWidgets import QMenu
 
 from RPMroot import Ui_Form
 
@@ -22,6 +22,15 @@ class SplashScreen(QtWidgets.QWidget):
         self.timer.start(15)
 
         self.show()
+
+    def contextMenuEvent(self, event):
+        menu = QMenu(self)
+        newAct = menu.addAction("Test")
+        quitAct= menu.addAction("Quit")
+        action= menu.exec_(self.mapToGlobal(event.pos()))
+        if action == quitAct:
+            self.close()
+
     def accellerate (self):
         global RPM
         value=RPM

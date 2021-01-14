@@ -3,6 +3,7 @@ from PyQt5 import QtWidgets, QtCore,QtGui
 
 
 # GUI File
+from PyQt5.QtWidgets import QMenu
 
 from Speedoroot import Ui_Form
 
@@ -34,6 +35,13 @@ class splashScreen(QtWidgets.QWidget):
             self.close()
         Speed += 0
 
+    def contextMenuEvent(self, event):
+        menu = QMenu(self)
+        newAct = menu.addAction("Test")
+        quitAct= menu.addAction("Quit")
+        action= menu.exec_(self.mapToGlobal(event.pos()))
+        if action == quitAct:
+            self.close()
 
     def animate(self,value):
         global Speed

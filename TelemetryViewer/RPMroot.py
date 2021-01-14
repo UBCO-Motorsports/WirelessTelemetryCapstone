@@ -14,7 +14,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Form(object):
     def setupUi(self, Form):
         Form.setObjectName("Form")
-        Form.resize(609, 455)
         self.frame = QtWidgets.QFrame(Form)
         self.frame.setGeometry(QtCore.QRect(-10, -10, 320, 320))
         self.frame.setFrameShape(QtWidgets.QFrame.NoFrame)
