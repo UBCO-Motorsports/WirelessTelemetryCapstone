@@ -27,7 +27,7 @@ class SplashScreen(QtWidgets.QWidget):
         menu = QMenu(self)
         newAct = menu.addAction("Test")
         quitAct= menu.addAction("Quit")
-        action= menu.exec_(self.mapToGlobal(event.pos()))
+        action= menu.popup(self.mapToGlobal(event.pos()))
         if action == quitAct:
             self.close()
 
