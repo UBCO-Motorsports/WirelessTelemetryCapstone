@@ -21,7 +21,7 @@ class GraphManager(QtGui.QWidget):
         self.graph_array = [[],[],[],[]]
         for i in range(4):
             for j in range(4):
-                self.graph_array[i].append(pg.PlotWidget())
+                self.graph_array[i].append(PlotWdgt())
                 self.graph_layout.addWidget(self.graph_array[i][j], i, j)
                 self.graph_array[i][j].showGrid(x=True, y=True)
                 self.graph_array[i][j].setBackground('w')
@@ -108,6 +108,24 @@ class GraphManager(QtGui.QWidget):
                 self.graph_layout.setRowStretch(i, 1)
                 for j in range(4):
                     self.graph_array[i][j].show()
+
+#TODO
+class PlotWdgt(pg.PlotWidget):
+    def __init__(self, parent=None):
+        super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox())
+
+class CustomViewBox(pg.ViewBox):
+    def __init__(self, parent=None):
+        super(CustomViewBox, self).__init__(parent)
+        self.menu = pg.ViewBoxMenu.ViewBoxMenu(self)
+        self.menuUpdate = True
+
+        self.menu.addSeparator()
+        self.editData = QtGui.QAction("Edit Data", self.menu)
+        self.editData.triggered.connect(lambda: print('edit')) #TODO Maybe return 'self' to link to data selection panel 
+        self.menu.addAction(self.editData)
+
+        self.menuUpdate = False
 
 
 # app = QtWidgets.QApplication(sys.argv)
