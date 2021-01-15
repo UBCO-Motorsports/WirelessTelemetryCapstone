@@ -9,12 +9,13 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from GraphManager import GraphManager
 
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1142, 804)
+        MainWindow.resize(1013, 764)
         MainWindow.setMinimumSize(QtCore.QSize(500, 0))
         MainWindow.setStyleSheet("background-color: rgb(45, 45, 45);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -465,11 +466,9 @@ class Ui_MainWindow(object):
         self.frame_10.setObjectName("frame_10")
         self.horizontalLayout_7 = QtWidgets.QHBoxLayout(self.frame_10)
         self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.graph_frame = QtWidgets.QFrame(self.frame_10)
-        self.graph_frame.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.graph_frame.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.graph_frame.setObjectName("graph_frame")
-        self.horizontalLayout_7.addWidget(self.graph_frame)
+        self.graph_widget = QtWidgets.QWidget(self.frame_10)
+        self.graph_widget.setObjectName("graph_widget")
+        self.horizontalLayout_7.addWidget(self.graph_widget)
         self.frame_15 = QtWidgets.QFrame(self.frame_10)
         self.frame_15.setMaximumSize(QtCore.QSize(275, 16777215))
         self.frame_15.setStyleSheet("background-color: rgb(100, 100, 100);")
@@ -520,7 +519,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 168, 143))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 162, 85))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
