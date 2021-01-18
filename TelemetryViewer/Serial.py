@@ -39,7 +39,7 @@ def printprompt():          #prompt to save or just view incoming data
 
 
 def recandprint():          #code that views,saves to arrays and to csv
-    with open('datafile_jan17-1.csv', 'w', newline='', encoding='utf8') as csvfile:
+    with open('serialcsvdata.csv', 'w', newline='', encoding='utf8') as csvfile:
         t = datetime.datetime.now()
         writer = csv.writer(csvfile, delimiter=' ')
         writer.writerow(['RPM', 'Lateral Acc', 'ThrottlePos', ':', 'Time started:',t.strftime("%H:%M:%S")])
