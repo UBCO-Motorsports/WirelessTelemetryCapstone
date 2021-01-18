@@ -58,7 +58,10 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
+"    background-color: rgb(85, 85, 85);\n"
+"}"
+"QPushButton:checked {\n"
+"    background-color: rgb(255, 255, 255);\n"
 "}")
         self.btn_home.setObjectName("btn_home")
         self.verticalLayout_4.addWidget(self.btn_home)
@@ -70,7 +73,10 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
+"    background-color: rgb(85, 85, 85);\n"
+"}\n"
+"QPushButton:checked {\n"
+"    background-color: rgb(255, 255, 255);\n"
 "}")
         self.btn_page_2.setObjectName("btn_page_2")
         self.verticalLayout_4.addWidget(self.btn_page_2)
@@ -82,7 +88,7 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
+"    background-color: rgb(85, 85, 85);\n"
 "}")
         self.btn_page_3.setObjectName("btn_page_3")
         self.verticalLayout_4.addWidget(self.btn_page_3)
@@ -94,7 +100,7 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
+"    background-color: rgb(85, 85, 85);\n"
 "}")
         self.btn_page_4.setObjectName("btn_page_4")
         self.verticalLayout_4.addWidget(self.btn_page_4)

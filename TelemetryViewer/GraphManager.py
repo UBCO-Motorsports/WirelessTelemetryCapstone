@@ -16,6 +16,13 @@ class GraphManager(QtGui.QWidget):
         self.graph_layout = QtGui.QGridLayout()
         self.setLayout(self.graph_layout)
 
+        self.pen = pg.mkPen(color=(255,0,0),width=2)
+
+        # Generate test data
+        self.x = [i for i in range(200)]
+        self.y = [i for i in range(200)]
+        self.z = [-i for i in range(200)]
+
         # Generates array of graphs and puts them in a layout
         # [Row][Column] to align with QGridLayout
         self.graph_array = [[],[],[]]
@@ -26,12 +33,14 @@ class GraphManager(QtGui.QWidget):
                 self.graph_array[i][j].showGrid(x=True, y=True)
                 self.graph_array[i][j].setBackground('w')
 
+                self.graph_array[i][j].data["Y"] = [self.x, self.y]
+
         # self.dial = SplashScreen()
         # self.graph_array[0][0].close()
         # self.graph_array[0][0] = self.dial
         # self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
-        #
+
         # self.speed = splashScreen()
         # self.graph_layout.removeWidget(self.graph_array[0][1])
         # self.graph_array[0][1].close()
@@ -39,12 +48,6 @@ class GraphManager(QtGui.QWidget):
         # self.graph_layout.addWidget(self.speed, 0, 1)
         # self.speed.frame_size.setGeometry(-10,-10,320,320)
 
-        self.pen = pg.mkPen(color=(255,0,0),width=2)
-
-        # Generate test data
-        self.x = [i for i in range(200)]
-        self.y = [i for i in range(200)]
-        self.z = [i for i in range(200)]
 
 
     def update(self):
@@ -58,23 +61,60 @@ class GraphManager(QtGui.QWidget):
         del self.y[0]
         self.y.append(self.y[-1] + 1)
         del self.z[0]
-        self.z.append(self.z[-1] + 1)
+        self.z.append(self.z[-1] - 1)
 
 
         for row in self.graph_array:
             for graph in row:
-                if graph.type == 'cart_graph':
-                    graph.plot(self.x, self.y, pen=self.pen, clear=True)
-                    # print('cartesian')
+                if graph.type == 'xy_graph':
+                    for data_type in graph.data:
+                        graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
+                        # print('cartesian')
                 elif graph.type == 'dial':
-                    print('dial')
+                    return
+                    # print('dial')
+                elif graph.type == 'polar':
+                    return
+                    # print('polar')
 
 
     #TODO
     # Rewrite this function in a better way
     #
     def showGraphs(self, num_shown):
-        return
+        if num_shown == '12':
+            for row in range(len(self.graph_array)):
+                for column in range(len(self.graph_array[row])):
+                    self.graph_array[row][column].show()
+                    print(str(row) + ' ' + str(column))
+
+        elif num_shown == '8':
+            for row in range(2):
+                for column in range(4):
+                    self.graph_array[row][column].show()
+            for column in range(len(self.graph_array[2])):
+                self.graph_array[2][column].hide()
+
+        elif num_shown == '6':
+            self.showGraphs('8')
+            for row in range(2):
+                self.graph_array[row][3].hide()
+
+        elif num_shown == '4':
+            self.showGraphs('6')
+            for row in range(2):
+                self.graph_array[row][2].hide()
+
+        elif num_shown == '2':
+            self.showGraphs('4')
+            for row in range(2):
+                self.graph_array[row][1].hide()
+
+        elif num_shown == '1':
+            self.showGraphs('2')
+            self.graph_array[1][0].hide()
+
+
     #     # Reset formats to better align widgets
     #     for i in range(4):
     #         self.graph_layout.setColumnStretch(i, 0)
@@ -138,21 +178,26 @@ class GraphManager(QtGui.QWidget):
 #TODO
 class PlotWdgt(pg.PlotWidget):
     def __init__(self, parent=None):
-        super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox())
-        self.type = 'cart_graph'
+        super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
+
+        self.type = 'xy_graph'
+        self.data = {}
+
 
 class CustomViewBox(pg.ViewBox):
-    def __init__(self, parent=None):
+    def __init__(self, parentWidget, parent=None):
         super(CustomViewBox, self).__init__(parent)
         self.menu = pg.ViewBoxMenu.ViewBoxMenu(self)
-        self.menuUpdate = True
+        self.parentWidget = parentWidget
+
+        # self.menuUpdate = True #Don't think this is needed
 
         self.menu.addSeparator()
         self.editData = QtGui.QAction("Edit Data", self.menu)
-        self.editData.triggered.connect(lambda: print('edit')) #TODO Maybe return 'self' to link to data selection panel 
+        self.editData.triggered.connect(lambda: self.parentWidget.hide()) #TODO Maybe return 'self' to link to data selection panel
         self.menu.addAction(self.editData)
 
-        self.menuUpdate = False
+        # self.menuUpdate = False #Don't think this is needed
 
 
 # app = QtWidgets.QApplication(sys.argv)
