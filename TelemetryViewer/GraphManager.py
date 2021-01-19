@@ -14,7 +14,7 @@ class GraphManager(QtGui.QWidget):
     def __init__(self):
         super(GraphManager, self).__init__()
 
-        self.serialStuff = SerialModule(self)
+        self.serialStuff = SerialModule()
 
         self.graph_layout = QtGui.QGridLayout()
         self.setLayout(self.graph_layout)
@@ -38,9 +38,6 @@ class GraphManager(QtGui.QWidget):
 
                 self.graph_array[i][j].data["Y"] = [self.x, self.y]
 
-                self.data = {}
-                self.data["RPM"] = [100, 150, 125]
-                self.data["speed"] =[10, 10]
 
         self.graph_array[0][0].data["Y"] = [self.x, self.serialStuff.array1]
 
@@ -79,7 +76,11 @@ class GraphManager(QtGui.QWidget):
             for graph in row:
                 if graph.type == 'xy_graph':
                     for data_type in graph.data:
-                        graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
+                        if graph == self.graph_array[0][0]:     #TODO data issue for this if else
+                            print(graph.data[data_type][1])
+                            graph.plot(graph.data[data_type][0], self.serialStuff.array1, pen=self.pen, clear=True)
+                        else:
+                            graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
                         # print('cartesian')
                 elif graph.type == 'dial':
                     return
@@ -89,7 +90,6 @@ class GraphManager(QtGui.QWidget):
                     # print('polar')
 
         self.serialStuff.readSerial()
-
 
     #TODO
     # Rewrite this function in a better way
