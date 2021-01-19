@@ -6,12 +6,15 @@ from RPM import SplashScreen
 from Speedo import splashScreen
 
 from PyQt5.QtWidgets import QSplitter
+from Serial import SerialModule
 
 
 class GraphManager(QtGui.QWidget):
 
     def __init__(self):
         super(GraphManager, self).__init__()
+
+        self.serialStuff = SerialModule(self)
 
         self.graph_layout = QtGui.QGridLayout()
         self.setLayout(self.graph_layout)
@@ -39,6 +42,8 @@ class GraphManager(QtGui.QWidget):
                 self.data["RPM"] = [100, 150, 125]
                 self.data["speed"] =[10, 10]
 
+        self.graph_array[0][0].data["Y"] = [self.x, self.serialStuff.array1]
+
 
         # self.dial = SplashScreen()
         # self.graph_array[0][0].close()
@@ -59,6 +64,7 @@ class GraphManager(QtGui.QWidget):
         #TODO
         # Call update for element in graph_array, if graph_array[i][j] == [polar]: update_polar()
         # Graph -> Update Graph, Dial -> Update Dial, Polar -> Update Polar
+
 
         # Update test data
         del self.x[0]  # Remove the first x element.
@@ -81,6 +87,8 @@ class GraphManager(QtGui.QWidget):
                 elif graph.type == 'polar':
                     return
                     # print('polar')
+
+        self.serialStuff.readSerial()
 
 
     #TODO

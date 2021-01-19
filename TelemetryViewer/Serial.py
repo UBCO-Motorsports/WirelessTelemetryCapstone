@@ -2,17 +2,17 @@ import serial, time, csv, datetime
 
 class SerialModule():
 
-    def __init__(self):
+    def __init__(self, parent):
         try:
             self.serialChannel = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
                                            xonxoff=False)      #TODO Change  timeout to 15 seconds...
             print('connected')
         except:
-            
+
             print("failed")
             # self.close() # close instance if failed
 
-        self.array1 = []
+        self.array1 = [0 for _ in range(200)]
         self.array2 = []
         self.array3 = []
 
@@ -29,19 +29,19 @@ class SerialModule():
         self.serialChannel.write(command)
 
     def readSerial(self):
-        for _ in self.serialChannel:
-            data = self.serialChannel.readline()
-            data = data.decode('utf-8')
-            data = data.rstrip()  # gets rid of \n from energia generated code
-            dataapp = data.split(",")
-            print(dataapp)
-            self.array1.append(dataapp[0])  # Add as many arrays as we want
-            self.array2.append(dataapp[1])
-            self.array3.append(dataapp[2])
+        # for _ in self.serialChannel:
+        data = self.serialChannel.readline()
+        data = data.decode('utf-8')
+        data = data.rstrip()  # gets rid of \n from energia generated code
+        dataapp = data.split(",")
+        print(dataapp)
+        self.array1.append(dataapp[0])  # Add as many arrays as we want
+        self.array2.append(dataapp[1])
+        self.array3.append(dataapp[2])
 
 
-serialTest = SerialModule()
-serialTest.readSerial()
+# serialTest = SerialModule()
+# serialTest.readSerial()
 
 
 global array1               #Add as many arrays as we want
