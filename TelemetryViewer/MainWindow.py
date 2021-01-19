@@ -28,6 +28,12 @@ class SplashScreen(QtWidgets.QMainWindow):
         self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
         self.ui.importlayout_btn.clicked.connect(Open)
         self.ui.savelayout_btn.clicked.connect(Save)
+        ##Command Page
+        self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
+
+
+
+
 
     def menuchange(self, i):
         configtext = (self.ui.graphtype_comboBox.currentText())
@@ -39,9 +45,6 @@ class SplashScreen(QtWidgets.QMainWindow):
             self.ui.configMenuStack.setCurrentWidget(self.ui.rpm_page)
         if configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
-
-        ##Command Page
-        self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
 
 
 if __name__ == "__main__":
