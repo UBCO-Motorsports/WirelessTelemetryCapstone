@@ -5,7 +5,7 @@ class SerialModule():
     def __init__(self):
         try:
             self.serialChannel = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
-                                           xonxoff=False)
+                                           xonxoff=False)      #TODO Change  timeout to 15 seconds...
             print('connected')
         except:
             
