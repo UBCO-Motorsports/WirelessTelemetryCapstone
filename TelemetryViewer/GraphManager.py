@@ -35,6 +35,11 @@ class GraphManager(QtGui.QWidget):
 
                 self.graph_array[i][j].data["Y"] = [self.x, self.y]
 
+                self.data = {}
+                self.data["RPM"] = [100, 150, 125]
+                self.data["speed"] =[10, 10]
+
+
         # self.dial = SplashScreen()
         # self.graph_array[0][0].close()
         # self.graph_array[0][0] = self.dial
