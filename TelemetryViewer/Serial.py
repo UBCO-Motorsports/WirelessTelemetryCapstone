@@ -35,24 +35,23 @@ class SerialModule():
         data = data.decode('utf-8')
         data = data.rstrip()  # gets rid of \n from energia generated code
         dataapp = data.split(",")
+        print(dataapp)
+        # del self.array1[0]
         self.array1 = self.array1[1:]  # Remove the first y element.
         try:
-            data1 = float(dataapp[0])
+            self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
             print(self.array1)
+            self.array2.append(float(dataapp[1]))
+            self.array3.append(float(dataapp[2]))
         except:
             self.array1.append(0)
-
-        # self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
-        # print(self.array1)
-        # self.array2.append(float(dataapp[1]))
-        # self.array3.append(float(dataapp[2]))
 
 
 # serialTest = SerialModule()
 # serialTest.readSerial()
 
-#TODO IGNORE ALL BELOW! USE AS REFERENCE
-#
+
+
 # global array1               #Add as many arrays as we want
 # global array2
 # global array3
@@ -131,5 +130,5 @@ class SerialModule():
 # #
 # # except:
 # #     trialplz()
-#
-#
+
+
