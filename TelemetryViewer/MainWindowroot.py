@@ -9,7 +9,6 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from GraphManager import GraphManager
 
 
 class Ui_MainWindow(object):
@@ -58,10 +57,7 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(85, 85, 85);\n"
-"}"
-"QPushButton:checked {\n"
-"    background-color: rgb(255, 255, 255);\n"
+"    background-color: rgb(0, 85, 255);\n"
 "}")
         self.btn_home.setObjectName("btn_home")
         self.verticalLayout_4.addWidget(self.btn_home)
@@ -73,10 +69,7 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(85, 85, 85);\n"
-"}\n"
-"QPushButton:checked {\n"
-"    background-color: rgb(255, 255, 255);\n"
+"    background-color: rgb(0, 85, 255);\n"
 "}")
         self.btn_page_2.setObjectName("btn_page_2")
         self.verticalLayout_4.addWidget(self.btn_page_2)
@@ -88,7 +81,7 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(85, 85, 85);\n"
+"    background-color: rgb(0, 85, 255);\n"
 "}")
         self.btn_page_3.setObjectName("btn_page_3")
         self.verticalLayout_4.addWidget(self.btn_page_3)
@@ -100,7 +93,7 @@ class Ui_MainWindow(object):
 "    border: 0px solid;\n"
 "}\n"
 "QPushButton:hover {\n"
-"    background-color: rgb(85, 85, 85);\n"
+"    background-color: rgb(0, 85, 255);\n"
 "}")
         self.btn_page_4.setObjectName("btn_page_4")
         self.verticalLayout_4.addWidget(self.btn_page_4)
@@ -525,7 +518,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 162, 85))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 168, 103))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -798,6 +791,32 @@ class Ui_MainWindow(object):
         self.frame_18.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_18.setObjectName("frame_18")
         self.horizontalLayout_9.addWidget(self.frame_18)
+        self.label_23 = QtWidgets.QLabel(self.frame_14)
+        self.label_23.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_23.setStyleSheet("color: rgb(255, 255, 255)\n"
+"")
+        self.label_23.setScaledContents(False)
+        self.label_23.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_23.setObjectName("label_23")
+        self.horizontalLayout_9.addWidget(self.label_23)
+        self.comboBox = QtWidgets.QComboBox(self.frame_14)
+        self.comboBox.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.comboBox.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.comboBox.setObjectName("comboBox")
+        self.horizontalLayout_9.addWidget(self.comboBox)
+        self.pushButton_3 = QtWidgets.QPushButton(self.frame_14)
+        self.pushButton_3.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.pushButton_3.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(0, 85, 255);\n"
+"}")
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.horizontalLayout_9.addWidget(self.pushButton_3)
         self.savelayout_btn = QtWidgets.QPushButton(self.frame_14)
         self.savelayout_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.savelayout_btn.setStyleSheet("QPushButton {\n"
@@ -957,7 +976,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         self.configMenuStack.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -1098,6 +1117,8 @@ class Ui_MainWindow(object):
         self.label_22.setText(_translate("MainWindow", "Dataset:"))
         self.cancelConfig_btn.setText(_translate("MainWindow", "Cancel"))
         self.applyconfig_btn.setText(_translate("MainWindow", "Apply"))
+        self.label_23.setText(_translate("MainWindow", "Select COM Port:"))
+        self.pushButton_3.setText(_translate("MainWindow", "Connect"))
         self.savelayout_btn.setText(_translate("MainWindow", "Save Layout"))
         self.importlayout_btn.setText(_translate("MainWindow", "Import Layout"))
         self.label_4.setText(_translate("MainWindow", "Send Commands"))
