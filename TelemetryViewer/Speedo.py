@@ -23,6 +23,8 @@ class splashScreen(QtWidgets.QWidget):
         self.timer.timeout.connect(self.accellerate)
         self.timer.start(15)
 
+        self.type = 'dial'
+
         self.show()
     def accellerate (self):
         global Speed

@@ -3,7 +3,6 @@ from PyQt5.QtWidgets import *
 #from PyQt5.QtWidgets import QDockWidget, QAction, QMenu, QVBoxLayout, QTextEdit, QStackedWidget, QListWidget, QLabel
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
 import pyqtgraph.widgets.RemoteGraphicsView
 import sys  # We need sys so that we can pass argv to QApplication

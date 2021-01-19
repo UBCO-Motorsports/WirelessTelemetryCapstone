@@ -17,6 +17,8 @@ class SplashScreen(QtWidgets.QWidget):
         self.ui.setupUi(self)
         self.animate(0)
 
+        self.type = 'dial'
+
         self.dial_size = self.ui.frame
 
         self.timer = QtCore.QTimer()
@@ -30,8 +32,8 @@ class SplashScreen(QtWidgets.QWidget):
         newAct = menu.addAction("Test")
         quitAct= menu.addAction("Quit")
         action= menu.popup(self.mapToGlobal(event.pos()))
-        if action == quitAct:
-            self.close()
+        quitAct.triggered.connect(self.close)
+
 
     def accellerate (self):
         global RPM
