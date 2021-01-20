@@ -1,4 +1,5 @@
 import serial, time, csv, datetime
+from MainWindowroot import Ui_MainWindow
 
 class SerialModule():
 
@@ -21,6 +22,7 @@ class SerialModule():
     # filter1 = speed
     # for filter in filters:
     #     sendCommand(filterFormat())
+
 
     def filterFormat(self):
         #TODO ser.write("f %f %f %f %f/r", data1, data2)
@@ -46,8 +48,15 @@ class SerialModule():
         except:
             self.array1.append(0)
 
+    def refreshports(self):
+        ports = ["Com1", "Com2", "Com3", "Com4"]
+        ui = Ui_MainWindow()
+        for port in ports:
+            ui.port_combobox.addItem(port)
 
-# serialTest = SerialModule()
+
+
+    # serialTest = SerialModule()
 # serialTest.readSerial()
 
 
