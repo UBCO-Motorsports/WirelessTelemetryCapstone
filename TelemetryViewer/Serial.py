@@ -1,6 +1,15 @@
 import serial, time, csv, datetime
 from MainWindowroot import Ui_MainWindow
 
+#TODO 1. We need to make sure theres an algoithim for connection status: Like if COM disconnects then it needs to
+#TODO    either reconnect or prompt, etc. Jan 20
+#TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
+#TODO    Royden's TIVA board. Jan 20
+#TODO 3. Need to be able to scan all com ports and show options for selection. Jan 20
+#TODO 4.
+#TODO
+#TODO
+
 class SerialModule():
 
     def __init__(self):
@@ -14,7 +23,7 @@ class SerialModule():
             print("failed")
             # self.close() # close instance if failed
 
-        self.array1 = [0 for _ in range(200)]
+        self.array1 = [0 for _ in range(200)]       #This limits data points to only 200 in memory at any give time.
         self.array2 = [0 for _ in range(200)]
         self.array3 = [0 for _ in range(200)]
 
