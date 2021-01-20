@@ -6,7 +6,7 @@ from MainWindowroot import Ui_MainWindow
 #TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
 #TODO    Royden's TIVA board. Jan 20
 #TODO 3. Need to be able to scan all com ports and show options for selection. Jan 20
-#TODO 4.
+#TODO 4. Need a Disconnect Method
 #TODO
 #TODO
 
@@ -57,11 +57,6 @@ class SerialModule():
         except:
             self.array1.append(0)
 
-    def refreshports(self):
-        ports = ["Com1", "Com2", "Com3", "Com4"]
-        ui = Ui_MainWindow()
-        for port in ports:
-            ui.port_combobox.addItem(port)
 
 
 
