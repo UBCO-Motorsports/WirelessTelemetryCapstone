@@ -29,10 +29,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.import_btn.clicked.connect(Open)
         self.ui.btn_page_2.setIcon(QIcon('icons/script-attribute-s.png')) # /wrench /wrench-screwdriver
         # Graph Page
+        self.ui.serial_btn.clicked.connect(self.serialbtn)
         self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
         self.ui.btn_page_3.setCheckable(True)
         self.ui.btn_page_3.setChecked(True)
         self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png')) # /blue-document-block /system-monitor /application-wave
+        self.ui.hideConfig_btn.clicked.connect(lambda: self.ui.frame_15.setMaximumWidth(0))
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
@@ -98,7 +100,11 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.configMenuStack.setCurrentWidget(self.ui.rpm_page)
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
-
+    def serialbtn(self):
+        if self.ui.serial_btn.text()=="Connect":
+            self.ui.serial_btn.setText("Disconnect")
+        else:
+            self.ui.serial_btn.setText("Connect")
 
 
 if __name__ == "__main__":

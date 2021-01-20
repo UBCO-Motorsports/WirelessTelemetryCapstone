@@ -768,6 +768,10 @@ class Ui_MainWindow(object):
         self.frame_17.setObjectName("frame_17")
         self.horizontalLayout_8 = QtWidgets.QHBoxLayout(self.frame_17)
         self.horizontalLayout_8.setObjectName("horizontalLayout_8")
+        self.hideConfig_btn = QtWidgets.QPushButton(self.frame_17)
+        self.hideConfig_btn.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.hideConfig_btn.setObjectName("hideConfig_btn")
+        self.horizontalLayout_8.addWidget(self.hideConfig_btn)
         self.cancelConfig_btn = QtWidgets.QPushButton(self.frame_17)
         self.cancelConfig_btn.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.cancelConfig_btn.setObjectName("cancelConfig_btn")
@@ -786,37 +790,6 @@ class Ui_MainWindow(object):
         self.frame_14.setObjectName("frame_14")
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout(self.frame_14)
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
-        self.frame_18 = QtWidgets.QFrame(self.frame_14)
-        self.frame_18.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_18.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_18.setObjectName("frame_18")
-        self.horizontalLayout_9.addWidget(self.frame_18)
-        self.label_23 = QtWidgets.QLabel(self.frame_14)
-        self.label_23.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_23.setStyleSheet("color: rgb(255, 255, 255)\n"
-"")
-        self.label_23.setScaledContents(False)
-        self.label_23.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_23.setObjectName("label_23")
-        self.horizontalLayout_9.addWidget(self.label_23)
-        self.comboBox = QtWidgets.QComboBox(self.frame_14)
-        self.comboBox.setMaximumSize(QtCore.QSize(150, 16777215))
-        self.comboBox.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.comboBox.setObjectName("comboBox")
-        self.horizontalLayout_9.addWidget(self.comboBox)
-        self.pushButton_3 = QtWidgets.QPushButton(self.frame_14)
-        self.pushButton_3.setMaximumSize(QtCore.QSize(80, 16777215))
-        self.pushButton_3.setStyleSheet("QPushButton {\n"
-"    color: rgb(0, 0, 0);\n"
-"    border-color: rgb(240, 240, 240);\n"
-"    background-color: rgb(240, 240, 240);\n"
-"\n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
-"}")
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.horizontalLayout_9.addWidget(self.pushButton_3)
         self.savelayout_btn = QtWidgets.QPushButton(self.frame_14)
         self.savelayout_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.savelayout_btn.setStyleSheet("QPushButton {\n"
@@ -843,6 +816,50 @@ class Ui_MainWindow(object):
 "}")
         self.importlayout_btn.setObjectName("importlayout_btn")
         self.horizontalLayout_9.addWidget(self.importlayout_btn)
+        self.frame_18 = QtWidgets.QFrame(self.frame_14)
+        self.frame_18.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_18.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_18.setObjectName("frame_18")
+        self.horizontalLayout_9.addWidget(self.frame_18)
+        self.label_23 = QtWidgets.QLabel(self.frame_14)
+        self.label_23.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_23.setStyleSheet("color: rgb(255, 255, 255)\n"
+"")
+        self.label_23.setScaledContents(False)
+        self.label_23.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_23.setObjectName("label_23")
+        self.horizontalLayout_9.addWidget(self.label_23)
+        self.port_combobox = QtWidgets.QComboBox(self.frame_14)
+        self.port_combobox.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.port_combobox.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.port_combobox.setObjectName("port_combobox")
+        self.horizontalLayout_9.addWidget(self.port_combobox)
+        self.serial_btn = QtWidgets.QPushButton(self.frame_14)
+        self.serial_btn.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.serial_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(0, 85, 255);\n"
+"}")
+        self.serial_btn.setObjectName("serial_btn")
+        self.horizontalLayout_9.addWidget(self.serial_btn)
+        self.Refreshport_btn = QtWidgets.QPushButton(self.frame_14)
+        self.Refreshport_btn.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.Refreshport_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(0, 85, 255);\n"
+"}")
+        self.Refreshport_btn.setObjectName("Refreshport_btn")
+        self.horizontalLayout_9.addWidget(self.Refreshport_btn)
         self.verticalLayout_8.addWidget(self.frame_14)
         self.stackedWidget.addWidget(self.graph_page)
         self.command_page = QtWidgets.QWidget()
@@ -1115,12 +1132,14 @@ class Ui_MainWindow(object):
         self.label_20.setText(_translate("MainWindow", "Samples"))
         self.label_21.setText(_translate("MainWindow", "Dataset"))
         self.label_22.setText(_translate("MainWindow", "Dataset:"))
+        self.hideConfig_btn.setText(_translate("MainWindow", "Hide"))
         self.cancelConfig_btn.setText(_translate("MainWindow", "Cancel"))
         self.applyconfig_btn.setText(_translate("MainWindow", "Apply"))
-        self.label_23.setText(_translate("MainWindow", "Select COM Port:"))
-        self.pushButton_3.setText(_translate("MainWindow", "Connect"))
         self.savelayout_btn.setText(_translate("MainWindow", "Save Layout"))
         self.importlayout_btn.setText(_translate("MainWindow", "Import Layout"))
+        self.label_23.setText(_translate("MainWindow", "Select COM Port:"))
+        self.serial_btn.setText(_translate("MainWindow", "Connect"))
+        self.Refreshport_btn.setText(_translate("MainWindow", "Refresh"))
         self.label_4.setText(_translate("MainWindow", "Send Commands"))
         __sortingEnabled = self.listWidget_2.isSortingEnabled()
         self.listWidget_2.setSortingEnabled(False)
