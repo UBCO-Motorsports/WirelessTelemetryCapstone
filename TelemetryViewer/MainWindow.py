@@ -35,8 +35,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btn_page_3.setCheckable(True)
         self.ui.btn_page_3.setChecked(True)
         self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png')) # /blue-document-block /system-monitor /application-wave
-        self.ui.hideConfig_btn.clicked.connect(lambda: self.ui.frame_15.setMaximumWidth(0))
-        self.ui.Refreshport_btn.clicked.connect(lambda: self.refreshports())
+        self.ui.hideConfig_btn.clicked.connect(lambda: self.ui.configMenu.setMaximumWidth(0))
+        self.ui.refreshPort_btn.clicked.connect(lambda: self.refreshports())
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
@@ -78,9 +78,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         ##Graph Page
         self.GraphManager = GraphManager()
-        self.ui.horizontalLayout_7.removeWidget(self.ui.frame_15)
+        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)
         self.ui.horizontalLayout_7.addWidget(self.GraphManager)
-        self.ui.horizontalLayout_7.addWidget(self.ui.frame_15)
+        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)
 
         self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")
 
@@ -113,7 +113,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         else:
             self.ui.serial_btn.setText("Connect")
-    def refreshports(self):
+    def refreshports(self):#TODO Remove this after actual refresh is completed
         ports = ["Com1", "Com2", "Com3", "Com4"]
         for port in ports:
            self.ui.port_combobox.addItem(port)

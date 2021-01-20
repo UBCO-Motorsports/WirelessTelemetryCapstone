@@ -895,21 +895,11 @@ background-color: rgb(60, 60, 60);</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_4">
                  <item>
-                  <widget class="QFrame" name="frame_6">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
                   <widget class="QPushButton" name="import_btn">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>25</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
@@ -939,7 +929,7 @@ QPushButton:hover {
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>25</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
@@ -960,7 +950,7 @@ QPushButton:hover {
 }</string>
                    </property>
                    <property name="text">
-                    <string>Use Default</string>
+                    <string>Log Default</string>
                    </property>
                   </widget>
                  </item>
@@ -969,7 +959,7 @@ QPushButton:hover {
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
-                     <height>25</height>
+                     <height>0</height>
                     </size>
                    </property>
                    <property name="maximumSize">
@@ -991,6 +981,97 @@ QPushButton:hover {
                    </property>
                    <property name="text">
                     <string>Apply</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_6">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QLabel" name="label_24">
+                   <property name="layoutDirection">
+                    <enum>Qt::LeftToRight</enum>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">color: rgb(255, 255, 255)
+</string>
+                   </property>
+                   <property name="text">
+                    <string>Select COM Port:</string>
+                   </property>
+                   <property name="scaledContents">
+                    <bool>false</bool>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QComboBox" name="port_combobox">
+                   <property name="maximumSize">
+                    <size>
+                     <width>150</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(255, 255, 255);</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="serial_btn">
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	color: rgb(0, 0, 0);
+	border-color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+
+}
+QPushButton:hover {
+	background-color: rgb(0, 85, 255);
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Connect</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QPushButton" name="refreshPort_btn">
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	color: rgb(0, 0, 0);
+	border-color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+
+}
+QPushButton:hover {
+	background-color: rgb(0, 85, 255);
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Refresh</string>
                    </property>
                   </widget>
                  </item>
@@ -1712,26 +1793,12 @@ background-color: rgb(255, 255, 255);</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout_9">
                  <item>
-                  <widget class="QPushButton" name="savelayout_btn">
-                   <property name="maximumSize">
-                    <size>
-                     <width>80</width>
-                     <height>16777215</height>
-                    </size>
+                  <widget class="QFrame" name="frame_18">
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
                    </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-	color: rgb(0, 0, 0);
-	border-color: rgb(240, 240, 240);
-	background-color: rgb(240, 240, 240);
-
-}
-QPushButton:hover {
-	background-color: rgb(0, 85, 255);
-}</string>
-                   </property>
-                   <property name="text">
-                    <string>Save Layout</string>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
                    </property>
                   </widget>
                  </item>
@@ -1760,50 +1827,7 @@ QPushButton:hover {
                   </widget>
                  </item>
                  <item>
-                  <widget class="QFrame" name="frame_18">
-                   <property name="frameShape">
-                    <enum>QFrame::StyledPanel</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Raised</enum>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QLabel" name="label_23">
-                   <property name="layoutDirection">
-                    <enum>Qt::LeftToRight</enum>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255)
-</string>
-                   </property>
-                   <property name="text">
-                    <string>Select COM Port:</string>
-                   </property>
-                   <property name="scaledContents">
-                    <bool>false</bool>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QComboBox" name="port_combobox">
-                   <property name="maximumSize">
-                    <size>
-                     <width>150</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">background-color: rgb(255, 255, 255);</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="serial_btn">
+                  <widget class="QPushButton" name="savelayout_btn">
                    <property name="maximumSize">
                     <size>
                      <width>80</width>
@@ -1822,31 +1846,7 @@ QPushButton:hover {
 }</string>
                    </property>
                    <property name="text">
-                    <string>Connect</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item>
-                  <widget class="QPushButton" name="refreshPort_btn">
-                   <property name="maximumSize">
-                    <size>
-                     <width>80</width>
-                     <height>16777215</height>
-                    </size>
-                   </property>
-                   <property name="styleSheet">
-                    <string notr="true">QPushButton {
-	color: rgb(0, 0, 0);
-	border-color: rgb(240, 240, 240);
-	background-color: rgb(240, 240, 240);
-
-}
-QPushButton:hover {
-	background-color: rgb(0, 85, 255);
-}</string>
-                   </property>
-                   <property name="text">
-                    <string>Refresh</string>
+                    <string>Save Layout</string>
                    </property>
                   </widget>
                  </item>

@@ -397,13 +397,8 @@ class Ui_MainWindow(object):
         self.frame_5.setObjectName("frame_5")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.frame_5)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.frame_6 = QtWidgets.QFrame(self.frame_5)
-        self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_6.setObjectName("frame_6")
-        self.horizontalLayout_4.addWidget(self.frame_6)
         self.import_btn = QtWidgets.QPushButton(self.frame_5)
-        self.import_btn.setMinimumSize(QtCore.QSize(0, 25))
+        self.import_btn.setMinimumSize(QtCore.QSize(0, 0))
         self.import_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.import_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(0, 0, 0);\n"
@@ -417,7 +412,7 @@ class Ui_MainWindow(object):
         self.import_btn.setObjectName("import_btn")
         self.horizontalLayout_4.addWidget(self.import_btn)
         self.default_btn = QtWidgets.QPushButton(self.frame_5)
-        self.default_btn.setMinimumSize(QtCore.QSize(0, 25))
+        self.default_btn.setMinimumSize(QtCore.QSize(0, 0))
         self.default_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.default_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(0, 0, 0);\n"
@@ -431,7 +426,7 @@ class Ui_MainWindow(object):
         self.default_btn.setObjectName("default_btn")
         self.horizontalLayout_4.addWidget(self.default_btn)
         self.apply_btn = QtWidgets.QPushButton(self.frame_5)
-        self.apply_btn.setMinimumSize(QtCore.QSize(0, 25))
+        self.apply_btn.setMinimumSize(QtCore.QSize(0, 0))
         self.apply_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.apply_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(0, 0, 0);\n"
@@ -444,6 +439,50 @@ class Ui_MainWindow(object):
 "}")
         self.apply_btn.setObjectName("apply_btn")
         self.horizontalLayout_4.addWidget(self.apply_btn)
+        self.frame_6 = QtWidgets.QFrame(self.frame_5)
+        self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_6.setObjectName("frame_6")
+        self.horizontalLayout_4.addWidget(self.frame_6)
+        self.label_24 = QtWidgets.QLabel(self.frame_5)
+        self.label_24.setLayoutDirection(QtCore.Qt.LeftToRight)
+        self.label_24.setStyleSheet("color: rgb(255, 255, 255)\n"
+"")
+        self.label_24.setScaledContents(False)
+        self.label_24.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_24.setObjectName("label_24")
+        self.horizontalLayout_4.addWidget(self.label_24)
+        self.port_combobox = QtWidgets.QComboBox(self.frame_5)
+        self.port_combobox.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.port_combobox.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.port_combobox.setObjectName("port_combobox")
+        self.horizontalLayout_4.addWidget(self.port_combobox)
+        self.serial_btn = QtWidgets.QPushButton(self.frame_5)
+        self.serial_btn.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.serial_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(0, 85, 255);\n"
+"}")
+        self.serial_btn.setObjectName("serial_btn")
+        self.horizontalLayout_4.addWidget(self.serial_btn)
+        self.refreshPort_btn = QtWidgets.QPushButton(self.frame_5)
+        self.refreshPort_btn.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.refreshPort_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(0, 85, 255);\n"
+"}")
+        self.refreshPort_btn.setObjectName("refreshPort_btn")
+        self.horizontalLayout_4.addWidget(self.refreshPort_btn)
         self.verticalLayout_6.addWidget(self.frame_5)
         self.stackedWidget.addWidget(self.setup_page)
         self.graph_page = QtWidgets.QWidget()
@@ -468,15 +507,15 @@ class Ui_MainWindow(object):
         self.graph_widget = QtWidgets.QWidget(self.frame_10)
         self.graph_widget.setObjectName("graph_widget")
         self.horizontalLayout_7.addWidget(self.graph_widget)
-        self.frame_15 = QtWidgets.QFrame(self.frame_10)
-        self.frame_15.setMaximumSize(QtCore.QSize(275, 16777215))
-        self.frame_15.setStyleSheet("background-color: rgb(100, 100, 100);")
-        self.frame_15.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_15.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_15.setObjectName("frame_15")
-        self.verticalLayout_13 = QtWidgets.QVBoxLayout(self.frame_15)
+        self.configMenu = QtWidgets.QFrame(self.frame_10)
+        self.configMenu.setMaximumSize(QtCore.QSize(275, 16777215))
+        self.configMenu.setStyleSheet("background-color: rgb(100, 100, 100);")
+        self.configMenu.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.configMenu.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.configMenu.setObjectName("configMenu")
+        self.verticalLayout_13 = QtWidgets.QVBoxLayout(self.configMenu)
         self.verticalLayout_13.setObjectName("verticalLayout_13")
-        self.label_10 = QtWidgets.QLabel(self.frame_15)
+        self.label_10 = QtWidgets.QLabel(self.configMenu)
         self.label_10.setMinimumSize(QtCore.QSize(0, 25))
         self.label_10.setMaximumSize(QtCore.QSize(16777215, 50))
         font = QtGui.QFont()
@@ -485,7 +524,7 @@ class Ui_MainWindow(object):
         self.label_10.setAlignment(QtCore.Qt.AlignCenter)
         self.label_10.setObjectName("label_10")
         self.verticalLayout_13.addWidget(self.label_10)
-        self.graphtype_comboBox = QtWidgets.QComboBox(self.frame_15)
+        self.graphtype_comboBox = QtWidgets.QComboBox(self.configMenu)
         font = QtGui.QFont()
         font.setPointSize(10)
         self.graphtype_comboBox.setFont(font)
@@ -496,7 +535,7 @@ class Ui_MainWindow(object):
         self.graphtype_comboBox.addItem("")
         self.graphtype_comboBox.addItem("")
         self.verticalLayout_13.addWidget(self.graphtype_comboBox)
-        self.configMenuStack = QtWidgets.QStackedWidget(self.frame_15)
+        self.configMenuStack = QtWidgets.QStackedWidget(self.configMenu)
         self.configMenuStack.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.configMenuStack.setObjectName("configMenuStack")
         self.timeDomain_page = QtWidgets.QWidget()
@@ -762,7 +801,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_25.addWidget(self.frame_35)
         self.configMenuStack.addWidget(self.rpm_page)
         self.verticalLayout_13.addWidget(self.configMenuStack)
-        self.frame_17 = QtWidgets.QFrame(self.frame_15)
+        self.frame_17 = QtWidgets.QFrame(self.configMenu)
         self.frame_17.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_17.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_17.setObjectName("frame_17")
@@ -781,7 +820,7 @@ class Ui_MainWindow(object):
         self.applyconfig_btn.setObjectName("applyconfig_btn")
         self.horizontalLayout_8.addWidget(self.applyconfig_btn)
         self.verticalLayout_13.addWidget(self.frame_17)
-        self.horizontalLayout_7.addWidget(self.frame_15)
+        self.horizontalLayout_7.addWidget(self.configMenu)
         self.verticalLayout_8.addWidget(self.frame_10)
         self.frame_14 = QtWidgets.QFrame(self.graph_page)
         self.frame_14.setMaximumSize(QtCore.QSize(16777215, 40))
@@ -790,19 +829,11 @@ class Ui_MainWindow(object):
         self.frame_14.setObjectName("frame_14")
         self.horizontalLayout_9 = QtWidgets.QHBoxLayout(self.frame_14)
         self.horizontalLayout_9.setObjectName("horizontalLayout_9")
-        self.savelayout_btn = QtWidgets.QPushButton(self.frame_14)
-        self.savelayout_btn.setMaximumSize(QtCore.QSize(80, 16777215))
-        self.savelayout_btn.setStyleSheet("QPushButton {\n"
-"    color: rgb(0, 0, 0);\n"
-"    border-color: rgb(240, 240, 240);\n"
-"    background-color: rgb(240, 240, 240);\n"
-"\n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
-"}")
-        self.savelayout_btn.setObjectName("savelayout_btn")
-        self.horizontalLayout_9.addWidget(self.savelayout_btn)
+        self.frame_18 = QtWidgets.QFrame(self.frame_14)
+        self.frame_18.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_18.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_18.setObjectName("frame_18")
+        self.horizontalLayout_9.addWidget(self.frame_18)
         self.importlayout_btn = QtWidgets.QPushButton(self.frame_14)
         self.importlayout_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.importlayout_btn.setStyleSheet("QPushButton {\n"
@@ -816,27 +847,9 @@ class Ui_MainWindow(object):
 "}")
         self.importlayout_btn.setObjectName("importlayout_btn")
         self.horizontalLayout_9.addWidget(self.importlayout_btn)
-        self.frame_18 = QtWidgets.QFrame(self.frame_14)
-        self.frame_18.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_18.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_18.setObjectName("frame_18")
-        self.horizontalLayout_9.addWidget(self.frame_18)
-        self.label_23 = QtWidgets.QLabel(self.frame_14)
-        self.label_23.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_23.setStyleSheet("color: rgb(255, 255, 255)\n"
-"")
-        self.label_23.setScaledContents(False)
-        self.label_23.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label_23.setObjectName("label_23")
-        self.horizontalLayout_9.addWidget(self.label_23)
-        self.port_combobox = QtWidgets.QComboBox(self.frame_14)
-        self.port_combobox.setMaximumSize(QtCore.QSize(150, 16777215))
-        self.port_combobox.setStyleSheet("background-color: rgb(255, 255, 255);")
-        self.port_combobox.setObjectName("port_combobox")
-        self.horizontalLayout_9.addWidget(self.port_combobox)
-        self.serial_btn = QtWidgets.QPushButton(self.frame_14)
-        self.serial_btn.setMaximumSize(QtCore.QSize(80, 16777215))
-        self.serial_btn.setStyleSheet("QPushButton {\n"
+        self.savelayout_btn = QtWidgets.QPushButton(self.frame_14)
+        self.savelayout_btn.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.savelayout_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(0, 0, 0);\n"
 "    border-color: rgb(240, 240, 240);\n"
 "    background-color: rgb(240, 240, 240);\n"
@@ -845,21 +858,8 @@ class Ui_MainWindow(object):
 "QPushButton:hover {\n"
 "    background-color: rgb(0, 85, 255);\n"
 "}")
-        self.serial_btn.setObjectName("serial_btn")
-        self.horizontalLayout_9.addWidget(self.serial_btn)
-        self.Refreshport_btn = QtWidgets.QPushButton(self.frame_14)
-        self.Refreshport_btn.setMaximumSize(QtCore.QSize(80, 16777215))
-        self.Refreshport_btn.setStyleSheet("QPushButton {\n"
-"    color: rgb(0, 0, 0);\n"
-"    border-color: rgb(240, 240, 240);\n"
-"    background-color: rgb(240, 240, 240);\n"
-"\n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: rgb(0, 85, 255);\n"
-"}")
-        self.Refreshport_btn.setObjectName("Refreshport_btn")
-        self.horizontalLayout_9.addWidget(self.Refreshport_btn)
+        self.savelayout_btn.setObjectName("savelayout_btn")
+        self.horizontalLayout_9.addWidget(self.savelayout_btn)
         self.verticalLayout_8.addWidget(self.frame_14)
         self.stackedWidget.addWidget(self.graph_page)
         self.command_page = QtWidgets.QWidget()
@@ -1103,8 +1103,11 @@ class Ui_MainWindow(object):
         item.setText(_translate("MainWindow", "None Selected"))
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.import_btn.setText(_translate("MainWindow", "Import CAN"))
-        self.default_btn.setText(_translate("MainWindow", "Use Default"))
+        self.default_btn.setText(_translate("MainWindow", "Log Default"))
         self.apply_btn.setText(_translate("MainWindow", "Apply"))
+        self.label_24.setText(_translate("MainWindow", "Select COM Port:"))
+        self.serial_btn.setText(_translate("MainWindow", "Connect"))
+        self.refreshPort_btn.setText(_translate("MainWindow", "Refresh"))
         self.label.setText(_translate("MainWindow", "Graphs"))
         self.label_10.setText(_translate("MainWindow", "Configuration Menu"))
         self.graphtype_comboBox.setItemText(0, _translate("MainWindow", "Time Domain"))
@@ -1135,11 +1138,8 @@ class Ui_MainWindow(object):
         self.hideConfig_btn.setText(_translate("MainWindow", "Hide"))
         self.cancelConfig_btn.setText(_translate("MainWindow", "Cancel"))
         self.applyconfig_btn.setText(_translate("MainWindow", "Apply"))
-        self.savelayout_btn.setText(_translate("MainWindow", "Save Layout"))
         self.importlayout_btn.setText(_translate("MainWindow", "Import Layout"))
-        self.label_23.setText(_translate("MainWindow", "Select COM Port:"))
-        self.serial_btn.setText(_translate("MainWindow", "Connect"))
-        self.Refreshport_btn.setText(_translate("MainWindow", "Refresh"))
+        self.savelayout_btn.setText(_translate("MainWindow", "Save Layout"))
         self.label_4.setText(_translate("MainWindow", "Send Commands"))
         __sortingEnabled = self.listWidget_2.isSortingEnabled()
         self.listWidget_2.setSortingEnabled(False)
