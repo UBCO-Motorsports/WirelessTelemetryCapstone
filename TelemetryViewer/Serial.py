@@ -7,7 +7,7 @@ from MainWindowroot import Ui_MainWindow
 #TODO    Royden's TIVA board. Jan 20
 #TODO 3. Need to be able to scan all com ports and show options for selection. Jan 20
 #TODO 4. Need a Disconnect Method
-#TODO
+#TODO 5. Scaling Function - to expand or shrink data points
 #TODO
 
 class SerialModule():
