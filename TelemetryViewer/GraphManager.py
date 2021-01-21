@@ -2,7 +2,7 @@ import pyqtgraph as pg
 import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
-from RPM import RPMScreen
+from RPM import RPMGauge
 from Speedo import splashScreen
 
 from PyQt5.QtWidgets import QSplitter
@@ -41,16 +41,16 @@ class GraphManager(QtGui.QWidget):
 
                 self.graph_array[i][j].data["Y"] = [self.x, self.y]
 
+                plotItem = self.graph_array[i][j].getPlotItem()
+                plotItem.setLabel('bottom', text='time')
+                plotItem.setLabel('left', text='y-axis')
 
         self.graph_array[0][0].data["Y"] = [self.x, self.SerialModule.array1]
 
-
-        # self.dial = RPMScreen(self)
-        # print('viewbox issue')
-        # self.graph_array[0][0].hide()
-        # print('viewbox issue')
-        # self.graph_array[0][0] = self.dial
-        # self.graph_layout.addWidget(self.dial, 0, 0)
+        self.dial = RPMGauge(self)
+        self.graph_array[0][0].hide()
+        self.graph_array[0][0] = self.dial
+        self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
 
         # self.speed = splashScreen()
@@ -89,10 +89,10 @@ class GraphManager(QtGui.QWidget):
                             graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
                         # print('cartesian')
                 elif graph.type == 'dial':
-                    return
+                    pass
                     # print('dial')
                 elif graph.type == 'polar':
-                    return
+                    pass
                     # print('polar')
 
         # self.SerialModule.readSerial() #TODO reenable
@@ -101,6 +101,10 @@ class GraphManager(QtGui.QWidget):
     # Rewrite this function in a better way
     #
     def showGraphs(self, num_shown):
+        for i in range(4):
+            self.graph_layout.setColumnStretch(i, 0)
+            self.graph_layout.setRowStretch(i, 0)
+
         if num_shown == '12':
             for row in range(len(self.graph_array)):
                 for column in range(len(self.graph_array[row])):

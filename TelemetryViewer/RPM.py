@@ -10,7 +10,7 @@ RPM = 0
 resizeval=0
 
 
-class RPMScreen(QtWidgets.QWidget):
+class RPMGauge(QtWidgets.QWidget):
     def __init__(self, parentWidget):
         QtWidgets.QWidget.__init__(self)
         self.ui = Ui_Form()
@@ -146,5 +146,5 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = RPMScreen()
+    window = RPMGauge()
     sys.exit(app.exec_())

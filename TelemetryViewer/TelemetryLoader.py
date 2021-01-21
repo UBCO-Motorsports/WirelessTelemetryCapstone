@@ -39,7 +39,7 @@ class Ui_SplashScreen(object):
         self.Circularvaluebg.setGeometry(QRect(10, 10, 300, 300))
         self.Circularvaluebg.setStyleSheet("QFrame{\n"
 "border-radius: 150px;\n"
-"    background-color: rgba(0, 170, 0, 150);\n"
+"    background-color: rgba(135, 170, 135, 150);\n"
 "}")
         self.Circularvaluebg.setFrameShape(QFrame.NoFrame)
         self.Circularvaluebg.setFrameShadow(QFrame.Raised)
