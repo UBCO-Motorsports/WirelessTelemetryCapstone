@@ -110,7 +110,7 @@ class MainWindow(QtWidgets.QMainWindow):
     #TODO This code allows us to see available COM ports and return using the portlist array. (NOT CALLED ATM)
     #TODO Now just need to know when to call this function (start of running or call, or always?) and also be able to
     #TODO    return the list of ports, also we can send more data back (ask me - Roy)
-    def availableCOMPorts(self):        # Generates a list of available COM ports
+    def availableCOMPorts(self):        # Generates a list of available COM ports testing
         portlist = serial.tools.list_ports.comports(include_links=False)
         portlistarray = []
         for element in portlist:
