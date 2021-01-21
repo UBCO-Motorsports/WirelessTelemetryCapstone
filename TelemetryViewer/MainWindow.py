@@ -40,7 +40,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)
         self.ui.configMenu.hide()
         self.ui.refreshPort_btn.clicked.connect(lambda: self.refreshports())
+<<<<<<< Updated upstream
 
+=======
+<<<<<<< HEAD
+        self.ui.graphvalue_comboBox.currentIndexChanged.connect(lambda :self.graphNumber())#TODO here Connor
+=======
+
+>>>>>>> 0af968d71843d7334f4e153cbfcfe657405d20e1
+>>>>>>> Stashed changes
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
@@ -91,6 +99,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start()
 
 
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+    def graphNumber(self):
+        text=self.ui.graphvalue_comboBox.currentText()
+        GraphManager.showGraphs(text)
+=======
+>>>>>>> 0af968d71843d7334f4e153cbfcfe657405d20e1
+>>>>>>> Stashed changes
     def menuchange(self, i):
         configtext = (self.ui.graphtype_comboBox.currentText())
         if configtext == "Time Domain":
