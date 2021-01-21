@@ -1,5 +1,6 @@
 import sys
 import time
+import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.Qt import *
@@ -105,10 +106,15 @@ class MainWindow(QtWidgets.QMainWindow):
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
 
-    #TODO Royden
-    def availableCOMPorts(self):
+    #TODO This code allows us to see available COM ports and return using the portlist array. (NOT CALLED ATM)
+    #TODO Now just need to know when to call this function (start of running or call, or always?) and also be able to
+    #TODO    return the list of ports, also we can send more data back (ask me - Roy)
+    def availableCOMPorts(self, portlist):
         # Generates a list of available COM ports
-        return # Should return a list of strings if possible -> ['COM1', 'COM4']
+        portlist = serial.tools.list_ports.comports(include_links=False)
+        # for port, desc, hwid in sorted(portlist):               #This FOR prints ports and info about whats connected
+        #     print("{}: {} [{}]".format(port, desc, hwid))       #Like Stellaris Virtual Serial Port (my Tiva board)
+        return portlist # Should return a list of strings if possible -> ['COM1', 'COM4']
 
     def serialbtn(self):
         if self.ui.serial_btn.text()=="Connect":
