@@ -18,9 +18,10 @@ class SerialModule():
             # self.serialChannel = serialChannel
             self.serialChannel = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
                                            xonxoff=False)      #TODO Change  timeout to 15 seconds...
-            print('connected')
+            print('COM connected')
         except:
-            print("failed")
+            # del self
+            print("COM failed -> closed")
             # self.close() # close instance if failed
 
         self.array1 = [0 for _ in range(200)]

@@ -32,7 +32,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.import_btn.clicked.connect(Open)
         self.ui.btn_page_2.setIcon(QIcon('icons/script-attribute-s.png')) # /wrench /wrench-screwdriver
 
-        # Graph Page
+        ##Graph Page
+        # Initializing GraphManager onto graph page
+        self.GraphManager = GraphManager(self)
+        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)
+        self.ui.horizontalLayout_7.addWidget(self.GraphManager)
+        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)
+        ##Graph Page cont.
         self.ui.serial_btn.clicked.connect(self.serialbtn)
         self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
         self.ui.btn_page_3.setCheckable(True)
@@ -40,7 +46,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)
         self.ui.configMenu.hide()
         self.ui.refreshPort_btn.clicked.connect(lambda: self.refreshports())
-        self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))#TODO Connor
+        self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))
+        self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count()-1)
 
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
@@ -77,11 +84,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #####color = QColorDialog.getColor()##### sets up color opening window
 
-        # Initializing GraphManager onto graph page
-        self.GraphManager = GraphManager(self)
-        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)
-        self.ui.horizontalLayout_7.addWidget(self.GraphManager)
-        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)
 
         self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")
 

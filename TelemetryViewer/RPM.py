@@ -10,14 +10,15 @@ RPM = 0
 resizeval=0
 
 
-class SplashScreen(QtWidgets.QWidget):
-    def __init__(self):
+class RPMScreen(QtWidgets.QWidget):
+    def __init__(self, parentWidget):
         QtWidgets.QWidget.__init__(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.animate(0)
 
         self.type = 'dial'
+        self.parentWidget = parentWidget
 
         self.dial_size = self.ui.frame
 
@@ -25,7 +26,7 @@ class SplashScreen(QtWidgets.QWidget):
         self.timer.timeout.connect(self.accellerate)
         self.timer.start(15)
 
-        self.show()
+        # self.show()
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
@@ -145,5 +146,5 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    window = SplashScreen()
+    window = RPMScreen()
     sys.exit(app.exec_())

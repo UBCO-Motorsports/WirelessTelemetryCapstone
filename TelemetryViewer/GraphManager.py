@@ -2,7 +2,7 @@ import pyqtgraph as pg
 import numpy as np
 from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
-from RPM import SplashScreen
+from RPM import RPMScreen
 from Speedo import splashScreen
 
 from PyQt5.QtWidgets import QSplitter
@@ -45,8 +45,10 @@ class GraphManager(QtGui.QWidget):
         self.graph_array[0][0].data["Y"] = [self.x, self.SerialModule.array1]
 
 
-        # self.dial = SplashScreen()
+        # self.dial = RPMScreen(self)
+        # print('viewbox issue')
         # self.graph_array[0][0].close()
+        # print('viewbox issue')
         # self.graph_array[0][0] = self.dial
         # self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
@@ -93,7 +95,7 @@ class GraphManager(QtGui.QWidget):
                     return
                     # print('polar')
 
-        self.SerialModule.readSerial()
+        # self.SerialModule.readSerial() #TODO reenable
 
     #TODO
     # Rewrite this function in a better way
@@ -103,12 +105,9 @@ class GraphManager(QtGui.QWidget):
             for row in range(len(self.graph_array)):
                 for column in range(len(self.graph_array[row])):
                     self.graph_array[row][column].show()
-                    print(str(row) + ' ' + str(column))
 
         elif num_shown == '8':
-            for row in range(2):
-                for column in range(4):
-                    self.graph_array[row][column].show()
+            self.showGraphs('12')
             for column in range(len(self.graph_array[2])):
                 self.graph_array[2][column].hide()
 
@@ -130,7 +129,6 @@ class GraphManager(QtGui.QWidget):
         elif num_shown == '1':
             self.showGraphs('2')
             self.graph_array[1][0].hide()
-
 
     #     # Reset formats to better align widgets
     #     for i in range(4):
