@@ -40,6 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)
         self.ui.configMenu.hide()
         self.ui.refreshPort_btn.clicked.connect(lambda: self.refreshports())
+        self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))#TODO Connor
 
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
