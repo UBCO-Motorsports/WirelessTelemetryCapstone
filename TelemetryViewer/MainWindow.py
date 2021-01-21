@@ -17,26 +17,30 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QWidget.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-        # self.show()
 
-        ## Pages
+        ## Pages-------------------------------------------------------------------------------------------------------
         ##Home Page
+        self.ui.stackedWidget.setCurrentWidget(self.ui.home_page)
         self.ui.btn_home.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.home_page))
         self.ui.btn_home.setCheckable(True)
+        self.ui.btn_home.setChecked(True)
         self.ui.btn_home.setIcon(QIcon('icons/home.png'))
+
         ##Setup Page
         self.ui.btn_page_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.setup_page))
         self.ui.btn_page_2.setCheckable(True)
         self.ui.import_btn.clicked.connect(Open)
         self.ui.btn_page_2.setIcon(QIcon('icons/script-attribute-s.png')) # /wrench /wrench-screwdriver
+
         # Graph Page
         self.ui.serial_btn.clicked.connect(self.serialbtn)
         self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
         self.ui.btn_page_3.setCheckable(True)
-        self.ui.btn_page_3.setChecked(True)
         self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png')) # /blue-document-block /system-monitor /application-wave
-        self.ui.hideConfig_btn.clicked.connect(lambda: self.ui.configMenu.setMaximumWidth(0))
+        self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)
+        self.ui.configMenu.hide()
         self.ui.refreshPort_btn.clicked.connect(lambda: self.refreshports())
+
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
@@ -63,21 +67,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 "    background-color: rgb(100, 100, 100);\n"
                 "}")
 
+        ## Pages-------------------------------------------------------------------------------------------------------
+
+        # Graph page functions
         self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
         self.ui.importlayout_btn.clicked.connect(Open)
         self.ui.savelayout_btn.clicked.connect(Save)
-        ##Command Page
-        self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
-
-
-
-
-
 
         #####color = QColorDialog.getColor()##### sets up color opening window
 
-        ##Graph Page
-        self.GraphManager = GraphManager()
+        # Initializing GraphManager onto graph page
+        self.GraphManager = GraphManager(self)
         self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)
         self.ui.horizontalLayout_7.addWidget(self.GraphManager)
         self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)
@@ -91,7 +91,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start()
 
 
-
     def menuchange(self, i):
         configtext = (self.ui.graphtype_comboBox.currentText())
         if configtext == "Time Domain":
@@ -102,25 +101,30 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.configMenuStack.setCurrentWidget(self.ui.rpm_page)
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
+
     def serialbtn(self):
         if self.ui.serial_btn.text()=="Connect":
             port=self.ui.port_combobox.currentText()
             print (port)
-
-
             self.ui.serial_btn.setText("Disconnect")
-
-
         else:
             self.ui.serial_btn.setText("Connect")
+
     def refreshports(self):#TODO Remove this after actual refresh is completed
         ports = ["Com1", "Com2", "Com3", "Com4"]
         for port in ports:
            self.ui.port_combobox.addItem(port)
 
+    def editMenuCalled(self, plotWidget):
+        self.currentPlotWidget = plotWidget
+        self.currentPlotWidget.setBackground('g')
+        self.ui.configMenu.show()
+        print('GUI connected')
+
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
     window = MainWindow()
     loader = Loader()
     loader.show()

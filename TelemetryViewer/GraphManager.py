@@ -11,15 +11,18 @@ from Serial import SerialModule
 
 class GraphManager(QtGui.QWidget):
 
-    def __init__(self):
+    def __init__(self, parentWidget):
         super(GraphManager, self).__init__()
-
-        self.serialStuff = SerialModule()
+        self.parentWidget = parentWidget
+        self.SerialModule = SerialModule()
 
         self.graph_layout = QtGui.QGridLayout()
         self.setLayout(self.graph_layout)
 
-        self.pen = pg.mkPen(color=(255,0,0),width=2)
+        self.r = 255
+        self.g = 0
+        self.b = 0
+        self.pen = pg.mkPen(color=(self.r,self.g,self.b),width=2)
 
         # Generate test data
         self.x = [i for i in range(200)]
@@ -31,7 +34,7 @@ class GraphManager(QtGui.QWidget):
         self.graph_array = [[],[],[]]
         for i in range(3):
             for j in range(4):
-                self.graph_array[i].append(PlotWdgt())
+                self.graph_array[i].append(PlotWdgt(self))
                 self.graph_layout.addWidget(self.graph_array[i][j], i, j)
                 self.graph_array[i][j].showGrid(x=True, y=True)
                 self.graph_array[i][j].setBackground('w')
@@ -39,7 +42,7 @@ class GraphManager(QtGui.QWidget):
                 self.graph_array[i][j].data["Y"] = [self.x, self.y]
 
 
-        self.graph_array[0][0].data["Y"] = [self.x, self.serialStuff.array1]
+        self.graph_array[0][0].data["Y"] = [self.x, self.SerialModule.array1]
 
 
         # self.dial = SplashScreen()
@@ -55,7 +58,8 @@ class GraphManager(QtGui.QWidget):
         # self.graph_layout.addWidget(self.speed, 0, 1)
         # self.speed.frame_size.setGeometry(-10,-10,320,320)
 
-
+    def editMenuCalled(self, plotWidget):
+        self.parentWidget.editMenuCalled(plotWidget)
 
     def update(self):
         #TODO
@@ -78,7 +82,7 @@ class GraphManager(QtGui.QWidget):
                     for data_type in graph.data:
                         if graph == self.graph_array[0][0]:     #TODO data issue for this if else
                             print(graph.data[data_type][1])
-                            graph.plot(graph.data[data_type][0], self.serialStuff.array1, pen=self.pen, clear=True)
+                            graph.plot(graph.data[data_type][0], self.SerialModule.array1, pen=self.pen, clear=True)
                         else:
                             graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
                         # print('cartesian')
@@ -89,7 +93,7 @@ class GraphManager(QtGui.QWidget):
                     return
                     # print('polar')
 
-        self.serialStuff.readSerial()
+        self.SerialModule.readSerial()
 
     #TODO
     # Rewrite this function in a better way
@@ -190,11 +194,16 @@ class GraphManager(QtGui.QWidget):
 
 #TODO
 class PlotWdgt(pg.PlotWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parentWidget, parent=None):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
-
+        self.parentWidget = parentWidget
         self.type = 'xy_graph'
         self.data = {}
+
+    def editMenuCalled(self):
+        print('connected to plot widget')
+        self.parentWidget.editMenuCalled(self)
+
 
 
 class CustomViewBox(pg.ViewBox):
@@ -207,7 +216,7 @@ class CustomViewBox(pg.ViewBox):
 
         self.menu.addSeparator()
         self.editData = QtGui.QAction("Edit Data", self.menu)
-        self.editData.triggered.connect(lambda: self.parentWidget.hide()) #TODO Maybe return 'self' to link to data selection panel
+        self.editData.triggered.connect(self.parentWidget.editMenuCalled) #TODO Maybe return 'self' to link to data selection panel
         self.menu.addAction(self.editData)
 
         # self.menuUpdate = False #Don't think this is needed

@@ -23,9 +23,11 @@ class SerialModule():
             print("failed")
             # self.close() # close instance if failed
 
-        self.array1 = [0 for _ in range(200)]       #This limits data points to only 200 in memory at any give time.
+        self.array1 = [0 for _ in range(200)]
         self.array2 = [0 for _ in range(200)]
         self.array3 = [0 for _ in range(200)]
+
+        self.channels = [self.array1, self.array2, self.array3]
 
     # filter0 = rpm
     # filter1 = speed
@@ -49,6 +51,16 @@ class SerialModule():
         print(dataapp)
         # del self.array1[0]
         self.array1 = self.array1[1:]  # Remove the first y element.
+
+        # # Iterates through current channels (assumes channels are in the same order as received data)
+        # for i, channel in enumerate(self.channels):
+        #     try:
+        #         dataapp[i] = float(dataapp[i])
+        #     except:
+        #         dataapp[i] = 0
+        #     channel[i].append(dataapp[i])
+
+
         try:
             self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
             print(self.array1)
