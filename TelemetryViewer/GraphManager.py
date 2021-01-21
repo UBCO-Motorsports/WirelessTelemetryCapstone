@@ -95,7 +95,7 @@ class GraphManager(QtGui.QWidget):
                     pass
                     # print('polar')
 
-        # self.SerialModule.readSerial() #TODO reenable
+        #self.SerialModule.readSerial() #TODO reenable
 
     #TODO
     # Rewrite this function in a better way

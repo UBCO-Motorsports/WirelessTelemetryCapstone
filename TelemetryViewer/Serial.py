@@ -1,5 +1,7 @@
 import serial, time, csv, datetime
+#from serial import SerialException             #Serial code
 from MainWindowroot import Ui_MainWindow
+
 
 #TODO 1. We need to make sure theres an algoithim for connection status: Like if COM disconnects then it needs to
 #TODO    either reconnect or prompt, etc. Jan 20
@@ -16,13 +18,13 @@ class SerialModule():
         try:
             # global serialChannel
             # self.serialChannel = serialChannel
-            self.serialChannel = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
+            self.serialChannel = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10,
                                            xonxoff=False)      #TODO Change  timeout to 15 seconds...
             print('COM connected')
-        except:
+        except:#SerialException:
             # del self
             print("COM failed -> closed")
-            # self.close() # close instance if failed
+            self.close() # close instance if failed
 
         self.array1 = [0 for _ in range(200)]
         self.array2 = [0 for _ in range(200)]
@@ -49,7 +51,7 @@ class SerialModule():
         data = data.decode('utf-8')
         data = data.rstrip()  # gets rid of \n from energia generated code
         dataapp = data.split(",")
-        print(dataapp)
+        #print(dataapp)
         # del self.array1[0]
         self.array1 = self.array1[1:]  # Remove the first y element.
 
@@ -60,8 +62,6 @@ class SerialModule():
         #     except:
         #         dataapp[i] = 0
         #     channel[i].append(dataapp[i])
-
-
         try:
             self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
             print(self.array1)
@@ -70,12 +70,8 @@ class SerialModule():
         except:
             self.array1.append(0)
 
-
-
-
     # serialTest = SerialModule()
 # serialTest.readSerial()
-
 
 
 # global array1               #Add as many arrays as we want

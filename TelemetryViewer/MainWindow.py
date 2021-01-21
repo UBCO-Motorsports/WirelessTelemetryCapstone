@@ -167,7 +167,7 @@ if __name__ == "__main__":
 
     def loaderProgress():
         #TODO Turn loader back on
-        # loader.counter = 100
+        #loader.counter = 100
 
         if loader.counter == 100:
             timer.stop()
