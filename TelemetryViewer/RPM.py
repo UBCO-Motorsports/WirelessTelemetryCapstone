@@ -22,9 +22,9 @@ class RPMScreen(QtWidgets.QWidget):
 
         self.dial_size = self.ui.frame
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.accellerate)
-        self.timer.start(15)
+        # self.timer = QtCore.QTimer()
+        # self.timer.timeout.connect(self.accellerate)
+        # self.timer.start(15)
 
         # self.show()
 

@@ -47,7 +47,7 @@ class GraphManager(QtGui.QWidget):
 
         # self.dial = RPMScreen(self)
         # print('viewbox issue')
-        # self.graph_array[0][0].close()
+        # self.graph_array[0][0].hide()
         # print('viewbox issue')
         # self.graph_array[0][0] = self.dial
         # self.graph_layout.addWidget(self.dial, 0, 0)

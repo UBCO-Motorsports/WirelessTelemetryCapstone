@@ -105,6 +105,11 @@ class MainWindow(QtWidgets.QMainWindow):
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
 
+    #TODO Royden
+    def availableCOMPorts(self):
+        # Generates a list of available COM ports
+        return # Should return a list of strings if possible -> ['COM1', 'COM4']
+
     def serialbtn(self):
         if self.ui.serial_btn.text()=="Connect":
             port=self.ui.port_combobox.currentText()
