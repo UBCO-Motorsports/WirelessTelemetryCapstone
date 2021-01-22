@@ -1,0 +1,328 @@
+{
+  "Channels":"CANBUS Channels",
+  "Haltech": [
+    {
+      "Name": "RPM",
+      "ID": "0x360",
+      "Units": "RPM",
+      "Scale": 1,
+      "Position": 0,
+      "Size": 16
+    },
+    {
+      "Name": "Manifold Pressure",
+      "ID": "0x360",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Throttle Position",
+      "ID": "0x360",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Coolant Pressure",
+      "ID": "0x360",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Fuel Pressure",
+      "ID": "0x361",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Oil Pressure",
+      "ID": "0x361",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Engine Demand",
+      "ID": "0x361",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Wastegate Pressure",
+      "ID": "0x361",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Injection Stage 1 Duty Cycle",
+      "ID": "0x362",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Injection Stage 2 Duty Cycle",
+      "ID": "0x362",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Ignition Angle",
+      "ID": "0x362",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Wheel Slip",
+      "ID": "0x363",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Wheel Diff",
+      "ID": "0x363",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Wideband 1",
+      "ID": "0x368",
+      "Units": null,
+      "Scale": 0.001,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Wideband 2",
+      "ID": "0x368",
+      "Units": null,
+      "Scale": 0.001,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Wideband 3",
+      "ID": "0x368",
+      "Units": null,
+      "Scale": 0.001,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Wideband 4",
+      "ID": "0x368",
+      "Units": null,
+      "Scale": 0.001,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Trigger System Error Count",
+      "ID": "0x369",
+      "Units": null,
+      "Scale": 1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Trigger Counter",
+      "ID": "0x369",
+      "Units": null,
+      "Scale": 1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Trigger Sync Level",
+      "ID": "0x369",
+      "Units": null,
+      "Scale": 1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Knock Level",
+      "ID": "0x36A",
+      "Units": "dB",
+      "Scale": 0.01,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Knock Level",
+      "ID": "0x36A",
+      "Units": "dB",
+      "Scale": 0.01,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Brake Pressure",
+      "ID": "0x36B",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "NOS Pressure Sensor 1",
+      "ID": "0x36B",
+      "Units": "kPa",
+      "Scale": 0.22,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Turbo Speed Sensor 1",
+      "ID": "0x36B",
+      "Units": "RPM",
+      "Scale": 10,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Lateral G",
+      "ID": "0x36B",
+      "Units": "m/s^2",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Wheel Speed Front Left",
+      "ID": "0x36C",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Wheel Speed Front Right",
+      "ID": "0x36C",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Wheel Speed Rear Left",
+      "ID": "0x36C",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Wheel Speed Rear Right",
+      "ID": "0x36C",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Exhaust Cam Angle 1",
+      "ID": "0x36D",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Exhaust Cam Angle 2",
+      "ID": "0x36D",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Engine Limiting Active",
+      "ID": "0x36E",
+      "Units": null,
+      "Scale": 1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Launch Control Ignition Retard",
+      "ID": "0x36E",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Launch Control Fuel Enrich",
+      "ID": "0x36E",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Longitudinal G",
+      "ID": "0x36E",
+      "Units": "m/s^2",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Generic Output 1 Duty Cycle",
+      "ID": "0x36F",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Boost Control Output",
+      "ID": "0x36F",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Vehicle Speed",
+      "ID": "0x370",
+      "Units": "km/h",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Gear",
+      "ID": "0x370",
+      "Units": null,
+      "Scale": 1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Intake Cam Angle 1",
+      "ID": "0x370",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Intake Cam Angle 2",
+      "ID": "0x370",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Fuel Flow",
+      "ID": "0x371",
+      "Units": "cc/min",
+      "Scale": 1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Fuel Flow Return",
+      "ID": "0x371",
+      "Units": "cc/min",
+      "Scale": 1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Battery Voltage",
+      "ID": "0x372",
+      "Units": "Volts",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Target Boost Level",
+      "ID": "0x372",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "4-5"
+    }
+  ]
+  }

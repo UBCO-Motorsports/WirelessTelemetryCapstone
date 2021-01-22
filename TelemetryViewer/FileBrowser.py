@@ -2,9 +2,7 @@ import sys
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtGui import QIcon
 
-
 class Open(QWidget):
-
     def __init__(self):
         super().__init__()
         self.title = 'PyQt5 file dialogs'
@@ -18,16 +16,14 @@ class Open(QWidget):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
 
-        self.openFileNameDialog()
+        #self.openFileNameDialog()
         self.show()
 
     def openFileNameDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getOpenFileName(self, "Ogopogo Telemetry", "",
-                                                  "All Files (*);;Python Files (*.py)", options=options)
-        if fileName:
-            print(fileName)
+        file, _ = QFileDialog.getOpenFileName(self, "Ogopogo Telemetry", "","Json Files Files (*.json)", options=options)
+        return str(file)
 
 
 
