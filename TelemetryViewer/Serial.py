@@ -24,7 +24,7 @@ class SerialModule():
         except:#SerialException:
             # del self
             print("COM failed -> closed")
-            self.close() # close instance if failed
+            #self.close() # close instance if failed
 
         self.array1 = [0 for _ in range(200)]
         self.array2 = [0 for _ in range(200)]

@@ -4,6 +4,7 @@ import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.Qt import *
+import json
 
 from MainWindowroot import Ui_MainWindow
 from FileBrowser import Open
@@ -39,6 +40,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox, self.comPortComboBox) # Places custom COM port menu in setup layout
         self.ui.port_combobox.close() # CLoses old COM port menu
         self.ui.serial_btn.clicked.connect(lambda: self.serialbtn) # Connect functions to serial button
+        self.ui.import_btn.clicked.connect(self.canJson)
+        self.ui.tableWidget.cellClicked.connect(self.tabletolist)
+        self.ui.listWidget.itemClicked.connect(self.listremove)
 
         ##Graph Page
         self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)") # Sets background of graph page
@@ -134,6 +138,44 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def configApply(self):
         return
+
+    def canJson(self):
+        p = 0
+        filelookup = Open()
+        file = filelookup.openFileNameDialog()
+        while (self.ui.tableWidget.rowCount() > 0):
+            self.ui.tableWidget.removeRow(0)
+
+        with open(file) as json_file:
+            data = json.load(json_file)
+            for i in data["Haltech"]:
+                self.ui.tableWidget.insertRow(p)
+                self.ui.tableWidget.setItem(p, 0, QtGui.QTableWidgetItem("Click to Select"))
+                self.ui.tableWidget.setItem(p, 1, QtGui.QTableWidgetItem(i['Name']))
+                self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
+                self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
+                p = p + 1
+
+    def tabletolist(self, row, column):
+        found = False
+        for i in range(self.ui.listWidget.count()):
+            if self.ui.listWidget.item(i).text() == self.ui.tableWidget.item(row, 1).text():
+                found = True
+        if not found:
+            self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
+            graphjson = '{"name": "Value1", "colour": "Value2"}'
+            graphjson = graphjson.replace("Value1", self.ui.tableWidget.item(row, 1).text())
+            graphjson = graphjson.replace("Value2", str(QColorDialog.getColor()))
+            print(graphjson)
+            if self.ui.listWidget.item(0).text() == "None Selected":
+                self.ui.listWidget.takeItem(0)
+
+    def listremove(self, row):
+        i = self.ui.listWidget.currentRow()
+        if self.ui.listWidget.currentItem().text() != "None Selected":
+            self.ui.listWidget.takeItem(i)
+        if self.ui.listWidget.count() == 0:
+            self.ui.listWidget.addItem("None Selected")
 
 class comPortComboBox(QtWidgets.QComboBox):
     populateCOMSelect = QtCore.pyqtSignal()
