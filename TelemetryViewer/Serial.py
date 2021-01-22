@@ -1,5 +1,6 @@
 import serial, time, csv, datetime
-#from serial import SerialException             #Serial code
+from serial import Serial             #Serial code
+from serial import SerialException
 from MainWindowroot import Ui_MainWindow
 
 
@@ -7,9 +8,14 @@ from MainWindowroot import Ui_MainWindow
 #TODO    either reconnect or prompt, etc. Jan 20
 #TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
 #TODO    Royden's TIVA board. Jan 20
+#TODO
+#TODO
+#TODO
 #TODO 3. Need a Disconnect Method
 #TODO 4. Scaling Function - to expand or shrink data points
 #TODO
+#TODO More to the END, Use Threading for updating graphs, checking serial ports, etc. Or Multiprocessing
+
 
 class SerialModule():
 
@@ -34,11 +40,11 @@ class SerialModule():
             try:
                 # global serialChannel
                 # self.serialChannel = serialChannel
-                self.serialChannel = serial.Serial(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10,
+                self.serialChannel = serial.Serial(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
                                                xonxoff=False)      #TODO Change  timeout to 15 seconds...
                 print('COM connected')
                 return True
-            except:#SerialException:
+            except SerialException:
                 # del self
                 print("COM failed -> closed")
                 #self.close() # close instance if failed

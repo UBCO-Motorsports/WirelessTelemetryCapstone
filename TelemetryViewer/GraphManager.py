@@ -6,7 +6,7 @@ from RPM import RPMGauge
 from Speedo import splashScreen
 
 from PyQt5.QtWidgets import QSplitter
-from Serial import SerialModule
+from Serial import SerialModule     #dont comment or delete > needed for Serial communication
 
 
 class GraphManager(QtGui.QWidget):
@@ -79,7 +79,7 @@ class GraphManager(QtGui.QWidget):
         self.z.append(self.z[-1] - 1)
 
 
-        for row in self.graph_array:
+        for row in self.graph_array:                #TODO Need to make this iterate through graphs, or use multiprocessing
             for graph in row:
                 if graph.type == 'xy_graph':
                     for data_type in graph.data:
