@@ -467,7 +467,11 @@ class Ui_MainWindow(object):
 "}\n"
 "QPushButton:hover {\n"
 "    background-color: rgb(0, 85, 255);\n"
-"}")
+"}"
+"QPushButton:disabled {\n"
+"    background-color: rgb(85, 85, 85);\n"
+"}"
+)
         self.serial_btn.setObjectName("serial_btn")
         self.horizontalLayout_4.addWidget(self.serial_btn)
         self.refreshPort_btn = QtWidgets.QPushButton(self.frame_5)

@@ -15,16 +15,6 @@ from MainWindowroot import Ui_MainWindow
 class SerialModule():
 
     def __init__(self):
-        try:
-            # global serialChannel
-            # self.serialChannel = serialChannel
-            self.serialChannel = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10,
-                                           xonxoff=False)      #TODO Change  timeout to 15 seconds...
-            print('COM connected')
-        except:#SerialException:
-            # del self
-            print("COM failed -> closed")
-            #self.close() # close instance if failed
 
         self.array1 = [0 for _ in range(200)]
         self.array2 = [0 for _ in range(200)]
@@ -37,6 +27,23 @@ class SerialModule():
     # for filter in filters:
     #     sendCommand(filterFormat())
 
+    def tryConnectSerial(self, portName):
+        if portName == 'Disconnect':
+            self.serialChannel.close()
+            print('COM disconnected')
+        else:
+            try:
+                # global serialChannel
+                # self.serialChannel = serialChannel
+                self.serialChannel = serial.Serial(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10,
+                                               xonxoff=False)      #TODO Change  timeout to 15 seconds...
+                print('COM connected')
+                return True
+            except:#SerialException:
+                # del self
+                print("COM failed -> closed")
+                #self.close() # close instance if failed
+                return False
 
     def filterFormat(self):
         #TODO ser.write("f %f %f %f %f/r", data1, data2)

@@ -39,7 +39,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.comPortComboBox = comPortComboBox(self) # Generate custom COM port menu
         self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox, self.comPortComboBox) # Places custom COM port menu in setup layout
         self.ui.port_combobox.close() # CLoses old COM port menu
-        self.ui.serial_btn.clicked.connect(lambda: self.serialbtn) # Connect functions to serial button
+        self.ui.serial_btn.clicked.connect(self.connectSerial) # Connect functions to serial button
+        self.ui.refreshPort_btn.clicked.connect(self.comPortComboBox.populateCOMSelect) # Refresh button calls to find open COM ports
         self.ui.import_btn.clicked.connect(self.canJson)
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
@@ -121,13 +122,22 @@ class MainWindow(QtWidgets.QMainWindow):
             portlistarray.append(element.device)
         return portlistarray # Should return a list of strings if possible -> ['COM1', 'COM4']
 
-    def serialbtn(self):
-        if self.ui.serial_btn.text()=="Connect":
-            port=self.ui.port_combobox.currentText()
-            print (port)
-            self.ui.serial_btn.setText("Disconnect")
+    def connectSerial(self):
+        if self.ui.serial_btn.text() == 'Connect':
+            if self.GraphManager.SerialModule.tryConnectSerial(self.comPortComboBox.currentText()):
+                self.ui.serial_btn.setText("Disconnect")
+            else:
+                self.ui.serial_btn.setText("Connect")
         else:
-            self.ui.serial_btn.setText("Connect")
+            self.GraphManager.SerialModule.tryConnectSerial(self.ui.serial_btn.text())
+            self.ui.serial_btn.setText('Connect')
+
+        # if self.ui.serial_btn.text()=="Connect":
+        #     port=self.ui.port_combobox.currentText()
+        #     print (port)
+        #     self.ui.serial_btn.setText("Disconnect")
+        # else:
+        #     self.ui.serial_btn.setText("Connect")
 
     def editMenuCalled(self, plotWidget):
         self.currentPlotWidget = plotWidget
@@ -184,18 +194,26 @@ class comPortComboBox(QtWidgets.QComboBox):
         super(comPortComboBox, self).__init__()
         self.parentWidget = parentWidget
         self.setStyleSheet('background-color: rgb(255,255,255);' 'selection-background-color: rgb(168,168,168);')
-        self.setMaximumWidth(100)
-        self.addItem('test')
+        self.setMinimumWidth(80)
+        self.setMaximumWidth(160)
+        self.addItem('Select COM port')
         self.populateCOMSelect.connect(self.populateComboBox)
 
     def showPopup(self):
         self.populateCOMSelect.emit()
         super(comPortComboBox, self).showPopup()
 
+    # Calls for a list of available COM ports and populates them to the combobox
     def populateComboBox(self):
         self.clear()
-        for port in self.parentWidget.availableCOMPorts():
-            self.addItem(port)
+        ports = self.parentWidget.availableCOMPorts()
+        if not ports: # Check if list of ports is empty
+            self.parentWidget.ui.serial_btn.setDisabled(True)
+            self.addItem('No active COM ports')
+        else:
+            self.parentWidget.ui.serial_btn.setDisabled(False)
+            for port in self.parentWidget.availableCOMPorts():
+                self.addItem(port)
 
 
 
@@ -209,7 +227,7 @@ if __name__ == "__main__":
 
     def loaderProgress():
         #TODO Turn loader back on
-        #loader.counter = 100
+        loader.counter = 100
 
         if loader.counter == 100:
             timer.stop()

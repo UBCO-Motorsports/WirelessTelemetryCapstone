@@ -15,6 +15,7 @@ class GraphManager(QtGui.QWidget):
         super(GraphManager, self).__init__()
         self.parentWidget = parentWidget
         self.SerialModule = SerialModule()
+        # self.SerialModule.connectSerial()
 
         self.graph_layout = QtGui.QGridLayout()
         self.setLayout(self.graph_layout)
@@ -46,11 +47,11 @@ class GraphManager(QtGui.QWidget):
                 plotItem.setLabel('left', text='y-axis')
 
         self.graph_array[0][0].data["Y"] = [self.x, self.SerialModule.array1]
-
-        self.dial = RPMGauge(self)
-        self.graph_array[0][0].hide()
-        self.graph_array[0][0] = self.dial
-        self.graph_layout.addWidget(self.dial, 0, 0)
+        #
+        # self.dial = RPMGauge(self)
+        # self.graph_array[0][0].hide()
+        # self.graph_array[0][0] = self.dial
+        # self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
 
         # self.speed = splashScreen()
@@ -83,7 +84,7 @@ class GraphManager(QtGui.QWidget):
                 if graph.type == 'xy_graph':
                     for data_type in graph.data:
                         if graph == self.graph_array[0][0]:     #TODO data issue for this if else
-                            print(graph.data[data_type][1])
+                            # print(graph.data[data_type][1])
                             graph.plot(graph.data[data_type][0], self.SerialModule.array1, pen=self.pen, clear=True)
                         else:
                             graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
@@ -99,7 +100,6 @@ class GraphManager(QtGui.QWidget):
 
     #TODO
     # Rewrite this function in a better way
-    #
     def showGraphs(self, num_shown):
         for i in range(4):
             self.graph_layout.setColumnStretch(i, 0)
