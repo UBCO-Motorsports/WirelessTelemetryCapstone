@@ -172,17 +172,25 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.ui.listWidget.item(i).text() == self.ui.tableWidget.item(row, 1).text():
                 found = True
         if not found:
-            self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
             graphjson = '{"name": "Value1", "colour": "Value2"}'
-            graphjson = graphjson.replace("Value1", self.ui.tableWidget.item(row, 1).text())
-            graphjson = graphjson.replace("Value2", str(QColorDialog.getColor()))
-            print(graphjson)
-            if self.ui.listWidget.item(0).text() == "None Selected":
-                self.ui.listWidget.takeItem(0)
+            color = QColorDialog.getColor()
+            if color.isValid():
+                graphjson = graphjson.replace("Value1", self.ui.tableWidget.item(row, 1).text())
+                graphjson = graphjson.replace("Value2", str(color))
+                self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
+                for j in range(self.ui.tableWidget.columnCount()):
+                    self.ui.tableWidget.item(row,j).setBackground(QColor.fromRgb(150,150,150))
+                if self.ui.listWidget.item(0).text() == "None Selected":
+                    self.ui.listWidget.takeItem(0)
+
 
     def listremove(self, row):
         i = self.ui.listWidget.currentRow()
         if self.ui.listWidget.currentItem().text() != "None Selected":
+            for j in range(self.ui.tableWidget.rowCount()):
+                if self.ui.listWidget.currentItem().text()==self.ui.tableWidget.item(j,1).text():
+                    for k in range(self.ui.tableWidget.columnCount()):
+                        self.ui.tableWidget.item(j,k).setBackground(QColor.fromRgb(190,190,190))
             self.ui.listWidget.takeItem(i)
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")
