@@ -67,6 +67,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
         self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
+        self.ui.textEdit.mousePressEvent=self.resetSendBox()
+        self.ui.pushButton.clicked.connect(lambda:print(self.ui.textEdit.toPlainText()))#TODO set this to Royden new send command
 
         # Add page buttons to a group for better control
         self.page_btn_group = QButtonGroup()
@@ -97,6 +99,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start()
         print(self.availableCOMPorts())
 
+    def resetSendBox(self):#TODO Fix this
+        self.ui.textEdit.clear()
 
     def menuchange(self, i):
         configtext = (self.ui.graphtype_comboBox.currentText())
