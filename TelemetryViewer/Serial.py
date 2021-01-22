@@ -7,9 +7,8 @@ from MainWindowroot import Ui_MainWindow
 #TODO    either reconnect or prompt, etc. Jan 20
 #TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
 #TODO    Royden's TIVA board. Jan 20
-#TODO 3. Need to be able to scan all com ports and show options for selection. Jan 20
-#TODO 4. Need a Disconnect Method
-#TODO 5. Scaling Function - to expand or shrink data points
+#TODO 3. Need a Disconnect Method
+#TODO 4. Scaling Function - to expand or shrink data points
 #TODO
 
 class SerialModule():
