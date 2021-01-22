@@ -90,8 +90,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 "}")
         ## End of Pages-------------------------------------------------------------------------------------------------------
 
-        #####color = QColorDialog.getColor()##### sets up color opening window
-
         # Timer for testing graphing -> calls update function
         self.timer = QtCore.QTimer()
         self.timer.setInterval(20)
@@ -152,18 +150,19 @@ class MainWindow(QtWidgets.QMainWindow):
         p = 0
         filelookup = Open()
         file = filelookup.openFileNameDialog()
-        while (self.ui.tableWidget.rowCount() > 0):
-            self.ui.tableWidget.removeRow(0)
+        if file != "":
+            while (self.ui.tableWidget.rowCount() > 0):
+                self.ui.tableWidget.removeRow(0)
 
-        with open(file) as json_file:
-            data = json.load(json_file)
-            for i in data["Haltech"]:
-                self.ui.tableWidget.insertRow(p)
-                self.ui.tableWidget.setItem(p, 0, QtGui.QTableWidgetItem("Click to Select"))
-                self.ui.tableWidget.setItem(p, 1, QtGui.QTableWidgetItem(i['Name']))
-                self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
-                self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
-                p = p + 1
+            with open(file) as json_file:
+                data = json.load(json_file)
+                for i in data["Haltech"]:
+                    self.ui.tableWidget.insertRow(p)
+                    self.ui.tableWidget.setItem(p, 0, QtGui.QTableWidgetItem("Click to Select"))
+                    self.ui.tableWidget.setItem(p, 1, QtGui.QTableWidgetItem(i['Name']))
+                    self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
+                    self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
+                    p = p + 1
 
     def tabletolist(self, row, column):
         found = False
@@ -173,14 +172,28 @@ class MainWindow(QtWidgets.QMainWindow):
         if not found:
             graphjson = '{"name": "Value1", "colour": "Value2"}'
             color = QColorDialog.getColor()
+            color2=color.getRgb()
             if color.isValid():
                 graphjson = graphjson.replace("Value1", self.ui.tableWidget.item(row, 1).text())
-                graphjson = graphjson.replace("Value2", str(color))
+                graphjson = graphjson.replace("Value2", str(color2))
+                self.jsonlogged(self.ui.tableWidget.item(row,1).text(),str(color2))
+
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
                 for j in range(self.ui.tableWidget.columnCount()):
                     self.ui.tableWidget.item(row,j).setBackground(QColor.fromRgb(150,150,150))
                 if self.ui.listWidget.item(0).text() == "None Selected":
                     self.ui.listWidget.takeItem(0)
+
+    def jsonlogged(self,name,color):
+        print (name,color)
+        with open('itemslogged.json', 'r+') as json_file:
+            data = json.load(json_file)
+            data["logged"].append({'name':name,
+                                   'color':color})
+            json_file.seek(0)
+            json.dump(data, json_file, indent=4)
+            json_file.truncate()
+
 
 
     def listremove(self, row):
