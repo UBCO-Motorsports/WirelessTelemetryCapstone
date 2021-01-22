@@ -40,7 +40,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox, self.comPortComboBox) # Places custom COM port menu in setup layout
         self.ui.port_combobox.close() # CLoses old COM port menu
         self.ui.serial_btn.clicked.connect(self.connectSerial) # Connect functions to serial button
-        self.ui.refreshPort_btn.clicked.connect(self.comPortComboBox.populateCOMSelect) # Refresh button calls to find open COM ports
         self.ui.import_btn.clicked.connect(self.canJson)
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
