@@ -11,7 +11,7 @@ from MainWindowroot import Ui_MainWindow
 #TODO
 #TODO
 #TODO
-#TODO 3. Need a Disconnect Method
+#TODO 3. (COMPLETED) Need a Disconnect Method -> see serial_btn in MainWindow + tryConnectSerial
 #TODO 4. Scaling Function - to expand or shrink data points
 #TODO
 #TODO More to the END, Use Threading for updating graphs, checking serial ports, etc. Or Multiprocessing
@@ -40,8 +40,9 @@ class SerialModule():
             try:
                 # global serialChannel
                 # self.serialChannel = serialChannel
-                self.serialChannel = serial.Serial(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
-                                               xonxoff=False)      #TODO Change  timeout to 15 seconds...
+                print('try serial')
+                self.serialChannel = SerialClass(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=1, xonxoff=False)      #TODO Change  timeout to 15 seconds...
+
                 print('COM connected')
                 return True
             except SerialException:
@@ -84,6 +85,23 @@ class SerialModule():
 
     # serialTest = SerialModule()
 # serialTest.readSerial()
+
+class SerialClass(serial.Serial):
+    # def __init__(self,port): # , baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10, xonxoff=False
+    #     print('init')
+    #     super(SerialTest, self).__init__(port=port, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10,
+    #                                            xonxoff=False)
+    def __del__(self):
+        print('testing')
+        super(SerialClass, self).__del__()
+
+    def close(self):
+        print('closing serial')
+        super(SerialClass, self).close()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print('time out ')
+        super(SerialClass, self).__exit__(self, exc_type, exc_val, exc_tb)
 
 
 # global array1               #Add as many arrays as we want
