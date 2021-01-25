@@ -262,7 +262,7 @@ class comPortComboBox(QtWidgets.QComboBox):
             self.addItem('No active COM ports')
         else:
             self.parentWidget.ui.serial_btn.setDisabled(False)
-            for port in self.parentWidget.availableCOMPorts():
+            for port in ports:
                 self.addItem(port)
 
 

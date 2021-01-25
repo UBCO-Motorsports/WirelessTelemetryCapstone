@@ -40,13 +40,19 @@ class GraphManager(QtGui.QWidget):
                 self.graph_array[i][j].showGrid(x=True, y=True)
                 self.graph_array[i][j].setBackground('w')
 
-                self.graph_array[i][j].data["Y"] = [self.x, self.y]
+                self.graph_array[i][j].xData = self.x
+                self.graph_array[i][j].yData = self.y
 
                 plotItem = self.graph_array[i][j].getPlotItem()
                 plotItem.setLabel('bottom', text='time')
                 plotItem.setLabel('left', text='y-axis')
 
-        self.graph_array[0][0].data["Y"] = [self.x, self.SerialModule.array1]
+        self.graph_array[0][0].yData = self.SerialModule.array1
+        self.graph_array[0][1].yData = self.SerialModule.array1
+
+
+        # self.graph_array[0][0].xData.append(self.x)
+        # self.graph_array[0][0].yData.append(self.SerialModule.array1)
         #
         # self.dial = RPMGauge(self)
         # self.graph_array[0][0].hide()
@@ -82,13 +88,12 @@ class GraphManager(QtGui.QWidget):
         for row in self.graph_array:                #TODO Need to make this iterate through graphs, or use multiprocessing
             for graph in row:
                 if graph.type == 'xy_graph':
-                    for data_type in graph.data:
-                        if graph == self.graph_array[0][0]:     #TODO data issue for this if else
-                            # print(graph.data[data_type][1])
-                            graph.plot(graph.data[data_type][0], self.SerialModule.array1, pen=self.pen, clear=True)
-                        else:
-                            graph.plot(graph.data[data_type][0], graph.data[data_type][1], pen=self.pen, clear=True)
-                        # print('cartesian')
+                    if graph == self.graph_array[0][0]:     #TODO data issue for this if else
+                        # print(graph.data[data_type][1])
+                        graph.plot(graph.xData, graph.yData, pen=self.pen, clear=True)
+                    else:
+                        graph.plot(graph.xData, graph.yData, pen=self.pen, clear=True)
+                    # print('cartesian')
                 elif graph.type == 'dial':
                     pass
                     # print('dial')
@@ -200,7 +205,8 @@ class PlotWdgt(pg.PlotWidget):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
         self.parentWidget = parentWidget
         self.type = 'xy_graph'
-        self.data = {}
+        self.xData = []
+        self.yData = []
 
     def editMenuCalled(self):
         print('connected to plot widget')
