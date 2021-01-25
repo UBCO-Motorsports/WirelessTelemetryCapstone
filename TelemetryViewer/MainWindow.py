@@ -44,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.import_btn.clicked.connect(self.canJson)
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
+        self.ui.apply_btn.clicked.connect(self.applytoConfig)
 
         ##Graph Page
         self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")  # Sets background of graph page
@@ -104,6 +105,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
         print(self.availableCOMPorts())
+
+    def applytoConfig(self):
+        with open('itemslogged.json', 'r+') as json_file:
+            data = json.load(json_file)
+            json_file.close()
+        for i in range(len(data["logged"])):
+            print(data["logged"][i]['name'])#TODO ask Connor about how best to add new radio buttons
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text())
