@@ -1022,6 +1022,30 @@ QPushButton:hover {
                   </widget>
                  </item>
                  <item>
+                  <widget class="QPushButton" name="refresh_btn">
+                   <property name="maximumSize">
+                    <size>
+                     <width>80</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">QPushButton {
+	color: rgb(0, 0, 0);
+	border-color: rgb(240, 240, 240);
+	background-color: rgb(240, 240, 240);
+
+}
+QPushButton:hover {
+	background-color: rgb(85, 170, 255);
+}</string>
+                   </property>
+                   <property name="text">
+                    <string>Refresh</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
                   <widget class="QPushButton" name="apply_btn">
                    <property name="minimumSize">
                     <size>
@@ -1180,7 +1204,7 @@ QPushButton:hover {
                        </size>
                       </property>
                       <property name="currentIndex">
-                       <number>3</number>
+                       <number>0</number>
                       </property>
                       <widget class="QWidget" name="timeDomain_page">
                        <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -1222,8 +1246,8 @@ QPushButton:hover {
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>100</width>
-                                <height>58</height>
+                                <width>168</width>
+                                <height>103</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -2013,31 +2037,6 @@ QPushButton:hover {
                    </property>
                    <layout class="QVBoxLayout" name="verticalLayout_2">
                     <item>
-                     <widget class="QLabel" name="label_3">
-                      <property name="maximumSize">
-                       <size>
-                        <width>16777215</width>
-                        <height>50</height>
-                       </size>
-                      </property>
-                      <property name="font">
-                       <font>
-                        <pointsize>18</pointsize>
-                       </font>
-                      </property>
-                      <property name="styleSheet">
-                       <string notr="true">background-color: rgb(255, 255, 0);
-color: rgb(255, 0, 0);</string>
-                      </property>
-                      <property name="text">
-                       <string>Emergency Shutdown</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
                      <widget class="QPushButton" name="EmergencyShutdown_btn">
                       <property name="minimumSize">
                        <size>
@@ -2119,40 +2118,12 @@ background-color: rgb(255, 255, 255);</string>
                 </property>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
-                  <widget class="QTextEdit" name="textEdit">
-                   <property name="maximumSize">
-                    <size>
-                     <width>16777215</width>
-                     <height>80</height>
-                    </size>
-                   </property>
-                   <property name="font">
-                    <font>
-                     <pointsize>12</pointsize>
-                    </font>
-                   </property>
+                  <widget class="QLineEdit" name="commandbox">
                    <property name="styleSheet">
-                    <string notr="true">background-color: rgb(235, 235, 235);</string>
+                    <string notr="true">background-color: rgb(255, 255, 255);</string>
                    </property>
-                   <property name="frameShape">
-                    <enum>QFrame::NoFrame</enum>
-                   </property>
-                   <property name="frameShadow">
-                    <enum>QFrame::Plain</enum>
-                   </property>
-                   <property name="verticalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
-                   </property>
-                   <property name="horizontalScrollBarPolicy">
-                    <enum>Qt::ScrollBarAlwaysOff</enum>
-                   </property>
-                   <property name="html">
-                    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:12pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Type here to send a command&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   <property name="text">
+                    <string>Type Command</string>
                    </property>
                   </widget>
                  </item>

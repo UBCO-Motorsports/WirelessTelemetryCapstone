@@ -456,6 +456,19 @@ class Ui_MainWindow(object):
 "}")
         self.serial_btn.setObjectName("serial_btn")
         self.horizontalLayout_4.addWidget(self.serial_btn)
+        self.refresh_btn = QtWidgets.QPushButton(self.frame_5)
+        self.refresh_btn.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.refresh_btn.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}")
+        self.refresh_btn.setObjectName("refresh_btn")
+        self.horizontalLayout_4.addWidget(self.refresh_btn)
         self.apply_btn = QtWidgets.QPushButton(self.frame_5)
         self.apply_btn.setMinimumSize(QtCore.QSize(0, 0))
         self.apply_btn.setMaximumSize(QtCore.QSize(80, 16777215))
@@ -544,7 +557,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 100, 58))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 168, 103))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -931,16 +944,6 @@ class Ui_MainWindow(object):
         self.frame_13.setObjectName("frame_13")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.frame_13)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.label_3 = QtWidgets.QLabel(self.frame_13)
-        self.label_3.setMaximumSize(QtCore.QSize(16777215, 50))
-        font = QtGui.QFont()
-        font.setPointSize(18)
-        self.label_3.setFont(font)
-        self.label_3.setStyleSheet("background-color: rgb(255, 255, 0);\n"
-"color: rgb(255, 0, 0);")
-        self.label_3.setAlignment(QtCore.Qt.AlignCenter)
-        self.label_3.setObjectName("label_3")
-        self.verticalLayout_2.addWidget(self.label_3)
         self.EmergencyShutdown_btn = QtWidgets.QPushButton(self.frame_13)
         self.EmergencyShutdown_btn.setMinimumSize(QtCore.QSize(0, 150))
         font = QtGui.QFont()
@@ -973,18 +976,10 @@ class Ui_MainWindow(object):
         self.frame_12.setObjectName("frame_12")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.frame_12)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.textEdit = QtWidgets.QTextEdit(self.frame_12)
-        self.textEdit.setMaximumSize(QtCore.QSize(16777215, 80))
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        self.textEdit.setFont(font)
-        self.textEdit.setStyleSheet("background-color: rgb(235, 235, 235);")
-        self.textEdit.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.textEdit.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.textEdit.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.textEdit.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.textEdit.setObjectName("textEdit")
-        self.horizontalLayout.addWidget(self.textEdit)
+        self.commandbox = QtWidgets.QLineEdit(self.frame_12)
+        self.commandbox.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.commandbox.setObjectName("commandbox")
+        self.horizontalLayout.addWidget(self.commandbox)
         self.pushButton = QtWidgets.QPushButton(self.frame_12)
         self.pushButton.setMinimumSize(QtCore.QSize(0, 0))
         font = QtGui.QFont()
@@ -1010,7 +1005,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
-        self.configMenuStack.setCurrentIndex(3)
+        self.configMenuStack.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
@@ -1122,6 +1117,7 @@ class Ui_MainWindow(object):
         self.default_btn.setText(_translate("MainWindow", "Log Default"))
         self.label_24.setText(_translate("MainWindow", "Select COM Port:"))
         self.serial_btn.setText(_translate("MainWindow", "Connect"))
+        self.refresh_btn.setText(_translate("MainWindow", "Refresh"))
         self.apply_btn.setText(_translate("MainWindow", "Apply"))
         self.label.setText(_translate("MainWindow", "Graphs"))
         self.label_10.setText(_translate("MainWindow", "Configuration Menu"))
@@ -1183,13 +1179,7 @@ class Ui_MainWindow(object):
         item = self.listWidget_2.item(8)
         item.setText(_translate("MainWindow", "9"))
         self.listWidget_2.setSortingEnabled(__sortingEnabled)
-        self.label_3.setText(_translate("MainWindow", "Emergency Shutdown"))
         self.EmergencyShutdown_btn.setText(_translate("MainWindow", "Push to Shutdown"))
         self.pushButton_2.setText(_translate("MainWindow", "Push to Reset"))
-        self.textEdit.setHtml(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:\'MS Shell Dlg 2\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8.25pt;\"><br /></p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Type here to send a command</p></body></html>"))
+        self.commandbox.setText(_translate("MainWindow", "Type Command"))
         self.pushButton.setText(_translate("MainWindow", "Send"))

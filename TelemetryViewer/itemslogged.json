@@ -1,3 +1,8 @@
 {
-    "logged": []
+    "logged": [
+        {
+            "name": "Throttle Position",
+            "color": "(255, 255, 255, 255)"
+        }
+    ]
 }

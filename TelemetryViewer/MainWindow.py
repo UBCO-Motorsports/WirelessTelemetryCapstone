@@ -35,25 +35,27 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btn_page_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.setup_page))
         self.ui.btn_page_2.setCheckable(True)
         self.ui.import_btn.clicked.connect(Open)
-        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png')) # /wrench /script-attribute-s
-        self.comPortComboBox = comPortComboBox(self) # Generate custom COM port menu
-        self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox, self.comPortComboBox) # Places custom COM port menu in setup layout
-        self.ui.port_combobox.close() # CLoses old COM port menu
-        self.ui.serial_btn.clicked.connect(self.connectSerial) # Connect functions to serial button
+        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))  # /wrench /script-attribute-s
+        self.comPortComboBox = comPortComboBox(self)  # Generate custom COM port menu
+        self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox,
+                                                 self.comPortComboBox)  # Places custom COM port menu in setup layout
+        self.ui.port_combobox.close()  # CLoses old COM port menu
+        self.ui.serial_btn.clicked.connect(self.connectSerial)  # Connect functions to serial button
         self.ui.import_btn.clicked.connect(self.canJson)
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
 
         ##Graph Page
-        self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)") # Sets background of graph page
+        self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")  # Sets background of graph page
         # Initializing GraphManager onto graph page
         self.GraphManager = GraphManager(self)
-        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu) # Reorganize widgets
-        self.ui.horizontalLayout_7.addWidget(self.GraphManager) # Reorganize widgets
-        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu) # Reorganize widgets
+        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)  # Reorganize widgets
+        self.ui.horizontalLayout_7.addWidget(self.GraphManager)  # Reorganize widgets
+        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)  # Reorganize widgets
         self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
         self.ui.btn_page_3.setCheckable(True)
-        self.ui.btn_page_3.setIcon( QIcon('icons/system-monitor.png'))  # /blue-document-block /system-monitor /application-wave
+        self.ui.btn_page_3.setIcon(
+            QIcon('icons/system-monitor.png'))  # /blue-document-block /system-monitor /application-wave
         # Graph page functions
         self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
         self.ui.importlayout_btn.clicked.connect(Open)
@@ -68,8 +70,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
         self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
-        self.ui.textEdit.mousePressEvent=self.resetSendBox()
-        self.ui.pushButton.clicked.connect(lambda:print(self.ui.textEdit.toPlainText()))#TODO set this to Royden new send command
+        self.ui.EmergencyShutdown_btn.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("s\r"))
+        self.ui.pushButton_2.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("r\r"))
+        self.ui.pushButton.clicked.connect(lambda: self.sendcommandfromBox())
+        self.ui.commandbox.returnPressed.connect(lambda: self.sendcommandfromBox())
+        self.ui.listWidget_2.clicked.connect(lambda: self.sendcommandfromList())
 
         # Add page buttons to a group for better control
         self.page_btn_group = QButtonGroup()
@@ -81,16 +86,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # Set style sheet of all buttons
         for button in self.page_btn_group.buttons():
             button.setStyleSheet("QPushButton {\n"
-                "    color: rgb(255, 255, 255);\n"
-                "    background-color: rgb(35, 35, 35);\n"
-                "    border: 0px solid;\n"
-                "}\n"
-                "QPushButton:hover {\n"
-                "    background-color: rgb(85, 85, 85);\n"
-                "}"
-                "QPushButton:checked {\n"
-                "    background-color: rgb(100, 100, 100);\n"
-                "}")
+                                 "    color: rgb(255, 255, 255);\n"
+                                 "    background-color: rgb(35, 35, 35);\n"
+                                 "    border: 0px solid;\n"
+                                 "}\n"
+                                 "QPushButton:hover {\n"
+                                 "    background-color: rgb(85, 85, 85);\n"
+                                 "}"
+                                 "QPushButton:checked {\n"
+                                 "    background-color: rgb(100, 100, 100);\n"
+                                 "}")
         ## End of Pages-------------------------------------------------------------------------------------------------------
 
         # Timer for testing graphing -> calls update function
@@ -100,8 +105,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start()
         print(self.availableCOMPorts())
 
-    def resetSendBox(self):#TODO Fix this
-        self.ui.textEdit.clear()
+    def sendcommandfromList(self):
+        self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text())
+
+    def sendcommandfromBox(self):
+        text=self.ui.commandbox.text()
+        self.ui.commandbox.clear()
+        self.GraphManager.SerialModule.sendCommand(text)
 
     def menuchange(self, i):
         configtext = (self.ui.graphtype_comboBox.currentText())
@@ -114,15 +124,15 @@ class MainWindow(QtWidgets.QMainWindow):
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
 
-    #TODO This code allows us to see available COM ports and return using the portlist array. (NOT CALLED ATM)
-    #TODO Now just need to know when to call this function (start of running or call, or always?) and also be able to
-    #TODO    return the list of ports, also we can send more data back (ask me - Roy)
-    def availableCOMPorts(self):        # Generates a list of available COM ports testing
+    # TODO This code allows us to see available COM ports and return using the portlist array. (NOT CALLED ATM)
+    # TODO Now just need to know when to call this function (start of running or call, or always?) and also be able to
+    # TODO    return the list of ports, also we can send more data back (ask me - Roy)
+    def availableCOMPorts(self):  # Generates a list of available COM ports testing
         portlist = serial.tools.list_ports.comports(include_links=False)
         portlistarray = []
         for element in portlist:
             portlistarray.append(element.device)
-        return portlistarray # Should return a list of strings if possible -> ['COM1', 'COM4']
+        return portlistarray  # Should return a list of strings if possible -> ['COM1', 'COM4']
 
     def connectSerial(self):
         if self.ui.serial_btn.text() == 'Connect':
@@ -171,15 +181,11 @@ class MainWindow(QtWidgets.QMainWindow):
                     p = p + 1
                 json_file.close()
             self.ui.listWidget.clear()
-            with open('itemslogged.json','w+') as jsonlist:
-                data= {}
-                data['logged']=[]
-                json.dump(data,jsonlist,indent=4)
+            with open('itemslogged.json', 'w+') as jsonlist:
+                data = {}
+                data['logged'] = []
+                json.dump(data, jsonlist, indent=4)
                 jsonlist.close()
-
-
-
-
 
     def tabletolist(self, row, column):
         found = False
@@ -189,55 +195,49 @@ class MainWindow(QtWidgets.QMainWindow):
         if not found:
             graphjson = '{"name": "Value1", "colour": "Value2"}'
             color = QColorDialog.getColor()
-            color2=color.getRgb()
+            color2 = color.getRgb()
             if color.isValid():
                 graphjson = graphjson.replace("Value1", self.ui.tableWidget.item(row, 1).text())
                 graphjson = graphjson.replace("Value2", str(color2))
-                self.jsonlogged(self.ui.tableWidget.item(row,1).text(),str(color2))
+                self.jsonlogged(self.ui.tableWidget.item(row, 1).text(), str(color2))
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
                 for j in range(self.ui.tableWidget.columnCount()):
-                    self.ui.tableWidget.item(row,j).setBackground(QColor.fromRgb(150,150,150))
+                    self.ui.tableWidget.item(row, j).setBackground(QColor.fromRgb(150, 150, 150))
                 if self.ui.listWidget.item(0).text() == "None Selected":
                     self.ui.listWidget.takeItem(0)
 
-    def jsonlogged(self,name,color):
+    def jsonlogged(self, name, color):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
-            data["logged"].append({'name':name,
-                                   'color':color})
+            data["logged"].append({'name': name,
+                                   'color': color})
             json_file.seek(0)
             json.dump(data, json_file, indent=4)
             json_file.close()
 
-
-
     def listremove(self, row):
         i = self.ui.listWidget.currentRow()
-        listtext=self.ui.listWidget.currentItem().text()
+        listtext = self.ui.listWidget.currentItem().text()
         if listtext != "None Selected":
             for j in range(self.ui.tableWidget.rowCount()):
-                if listtext==self.ui.tableWidget.item(j,1).text():
+                if listtext == self.ui.tableWidget.item(j, 1).text():
                     for k in range(self.ui.tableWidget.columnCount()):
-                        self.ui.tableWidget.item(j,k).setBackground(QColor.fromRgb(190,190,190))
+                        self.ui.tableWidget.item(j, k).setBackground(QColor.fromRgb(190, 190, 190))
             with open('itemslogged.json', 'r+') as json_file:
                 data = json.load(json_file)
                 del data["logged"][i]
                 json_file.seek(0)
                 json_file.close()
-            with open('itemslogged.json','w+') as json_file:
-                json.dump(data,json_file,indent=4)
+            with open('itemslogged.json', 'w+') as json_file:
+                json.dump(data, json_file, indent=4)
                 json_file.close()
-
 
             self.ui.listWidget.takeItem(i)
 
-
-
-
-
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")
+
 
 class comPortComboBox(QtWidgets.QComboBox):
     populateCOMSelect = QtCore.pyqtSignal()
@@ -259,15 +259,13 @@ class comPortComboBox(QtWidgets.QComboBox):
     def populateComboBox(self):
         self.clear()
         ports = self.parentWidget.availableCOMPorts()
-        if not ports: # Check if list of ports is empty
+        if not ports:  # Check if list of ports is empty
             self.parentWidget.ui.serial_btn.setDisabled(True)
             self.addItem('No active COM ports')
         else:
             self.parentWidget.ui.serial_btn.setDisabled(False)
             for port in ports:
                 self.addItem(port)
-
-
 
 
 if __name__ == "__main__":
@@ -277,8 +275,9 @@ if __name__ == "__main__":
     loader = Loader()
     loader.show()
 
+
     def loaderProgress():
-        #TODO Turn loader back on
+        # TODO Turn loader back on
         loader.counter = 100
 
         if loader.counter == 100:
@@ -286,6 +285,7 @@ if __name__ == "__main__":
             window.show()
             loader.close()
         loader.progress()
+
 
     # Sets a timer to check loading progress
     timer = QtCore.QTimer()
