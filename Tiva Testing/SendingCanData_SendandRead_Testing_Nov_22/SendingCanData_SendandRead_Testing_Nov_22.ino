@@ -29,6 +29,9 @@ void loop() {
     else if(sread == 50){         //50 is ASCII for "2"
       type = 2;
     }
+    else if(sread == 104){
+      type = 3;
+    }
     else{
       type = 0;
     }
@@ -39,6 +42,9 @@ void loop() {
   }
   else if(type == 2){
     redblink();
+  }
+  else if(type == 3){
+    redblueblink();
   }
   else{
     greenblink();
@@ -90,6 +96,23 @@ void redblink(){
     }
     else{
       analogWrite(red, 0);
+      timer = 0;
+    }
+  }
+}
+void redblueblink(){
+  analogWrite(green, 0);
+  cm = millis();
+  if(cm-pm>500){
+    pm = cm;
+    if(timer == 0){
+      analogWrite(red, 10);
+      analogWrite(blue, 10);
+      timer = 1;
+    }
+    else{
+      analogWrite(red, 0);
+      analogWrite(blue, 0);
       timer = 0;
     }
   }

@@ -52,11 +52,11 @@ class SerialModule():
                 return False
 
     def filterFormat(self):
-        #TODO ser.write("f %f %f %f %f/r", data1, data2)
+        #TODO ser.write("f %f %f %f %f/r", data1, data2...
         return
 
     def sendCommand(self, command):
-        self.serialChannel.write(command)
+        self.serialChannel.write(command.encode())  #should work for sending strings
 
     def readSerial(self):
         # for _ in self.serialChannel:
