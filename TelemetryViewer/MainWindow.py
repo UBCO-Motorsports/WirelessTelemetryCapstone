@@ -167,6 +167,17 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
                     self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
                     p = p + 1
+                json_file.close()
+            self.ui.listWidget.clear()
+            with open('itemslogged.json','w+') as jsonlist:
+                data= {}
+                data['logged']=[]
+                json.dump(data,jsonlist,indent=4)
+                jsonlist.close()
+
+
+
+
 
     def tabletolist(self, row, column):
         found = False
@@ -189,25 +200,40 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.listWidget.takeItem(0)
 
     def jsonlogged(self,name,color):
-        print (name,color)
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             data["logged"].append({'name':name,
                                    'color':color})
             json_file.seek(0)
             json.dump(data, json_file, indent=4)
-            json_file.truncate()
+            json_file.close()
 
 
 
     def listremove(self, row):
         i = self.ui.listWidget.currentRow()
-        if self.ui.listWidget.currentItem().text() != "None Selected":
+        listtext=self.ui.listWidget.currentItem().text()
+        if listtext != "None Selected":
             for j in range(self.ui.tableWidget.rowCount()):
-                if self.ui.listWidget.currentItem().text()==self.ui.tableWidget.item(j,1).text():
+                if listtext==self.ui.tableWidget.item(j,1).text():
                     for k in range(self.ui.tableWidget.columnCount()):
                         self.ui.tableWidget.item(j,k).setBackground(QColor.fromRgb(190,190,190))
+            with open('itemslogged.json', 'r+') as json_file:
+                data = json.load(json_file)
+                del data["logged"][i]
+                json_file.seek(0)
+                json_file.close()
+            with open('itemslogged.json','w+') as json_file:
+                json.dump(data,json_file,indent=4)
+                json_file.close()
+
+
             self.ui.listWidget.takeItem(i)
+
+
+
+
+
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")
 

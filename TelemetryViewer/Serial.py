@@ -82,6 +82,7 @@ class SerialModule():
             self.array3.append(float(dataapp[2]))
         except:
             self.array1.append(0)
+            print("Parse Failed")
 
     # serialTest = SerialModule()
 # serialTest.readSerial()
