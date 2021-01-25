@@ -62,6 +62,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.configMenu.hide() # Initially hide configuration menu
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText())) # Change number of graphs shown when combobox value changed
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count()-1) # Initialize number of shown graphs to maximum
+        self.ui.applyconfig_btn.clicked.connect(self.configApply)
 
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
@@ -145,9 +146,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.currentPlotWidget.setBackground('g')
         self.currentPlotWidget.getPlotItem().setLabel('bottom', text='test')
         self.ui.configMenu.show()
-        print('GUI connected')
 
     def configApply(self):
+        self.currentPlotWidget.setBackground('b')
+        self.currentPlotWidget.yData = self.GraphManager.z
         return
 
     def canJson(self):

@@ -88,11 +88,7 @@ class GraphManager(QtGui.QWidget):
         for row in self.graph_array:                #TODO Need to make this iterate through graphs, or use multiprocessing
             for graph in row:
                 if graph.type == 'xy_graph':
-                    if graph == self.graph_array[0][0]:     #TODO data issue for this if else
-                        # print(graph.data[data_type][1])
-                        graph.plot(graph.xData, graph.yData, pen=self.pen, clear=True)
-                    else:
-                        graph.plot(graph.xData, graph.yData, pen=self.pen, clear=True)
+                    graph.plot(graph.xData, graph.yData, pen=self.pen, clear=True)
                     # print('cartesian')
                 elif graph.type == 'dial':
                     pass
@@ -101,7 +97,7 @@ class GraphManager(QtGui.QWidget):
                     pass
                     # print('polar')
 
-        #self.SerialModule.readSerial() #TODO reenable
+        self.SerialModule.readSerial() #TODO reenable
 
     #TODO
     # Rewrite this function in a better way
@@ -209,7 +205,7 @@ class PlotWdgt(pg.PlotWidget):
         self.yData = []
 
     def editMenuCalled(self):
-        print('connected to plot widget')
+        # Calls parent widget to open edit menu
         self.parentWidget.editMenuCalled(self)
 
 
