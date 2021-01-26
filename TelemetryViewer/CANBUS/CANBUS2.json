@@ -523,7 +523,273 @@
     {
       "Name": "Gear Switch",
       "ID": "0x3E4",
-      "Units": "null",
+      "Units": "Look at this row",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Ignition Switch",
+      "ID": "0x3E5",
+      "Units": "",
+      "Scale": 1,
+      "Position": "0"
+    },
+    {
+      "Name": "Turbo Timer - Time Remaining",
+      "ID": "0x3E5",
+      "Units": "s",
+      "Scale": 1,
+      "Position": "1"
+    },
+    {
+      "Name": "Turbo Timer - Engine Time Remaining",
+      "ID": "0x3E5",
+      "Units": "s",
+      "Scale": 1,
+      "Position": "2"
+    },
+    {
+      "Name": "Steering Wheel Angle",
+      "ID": "0x3E5",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Driveshaft RPM",
+      "ID": "0x3E5",
+      "Units": "RPM",
+      "Scale": 1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "NOS Pressure Sensor 2",
+      "ID": "0x3E6",
+      "Units": "kPa",
+      "Scale": 0.22,
+      "Position": "0-1"
+    },
+    {
+      "Name": "NOS Pressure Sensor 3",
+      "ID": "0x3E6",
+      "Units": "kPa",
+      "Scale": 0.22,
+      "Position": "2-3"
+    },
+    {
+      "Name": "NOS Pressure Sensor 4",
+      "ID": "0x3E6",
+      "Units": "kPa",
+      "Scale": 0.22,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Turbo Speed Sensor",
+      "ID": "0x3E6",
+      "Units": "RPM",
+      "Scale": 10,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Target Lambda",
+      "ID": "0x3E9",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Torque Management Knob Position",
+      "ID": "0x3E9",
+      "Units": "",
+      "Scale": 1,
+      "Position": "7"
+    },
+    {
+      "Name": "Gearbox Oil Pressure",
+      "ID": "0x3EA",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Injection Stage 3 Duty Cycle",
+      "ID": "0x3EA",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Injection Stage 4 Duty Cycle",
+      "ID": "0x3EA",
+      "Units": "%",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Crank Case Pressure",
+      "ID": "0x3EA",
+      "Units": "kPa",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Race Timer",
+      "ID": "0x3EB",
+      "Units": "ms",
+      "Scale": 1,
+      "Position": "0-3"
+    },
+    {
+      "Name": "Ignition Angle Bank 1",
+      "ID": "0x3EB",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Ignition Angle Bank 2",
+      "ID": "0x3EB",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Torque Management Driveshaft RPM Target",
+      "ID": "0x3EC",
+      "Units": "RPM",
+      "Scale": 1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Torque Management Driveshaft RPM Error",
+      "ID": "0x3EC",
+      "Units": "RPM",
+      "Scale": 1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Torque Management Driveshaft RPM Target Error Ignition Correction",
+      "ID": "0x3EC",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Torque Management Timed Ignition Correction",
+      "ID": "0x3EC",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Torque Management Combined Ignition Correction",
+      "ID": "0x3ED",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Torque Management Engine RPM Target",
+      "ID": "0x3ED",
+      "Units": "RPM",
+      "Scale": 1,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Torque Management Engine RPM Target Error",
+      "ID": "0x3ED",
+      "Units": "RPM",
+      "Scale": 1,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Torque Management Engine RPM Target Error Ignition Correction",
+      "ID": "0x3ED",
+      "Units": "º",
+      "Scale": 0.1,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Wideband Sensor 5",
+      "ID": "0x3EE",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Wideband Sensor 6",
+      "ID": "0x3EE",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Wideband Sensor 7",
+      "ID": "0x3EE",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Wideband Sensor 8",
+      "ID": "0x3EE",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Wideband Sensor 9",
+      "ID": "0x3EF",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Wideband Sensor 10",
+      "ID": "0x3EF",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Wideband Sensor 11",
+      "ID": "0x3EF",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Wideband Sensor 12",
+      "ID": "0x3EF",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "6-7"
+    },
+    {
+      "Name": "Wideband Overall Average",
+      "ID": "0x470",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "0-1"
+    },
+    {
+      "Name": "Wideband Bank 1 Average",
+      "ID": "0x470",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "2-3"
+    },
+    {
+      "Name": "Wideband Bank 2 Average",
+      "ID": "0x470",
+      "Units": "",
+      "Scale": 0.001,
+      "Position": "4-5"
+    },
+    {
+      "Name": "Injector Pressure Difference",
+      "ID": "0x471",
+      "Units": "kPa Difference",
       "Scale": 0.1,
       "Position": "0-1"
     }
