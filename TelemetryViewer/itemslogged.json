@@ -1,24 +1,3 @@
 {
-    "logged": [
-        {
-            "name": "Throttle Position",
-            "color": "(255, 255, 255, 255)"
-        },
-        {
-            "name": "Coolant Pressure",
-            "color": "(255, 255, 255, 255)"
-        },
-        {
-            "name": "Fuel Pressure",
-            "color": "(255, 255, 255, 255)"
-        },
-        {
-            "name": "Oil Pressure",
-            "color": "(255, 255, 255, 255)"
-        },
-        {
-            "name": "Engine Demand",
-            "color": "(255, 255, 255, 255)"
-        }
-    ]
+    "logged": []
 }
