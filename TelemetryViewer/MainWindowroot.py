@@ -833,6 +833,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.addWidget(self.applyconfig_btn)
         self.verticalLayout_13.addWidget(self.frame_17)
         self.horizontalLayout_7.addWidget(self.configMenu)
+        self.configMenu.raise_()
+        self.graph_widget.raise_()
         self.verticalLayout_8.addWidget(self.frame_10)
         self.frame_14 = QtWidgets.QFrame(self.graph_page)
         self.frame_14.setMaximumSize(QtCore.QSize(16777215, 40))
@@ -1183,3 +1185,13 @@ class Ui_MainWindow(object):
         self.pushButton_2.setText(_translate("MainWindow", "Push to Reset"))
         self.commandbox.setText(_translate("MainWindow", "Type Command"))
         self.pushButton.setText(_translate("MainWindow", "Send"))
+
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())

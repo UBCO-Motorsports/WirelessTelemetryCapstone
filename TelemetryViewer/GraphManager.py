@@ -41,14 +41,12 @@ class GraphManager(QtGui.QWidget):
                 self.graph_array[i][j].setBackground('w')
 
                 self.graph_array[i][j].xData = self.x
-                self.graph_array[i][j].yData = self.y
+                self.graph_array[i][j].yData = self.SerialModule.array1
 
                 plotItem = self.graph_array[i][j].getPlotItem()
                 plotItem.setLabel('bottom', text='time')
                 plotItem.setLabel('left', text='y-axis')
 
-        self.graph_array[0][0].yData = self.SerialModule.array1
-        self.graph_array[0][1].yData = self.SerialModule.array1
 
 
         # self.graph_array[0][0].xData.append(self.x)
@@ -75,7 +73,6 @@ class GraphManager(QtGui.QWidget):
         # Call update for element in graph_array, if graph_array[i][j] == [polar]: update_polar()
         # Graph -> Update Graph, Dial -> Update Dial, Polar -> Update Polar
 
-
         # Update test data
         del self.x[0]  # Remove the first x element.
         self.x.append(self.x[-1] + 1)  # Add a new value 1 higher than the last.
@@ -84,28 +81,28 @@ class GraphManager(QtGui.QWidget):
         del self.z[0]
         self.z.append(self.z[-1] - 1)
 
+        # Read latest data if serial is connected
+        if self.parentWidget.serialConnected:
+            self.SerialModule.readSerial()
 
-        for row in self.graph_array:                #TODO Need to make this iterate through graphs, or use multiprocessing
-            for graph in row:
-                if graph.type == 'xy_graph':
-                    graph.plot(graph.xData, graph.yData, pen=self.pen, clear=True)
-                    # print('cartesian')
-                elif graph.type == 'dial':
-                    pass
-                    # print('dial')
-                elif graph.type == 'polar':
-                    pass
-                    # print('polar')
+            # Gets a sample of the latest arrays
+            self.serialArrays = self.SerialModule.getData()
 
-        #self.SerialModule.readSerial() #TODO reenable
+            # Iterates through each graph/dial and refreshes its data
+            for i, row in enumerate(self.graph_array):
+                for graph in row:
+                    if graph.type == 'xy_graph':
+                        graph.plot(graph.xData, self.serialArrays[i], pen=self.pen, clear=True)
+                        # print('cartesian')
+                    elif graph.type == 'dial':
+                        pass
+                        # print('dial')
+                    elif graph.type == 'polar':
+                        pass
+                        # print('polar')
 
-    #TODO
-    # Rewrite this function in a better way
+
     def showGraphs(self, num_shown):
-        for i in range(4):
-            self.graph_layout.setColumnStretch(i, 0)
-            self.graph_layout.setRowStretch(i, 0)
-
         if num_shown == '12':
             for row in range(len(self.graph_array)):
                 for column in range(len(self.graph_array[row])):
@@ -135,70 +132,10 @@ class GraphManager(QtGui.QWidget):
             self.showGraphs('2')
             self.graph_array[1][0].hide()
 
-    #     # Reset formats to better align widgets
-    #     for i in range(4):
-    #         self.graph_layout.setColumnStretch(i, 0)
-    #         self.graph_layout.setRowStretch(i, 0)
-    #
-    #     if num_shown == '1':
-    #         for i in range(1, 3):
-    #             self.graph_array[0][i].hide()
-    #         for i in range(1, 3):
-    #             for j in range(3):
-    #                 self.graph_array[i][j].hide()
-    #
-    #     elif num_shown == '2':
-    #         self.graph_array[1][0].show()
-    #         for i in range(2):
-    #             for j in range(1, 3):
-    #                 self.graph_array[i][j].hide()
-    #         for i in range(2, 3):
-    #             for j in range(3):
-    #                 self.graph_array[i][j].hide()
-    #         self.graph_array[0][0].resize(self.width(), self.height()/2)
-    #         self.graph_array[1][0].resize(self.width(), self.height()/2)
-    #
-    #     elif num_shown == '4':
-    #         for i in range(2):
-    #             for j in range(2):
-    #                 self.graph_array[i][j].show()
-    #         for i in range(2):
-    #             for j in range(2, 3):
-    #                 self.graph_array[i][j].hide()
-    #         for i in range(2, 3):
-    #             for j in range(3):
-    #                 self.graph_array[i][j].hide()
-    #
-    #         for i in range(2):
-    #             for j in range(2):
-    #                 self.graph_array[i][j].setGeometry(j * self.width() / 2, i * self.height() / 2, self.width() / 2, self.height() / 2)
-    #                 print(self.graph_array[i][j].frameGeometry())
-    #
-    #
-    #     elif num_shown == '8':
-    #         for i in range(2,3):
-    #             for j in range(3):
-    #                 self.graph_array[i][j].hide()
-    #         for i in range(2):
-    #             for j in range(3):
-    #                 self.graph_array[i][j].show()
-    #
-    #         for i in range(2):
-    #             for j in range(3):
-    #                 self.graph_array[i][j].setGeometry(j * self.width()/4, i * self.height()/2, self.width()/4, self.height()/2)
-    #
-    #     elif num_shown == '12':
-    #         for i in range(3):
-    #             # Reformats layout of widgets
-    #             self.graph_layout.setColumnStretch(i, 1)
-    #             self.graph_layout.setRowStretch(i, 1)
-    #             for j in range(4):
-    #                 self.graph_array[i][j].show()
-
-#TODO
 class PlotWdgt(pg.PlotWidget):
     def __init__(self, parentWidget, parent=None):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
+        self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored))
         self.parentWidget = parentWidget
         self.type = 'xy_graph'
         self.xData = []
@@ -208,22 +145,17 @@ class PlotWdgt(pg.PlotWidget):
         # Calls parent widget to open edit menu
         self.parentWidget.editMenuCalled(self)
 
-
-
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentWidget, parent=None):
         super(CustomViewBox, self).__init__(parent)
         self.menu = pg.ViewBoxMenu.ViewBoxMenu(self)
         self.parentWidget = parentWidget
 
-        # self.menuUpdate = True #Don't think this is needed
-
+        # Adds edit option to right click menu
         self.menu.addSeparator()
         self.editData = QtGui.QAction("Edit Data", self.menu)
         self.editData.triggered.connect(self.parentWidget.editMenuCalled) #TODO Maybe return 'self' to link to data selection panel
         self.menu.addAction(self.editData)
-
-        # self.menuUpdate = False #Don't think this is needed
 
 
 # app = QtWidgets.QApplication(sys.argv)

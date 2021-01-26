@@ -20,6 +20,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # Serial not initially connected at start up
+        self.serialConnected = False
+
         # Better sizing for page selection menu
         self.ui.frame_left_menu.setMinimumWidth(100)
 
@@ -50,9 +53,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")  # Sets background of graph page
         # Initializing GraphManager onto graph page
         self.GraphManager = GraphManager(self)
-        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)  # Reorganize widgets
-        self.ui.horizontalLayout_7.addWidget(self.GraphManager)  # Reorganize widgets
-        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)  # Reorganize widgets
+        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu) # Reorganize widgets
+        self.ui.horizontalLayout_7.removeWidget(self.ui.graph_widget) # Reorganize widgets
+        self.ui.horizontalLayout_7.addWidget(self.GraphManager) # Reorganize widgets
+        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu) # Reorganize widgets
         self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
         self.ui.btn_page_3.setCheckable(True)
         self.ui.btn_page_3.setIcon(
@@ -146,18 +150,14 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.serial_btn.text() == 'Connect':
             if self.GraphManager.SerialModule.tryConnectSerial(self.comPortComboBox.currentText()):
                 self.ui.serial_btn.setText("Disconnect")
+                self.serialConnected = True
             else:
                 self.ui.serial_btn.setText("Connect")
+                self.serialConnected = False
         else:
             self.GraphManager.SerialModule.tryConnectSerial(self.ui.serial_btn.text())
             self.ui.serial_btn.setText('Connect')
-
-        # if self.ui.serial_btn.text()=="Connect":
-        #     port=self.ui.port_combobox.currentText()
-        #     print (port)
-        #     self.ui.serial_btn.setText("Disconnect")
-        # else:
-        #     self.ui.serial_btn.setText("Connect")
+            self.serialConnected = False
 
     def editMenuCalled(self, plotWidget):
         self.currentPlotWidget = plotWidget
