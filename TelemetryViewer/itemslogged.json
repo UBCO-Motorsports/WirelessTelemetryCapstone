@@ -1,12 +1,3 @@
 {
-    "logged": [
-        {
-            "name": "RPM",
-            "color": "(0, 170, 255, 255)"
-        },
-        {
-            "name": "Throttle Position",
-            "color": "(170, 0, 0, 255)"
-        }
-    ]
+    "logged": []
 }

@@ -71,6 +71,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count()-1) # Initialize number of shown graphs to maximum
         self.ui.applyconfig_btn.clicked.connect(self.configApply)
 
+
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
@@ -115,7 +116,13 @@ class MainWindow(QtWidgets.QMainWindow):
             data = json.load(json_file)
             json_file.close()
         for i in range(len(data["logged"])):
+            dataitem=data["logged"][i]['name']
+            self.ui.comboBox_3.addItem(dataitem)
+            self.ui.comboBox_4.addItem(dataitem)
+            self.ui.comboBox_5.addItem(dataitem)
+            self.ui.comboBox.addItem(dataitem)
             print(data["logged"][i]['name'])#TODO ask Connor about how best to add new radio buttons
+
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text())
@@ -186,6 +193,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.tableWidget.setItem(p, 1, QtGui.QTableWidgetItem(i['Name']))
                     self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
                     self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
+                    self.ui.tableWidget.setItem(p, 4, QtGui.QTableWidgetItem(str(i['Position'])))
+                    self.ui.tableWidget.setItem(p, 5, QtGui.QTableWidgetItem(str(i['Size'])))
                     p = p + 1
                 json_file.close()
             self.ui.listWidget.clear()
