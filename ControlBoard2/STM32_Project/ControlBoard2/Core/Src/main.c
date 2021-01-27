@@ -34,6 +34,7 @@
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
+typedef StaticTask_t osStaticThreadDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -64,6 +65,9 @@
 #define UJA_NWP_64 3
 #define UJA_NWP_128 4
 #define UJA_NWP_256 5
+#define UJA_NWP_1024 6
+#define UJA_NWP_4096 7
+
 
 //Mode_Control register
 #define UJA_MC_STBY 0
@@ -127,10 +131,15 @@ const osThreadAttr_t SendTelemetry_attributes = {
 };
 /* Definitions for FeedWDG */
 osThreadId_t FeedWDGHandle;
+uint32_t FeedWDGBuffer[ 128 ];
+osStaticThreadDef_t FeedWDGControlBlock;
 const osThreadAttr_t FeedWDG_attributes = {
   .name = "FeedWDG",
-  .priority = (osPriority_t) osPriorityRealtime,
-  .stack_size = 128 * 4
+  .stack_mem = &FeedWDGBuffer[0],
+  .stack_size = sizeof(FeedWDGBuffer),
+  .cb_mem = &FeedWDGControlBlock,
+  .cb_size = sizeof(FeedWDGControlBlock),
+  .priority = (osPriority_t) osPriorityRealtime7,
 };
 /* Definitions for ProcessCommandSem */
 osSemaphoreId_t ProcessCommandSemHandle;
@@ -191,7 +200,7 @@ char uart_tx_buff[128];
 uint8_t cmdbuff[24];
 int8_t cmdbuffind = 0;
 
-const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_128);
+const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_TO << 3) | (UJA_NWP_1024);
 
 /* USER CODE END PV */
 
@@ -228,24 +237,32 @@ void DebugPrint(char *msg) {
 
 //Initializes UJA SBC
 void Init_SBC(void) {
-	//Chip select
-
-
+	HAL_StatusTypeDef result;
 	uint16_t data[1];
+	uint16_t rxdata[1];
 
 	//Setup WDG and Status register
-	//data[0] = WD_SETUP << 8;
-	data[0] = 0b0000111000000000;
-	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
-	//HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
-	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+	data[0] = 0;
+	data[0] = WD_SETUP << 8;
+
+	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+
+	while (hspi1.State != HAL_SPI_STATE_READY) {
+		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 1);
+	}
+	HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
 
 
 	//Setup Mode Control register
+	data[0] = 0;
 	data[0] = (UJA_REG_MODECONTROL << 13) | (UJA_RO_RW << 12) | (UJA_MC_V2ON << 10);
-	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
-	HAL_SPI_Transmit(&hspi1, (uint8_t *)data, 1, 100);
-	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+
+	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+
+	while (hspi1.State != HAL_SPI_STATE_READY) {
+		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
+	}
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 }
 
 
@@ -342,22 +359,28 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USART1_UART_Init();
 
-  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 1);
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
-
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
-  //Load default message configuration
-  memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
-  Init_CAN();
 
-  Init_SBC();
+
+
+  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+
+
+	Init_CAN();
+	Init_SBC();
+
 
   //Start receiving UART
 	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
+
+
+	//Load default message configuration
+	//memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
 
   /* USER CODE END 2 */
@@ -542,14 +565,14 @@ static void MX_SPI1_Init(void)
   hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
+  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
   hspi1.Init.CRCPolynomial = 7;
   hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
-  hspi1.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
   if (HAL_SPI_Init(&hspi1) != HAL_OK)
   {
     Error_Handler();
@@ -645,10 +668,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, UJA_CS_Pin|LD2_Pin|LD1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|LD1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : UJA_CS_Pin LD2_Pin LD1_Pin */
-  GPIO_InitStruct.Pin = UJA_CS_Pin|LD2_Pin|LD1_Pin;
+  /*Configure GPIO pins : LD2_Pin LD1_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|LD1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -822,6 +845,8 @@ void StartSendTelemetry(void *argument)
   {
   	//Transmit at 10hz
     osDelay(100);
+
+
     //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
   	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
@@ -856,15 +881,28 @@ void StartSendTelemetry(void *argument)
 void StartFeedWDG(void *argument)
 {
   /* USER CODE BEGIN StartFeedWDG */
+
+	uint32_t tick;
+	tick = osKernelGetTickCount();
+	tick += 700;
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(100);
-    HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
-    uint16_t data[1];
-    data[0] = WD_SETUP << 8;
-    //HAL_SPI_Transmit_IT(&hspi1, (uint8_t *)data, 1);
-    HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+
+    osDelayUntil(tick);
+    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
+    HAL_StatusTypeDef result;
+
+		uint16_t data[1];
+		uint16_t rxdata[1];
+		data[0] = 0;
+		data[0] = WD_SETUP << 8;
+
+		result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+
+    tick += 700;
   }
   /* USER CODE END StartFeedWDG */
 }
