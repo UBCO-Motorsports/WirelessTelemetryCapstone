@@ -1,5 +1,4 @@
 EESchema Schematic File Version 4
-LIBS:Wireless telemetry pcb-cache
 EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
@@ -490,7 +489,7 @@ U 1 1 5F91E2E7
 P 6250 3150
 F 0 "U2" H 6500 4115 50  0000 C CNN
 F 1 "ControllerBoardV2" H 6500 4024 50  0000 C CNN
-F 2 "Lukas_Library:Breadboard_Center_32pin" H 6250 3850 50  0001 C CNN
+F 2 "Lukas_Library:ControlBoardV2.0" H 6250 3850 50  0001 C CNN
 F 3 "" H 6250 3850 50  0001 C CNN
 	1    6250 3150
 	1    0    0    -1  
