@@ -92,6 +92,7 @@ class GraphManager(QtGui.QWidget):
             for i, row in enumerate(self.graph_array):
                 for graph in row:
                     if graph.type == 'xy_graph':
+                        graph.clear()
                         graph.plot(graph.xData, self.serialArrays[i], pen=self.pen, clear=True)
                         # print('cartesian')
                     elif graph.type == 'dial':
@@ -107,27 +108,22 @@ class GraphManager(QtGui.QWidget):
             for row in range(len(self.graph_array)):
                 for column in range(len(self.graph_array[row])):
                     self.graph_array[row][column].show()
-
         elif num_shown == '8':
             self.showGraphs('12')
             for column in range(len(self.graph_array[2])):
                 self.graph_array[2][column].hide()
-
         elif num_shown == '6':
             self.showGraphs('8')
             for row in range(2):
                 self.graph_array[row][3].hide()
-
         elif num_shown == '4':
             self.showGraphs('6')
             for row in range(2):
                 self.graph_array[row][2].hide()
-
         elif num_shown == '2':
             self.showGraphs('4')
             for row in range(2):
                 self.graph_array[row][1].hide()
-
         elif num_shown == '1':
             self.showGraphs('2')
             self.graph_array[1][0].hide()

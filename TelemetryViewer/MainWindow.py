@@ -44,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow):
                                                  self.comPortComboBox)  # Places custom COM port menu in setup layout
         self.ui.port_combobox.close()  # CLoses old COM port menu
         self.ui.serial_btn.clicked.connect(self.connectSerial)  # Connect functions to serial button
+        self.ui.refresh_btn.clicked.connect(self.comPortComboBox.populateCOMSelect)
         self.ui.import_btn.clicked.connect(self.canJson)
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
@@ -110,6 +111,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
         print(self.availableCOMPorts())
+
+        self.data_layout = QVBoxLayout()
 
     def applytoConfig(self):
         if self.ui.listWidget.item(0).text() != "None Selected":
@@ -184,15 +187,36 @@ class MainWindow(QtWidgets.QMainWindow):
             self.serialConnected = False
 
     def editMenuCalled(self, plotWidget):
+        #TODO reset configuration menu to the current plotwidget data\
+
         self.currentPlotWidget = plotWidget
         self.currentPlotWidget.setBackground('g')
         self.currentPlotWidget.getPlotItem().setLabel('bottom', text='test')
         self.ui.configMenu.show()
 
     def configApply(self):
-        self.currentPlotWidget.setBackground('b')
-        self.currentPlotWidget.yData = self.GraphManager.z
-        return
+        # Set range of plot
+        if self.ui.radioButton_4.isChecked():
+            self.ui.lineEdit_5.setDisabled(True)
+            self.currentPlotWidget.enableAutoRange()
+        else:
+            self.ui.lineEdit_5.setDisabled(False)
+            self.currentPlotWidget.disableAutoRange()
+            # self.currentPlotWidget.setLimits(yMax=int(self.ui.lineEdit_5.text()))
+
+        # Set axes labels and title
+        try:
+            self.currentPlotWidget.getPlotItem().setLabel('top', text=self.ui.lineEdit_2.text())
+        except:
+            self.currentPlotWidget.getPlotItem().setLabel('top', text='Graph')
+        try:
+            self.currentPlotWidget.getPlotItem().setLabel('left', text=self.ui.lineEdit_3.text())
+        except:
+            self.currentPlotWidget.getPlotItem().setLabel('left', text='Y-Axis')
+        try:
+            self.currentPlotWidget.getPlotItem().setLabel('bottom', text=self.ui.lineEdit_4.text())
+        except:
+            self.currentPlotWidget.getPlotItem().setLabel('bottom', text='X-Axis')
 
     def canJson(self):
         global Canfilename
