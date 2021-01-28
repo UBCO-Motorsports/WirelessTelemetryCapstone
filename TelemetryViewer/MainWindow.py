@@ -125,7 +125,7 @@ class MainWindow(QtWidgets.QMainWindow):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             json_file.close()
-
+        messagebuffer=[]
         for i in reversed(range(self.data_layout.count())):
             self.data_layout.itemAt(i).widget().setParent(None)
 
@@ -145,6 +145,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.comboBox_4.addItem(name)
             self.ui.comboBox_5.addItem(name)
             self.ui.comboBox.addItem(name)
+            message="f "+str(i)+" "+str(int(id,16))+" "+str(position)+" "+str(size)
+            print(message)
+            messagebuffer.append(message)
+
+        for messages in range(len(messagebuffer)):
+            self.GraphManager.SerialModule.sendCommand(messages)
 
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
