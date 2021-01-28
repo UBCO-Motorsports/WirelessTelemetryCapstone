@@ -115,29 +115,31 @@ class MainWindow(QtWidgets.QMainWindow):
         self.data_layout = QVBoxLayout()
 
     def applytoConfig(self):
-        if self.ui.listWidget.item(0).text() != "None Selected":
-            with open('itemslogged.json', 'r+') as json_file:
-                data = json.load(json_file)
-                json_file.close()
-            layout = QVBoxLayout()
-            self.radiodict={}
-            for i in range(len(data["logged"])):
-                name = data["logged"][i]['Name']
-                id = data["logged"][i]['ID']
-                units = data["logged"][i]['Units']
-                scale = data["logged"][i]['Scale']
-                position = data["logged"][i]['Position']
-                size = data["logged"][i]['Size']
-                offset = data["logged"][i]['Offset']
-                color = data["logged"][i]['Color']
-                self.radiodict[i]=QCheckBox(name)
-                self.ui.comboBox_3.addItem(name)
-                self.ui.comboBox_4.addItem(name)
-                self.ui.comboBox_5.addItem(name)
-                self.ui.comboBox.addItem(name)
-            for i in self.radiodict.items():
-                layout.addWidget(i[1])
-            self.ui.scrollArea.setLayout(layout)
+        with open('itemslogged.json', 'r+') as json_file:
+            data = json.load(json_file)
+            json_file.close()
+
+        for i in reversed(range(self.data_layout.count())):
+            self.data_layout.itemAt(i).widget().setParent(None)
+
+        self.radiodict={}
+        for i in range(len(data["logged"])):
+            name = data["logged"][i]['Name']
+            id = data["logged"][i]['ID']
+            units = data["logged"][i]['Units']
+            scale = data["logged"][i]['Scale']
+            position = data["logged"][i]['Position']
+            size = data["logged"][i]['Size']
+            offset = data["logged"][i]['Offset']
+            color = data["logged"][i]['Color']
+            self.radiodict[i]=QCheckBox(name)
+            self.ui.comboBox_3.addItem(name)
+            self.ui.comboBox_4.addItem(name)
+            self.ui.comboBox_5.addItem(name)
+            self.ui.comboBox.addItem(name)
+        for i in self.radiodict.items():
+            self.data_layout.addWidget(i[1])
+        self.ui.scrollArea.setLayout(self.data_layout)
 
 
 
