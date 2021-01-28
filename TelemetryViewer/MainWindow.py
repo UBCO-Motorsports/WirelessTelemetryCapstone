@@ -151,8 +151,8 @@ class MainWindow(QtWidgets.QMainWindow):
             messagebuffer.append(message)
 
         for messages in range(len(messagebuffer)):
-            self.GraphManager.SerialModule.sendCommand(messages)
-
+            #self.GraphManager.SerialModule.sendCommand(messages) #TODO reenable
+            print("messages")
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
         self.ui.scrollArea.setWidget(self.scrollWidget)
@@ -213,14 +213,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.configMenu.show()
 
     def configApply(self):
+        #TODO reconfigure
         # Set range of plot
-        if self.ui.radioButton_4.isChecked():
-            self.ui.lineEdit_5.setDisabled(True)
-            self.currentPlotWidget.enableAutoRange()
-        else:
-            self.ui.lineEdit_5.setDisabled(False)
-            self.currentPlotWidget.disableAutoRange()
-            # self.currentPlotWidget.setLimits(yMax=int(self.ui.lineEdit_5.text()))
+        #if self.ui.radioButton_4.isChecked():
+        #    self.ui.lineEdit_5.setDisabled(True)
+        #    self.currentPlotWidget.enableAutoRange()
+        #else:
+        #    self.ui.lineEdit_5.setDisabled(False)
+        #    self.currentPlotWidget.disableAutoRange()
+        #    # self.currentPlotWidget.setLimits(yMax=int(self.ui.lineEdit_5.text()))
 
         # Set axes labels and title
         try:
