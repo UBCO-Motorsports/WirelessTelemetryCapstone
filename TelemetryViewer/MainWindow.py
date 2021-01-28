@@ -67,6 +67,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.importlayout_btn.clicked.connect(Open)
         self.ui.savelayout_btn.clicked.connect(Save)
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide) # Hides configuration menu when clicked
+        self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.setBackground('w'))
         self.ui.configMenu.hide() # Initially hide configuration menu
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText())) # Change number of graphs shown when combobox value changed
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count()-1) # Initialize number of shown graphs to maximum
@@ -112,7 +113,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.start()
         print(self.availableCOMPorts())
 
+        # Config menu inits
         self.data_layout = QVBoxLayout()
+        self.scrollWidget = QWidget()
+        self.ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.ui.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        # self.ui.scrollArea.setWidgetResizable(True)
+
 
     def applytoConfig(self):
         with open('itemslogged.json', 'r+') as json_file:
@@ -133,18 +140,16 @@ class MainWindow(QtWidgets.QMainWindow):
             offset = data["logged"][i]['Offset']
             color = data["logged"][i]['Color']
             self.radiodict[i]=QCheckBox(name)
+            self.radiodict[i].setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
             self.ui.comboBox_3.addItem(name)
             self.ui.comboBox_4.addItem(name)
             self.ui.comboBox_5.addItem(name)
             self.ui.comboBox.addItem(name)
+
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
-        self.ui.scrollArea.setLayout(self.data_layout)
-
-
-
-            #TODO make it so radio buttons refresh after hitting apply on setup again
-
+        self.ui.scrollArea.setWidget(self.scrollWidget)
+        self.scrollWidget.setLayout(self.data_layout)
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text())
@@ -190,6 +195,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def editMenuCalled(self, plotWidget):
         #TODO reset configuration menu to the current plotwidget data\
+        try:
+            self.currentPlotWidget.setBackground('w')
+        except:
+            pass
 
         self.currentPlotWidget = plotWidget
         self.currentPlotWidget.setBackground('g')
