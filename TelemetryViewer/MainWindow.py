@@ -12,6 +12,7 @@ from FileSaver import Save
 from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
 import Serial
+Canfilename=""
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -37,7 +38,6 @@ class MainWindow(QtWidgets.QMainWindow):
         ##Setup Page
         self.ui.btn_page_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.setup_page))
         self.ui.btn_page_2.setCheckable(True)
-        self.ui.import_btn.clicked.connect(Open)
         self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))  # /wrench /script-attribute-s
         self.comPortComboBox = comPortComboBox(self)  # Generate custom COM port menu
         self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox,
@@ -115,13 +115,29 @@ class MainWindow(QtWidgets.QMainWindow):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             json_file.close()
+        layout = QVBoxLayout()
+        self.radiodict={}
         for i in range(len(data["logged"])):
-            dataitem=data["logged"][i]['name']
-            self.ui.comboBox_3.addItem(dataitem)
-            self.ui.comboBox_4.addItem(dataitem)
-            self.ui.comboBox_5.addItem(dataitem)
-            self.ui.comboBox.addItem(dataitem)
-            print(data["logged"][i]['name'])#TODO ask Connor about how best to add new radio buttons
+            name = data["logged"][i]['Name']
+            id = data["logged"][i]['ID']
+            units = data["logged"][i]['Units']
+            scale = data["logged"][i]['Scale']
+            position = data["logged"][i]['Position']
+            size = data["logged"][i]['Size']
+            offset = data["logged"][i]['Offset']
+            color = data["logged"][i]['Color']
+            self.radiodict[i]=QCheckBox(name)
+            self.ui.comboBox_3.addItem(name)
+            self.ui.comboBox_4.addItem(name)
+            self.ui.comboBox_5.addItem(name)
+            self.ui.comboBox.addItem(name)
+        for i in self.radiodict.items():
+            layout.addWidget(i[1])
+        self.ui.scrollArea.setLayout(layout)
+
+
+
+            #TODO make it so radio buttons refresh after hitting apply on setup again
 
 
     def sendcommandfromList(self):
@@ -178,9 +194,11 @@ class MainWindow(QtWidgets.QMainWindow):
         return
 
     def canJson(self):
+        global Canfilename
         p = 0
         filelookup = Open()
         file = filelookup.openFileNameDialog()
+        Canfilename=file
         if file != "":
             while (self.ui.tableWidget.rowCount() > 0):
                 self.ui.tableWidget.removeRow(0)
@@ -193,8 +211,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.tableWidget.setItem(p, 1, QtGui.QTableWidgetItem(i['Name']))
                     self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
                     self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
-                    self.ui.tableWidget.setItem(p, 4, QtGui.QTableWidgetItem(str(i['Position'])))
-                    self.ui.tableWidget.setItem(p, 5, QtGui.QTableWidgetItem(str(i['Size'])))
                     p = p + 1
                 json_file.close()
             self.ui.listWidget.clear()
@@ -205,18 +221,21 @@ class MainWindow(QtWidgets.QMainWindow):
                 jsonlist.close()
 
     def tabletolist(self, row, column):
+        global Canfilename
         found = False
         for i in range(self.ui.listWidget.count()):
             if self.ui.listWidget.item(i).text() == self.ui.tableWidget.item(row, 1).text():
                 found = True
         if not found:
-            graphjson = '{"name": "Value1", "colour": "Value2"}'
             color = QColorDialog.getColor()
             color2 = color.getRgb()
             if color.isValid():
-                graphjson = graphjson.replace("Value1", self.ui.tableWidget.item(row, 1).text())
-                graphjson = graphjson.replace("Value2", str(color2))
-                self.jsonlogged(self.ui.tableWidget.item(row, 1).text(), str(color2))
+                with open(Canfilename, 'r+') as json_file:
+                    data= json.load(json_file)
+                    datafromcan=data["Haltech"][int(row)]
+                    json_file.close()
+
+                self.jsonlogged(datafromcan, str(color2), self.ui.listWidget.count())
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
                 for j in range(self.ui.tableWidget.columnCount()):
@@ -224,11 +243,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 if self.ui.listWidget.item(0).text() == "None Selected":
                     self.ui.listWidget.takeItem(0)
 
-    def jsonlogged(self, name, color):
+    def jsonlogged(self, datafromcan, color, i):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
-            data["logged"].append({'name': name,
-                                   'color': color})
+            data["logged"].append(datafromcan)
+            data["logged"][i]['Color']=color
             json_file.seek(0)
             json.dump(data, json_file, indent=4)
             json_file.close()

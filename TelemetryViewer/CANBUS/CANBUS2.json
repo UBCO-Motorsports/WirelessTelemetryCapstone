@@ -7,7 +7,8 @@
       "Units": "RPM",
       "Scale": 1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Manifold Pressure",
@@ -15,7 +16,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Throttle Position",
@@ -23,7 +25,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Coolant Pressure",
@@ -31,7 +34,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Pressure",
@@ -39,7 +43,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Oil Pressure",
@@ -47,7 +52,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Engine Demand",
@@ -55,7 +61,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wastegate Pressure",
@@ -63,7 +70,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Injection Stage 1 Duty Cycle",
@@ -71,7 +79,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Injection Stage 2 Duty Cycle",
@@ -79,7 +88,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Ignition Angle",
@@ -87,7 +97,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wheel Slip",
@@ -95,7 +106,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wheel Diff",
@@ -103,7 +115,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband 1",
@@ -111,7 +124,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband 2",
@@ -119,7 +133,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband 3",
@@ -127,7 +142,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband 4",
@@ -135,7 +151,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Trigger System Error Count",
@@ -143,7 +160,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Trigger Counter",
@@ -151,7 +169,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Trigger Sync Level",
@@ -159,7 +178,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Knock Level",
@@ -167,7 +187,8 @@
       "Units": "dB",
       "Scale": 0.01,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Knock Level",
@@ -175,7 +196,8 @@
       "Units": "dB",
       "Scale": 0.01,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Brake Pressure",
@@ -183,7 +205,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "NOS Pressure Sensor 1",
@@ -191,7 +214,8 @@
       "Units": "kPa",
       "Scale": 0.22,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Turbo Speed Sensor 1",
@@ -199,7 +223,8 @@
       "Units": "RPM",
       "Scale": 10,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Lateral G",
@@ -207,7 +232,8 @@
       "Units": "m/s^2",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wheel Speed Front Left",
@@ -215,7 +241,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
 
     },
     {
@@ -224,7 +251,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wheel Speed Rear Left",
@@ -232,7 +260,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wheel Speed Rear Right",
@@ -240,7 +269,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Exhaust Cam Angle 1",
@@ -248,7 +278,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Exhaust Cam Angle 2",
@@ -256,7 +287,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Engine Limiting Active",
@@ -264,7 +296,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Launch Control Ignition Retard",
@@ -272,7 +305,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Launch Control Fuel Enrich",
@@ -280,7 +314,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Longitudinal G",
@@ -288,7 +323,8 @@
       "Units": "m/s^2",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Generic Output 1 Duty Cycle",
@@ -296,7 +332,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Boost Control Output",
@@ -304,7 +341,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Vehicle Speed",
@@ -312,7 +350,8 @@
       "Units": "km/h",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Gear",
@@ -320,7 +359,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Intake Cam Angle 1",
@@ -328,7 +368,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Intake Cam Angle 2",
@@ -336,7 +377,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Flow",
@@ -344,7 +386,8 @@
       "Units": "cc/min",
       "Scale": 1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Flow Return",
@@ -352,7 +395,8 @@
       "Units": "cc/min",
       "Scale": 1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Battery Voltage",
@@ -360,7 +404,8 @@
       "Units": "Volts",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Target Boost Level",
@@ -368,7 +413,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Barometric Pressure",
@@ -376,7 +422,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "EGT Sensor 1",
@@ -384,7 +431,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 2",
@@ -392,7 +440,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 3",
@@ -400,7 +449,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 4",
@@ -408,7 +458,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 5",
@@ -416,7 +467,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 6",
@@ -424,7 +476,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 7",
@@ -432,7 +485,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 8",
@@ -440,7 +494,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 9",
@@ -448,7 +503,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 10",
@@ -456,7 +512,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 11",
@@ -464,7 +521,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "EGT Sensor 12",
@@ -472,7 +530,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Ambient Air Temperature",
@@ -480,7 +539,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Relative Humidity",
@@ -488,7 +548,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Specific Humidity",
@@ -496,7 +557,8 @@
       "Units": "ppm",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Coolant Temperature",
@@ -504,7 +566,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Air Temperature",
@@ -512,7 +575,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Fuel Temperature",
@@ -520,7 +584,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Oil Temperature",
@@ -528,7 +593,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Gearbox Oil Temperature",
@@ -536,7 +602,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Diff Oil Temperature",
@@ -544,7 +611,8 @@
       "Units": "K",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": -273.15
     },
     {
       "Name": "Fuel Composition",
@@ -552,7 +620,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Level",
@@ -560,7 +629,8 @@
       "Units": "L",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Trim Short Term Bank 1",
@@ -568,7 +638,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Trim Short Term Bank 2",
@@ -576,7 +647,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Trim Long Term Bank 1",
@@ -584,7 +656,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Fuel Trim Long Term Bank 2",
@@ -592,7 +665,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Gear Switch",
@@ -600,7 +674,8 @@
       "Units": "Look at this row",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Ignition Switch",
@@ -608,7 +683,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 0,
-      "Size": 8
+      "Size": 8,
+      "Offset": 0
     },
     {
       "Name": "Turbo Timer - Time Remaining",
@@ -616,7 +692,8 @@
       "Units": "s",
       "Scale": 1,
       "Position": 1,
-      "Size": 8
+      "Size": 8,
+      "Offset": 0
     },
     {
       "Name": "Turbo Timer - Engine Time Remaining",
@@ -624,7 +701,8 @@
       "Units": "s",
       "Scale": 1,
       "Position": 2,
-      "Size": 8
+      "Size": 8,
+      "Offset": 0
     },
     {
       "Name": "Steering Wheel Angle",
@@ -632,7 +710,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Driveshaft RPM",
@@ -640,7 +719,8 @@
       "Units": "RPM",
       "Scale": 1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "NOS Pressure Sensor 2",
@@ -648,7 +728,8 @@
       "Units": "kPa",
       "Scale": 0.22,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "NOS Pressure Sensor 3",
@@ -656,7 +737,8 @@
       "Units": "kPa",
       "Scale": 0.22,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "NOS Pressure Sensor 4",
@@ -664,7 +746,8 @@
       "Units": "kPa",
       "Scale": 0.22,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Turbo Speed Sensor",
@@ -672,7 +755,8 @@
       "Units": "RPM",
       "Scale": 10,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Target Lambda",
@@ -680,7 +764,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Knob Position",
@@ -688,7 +773,8 @@
       "Units": "",
       "Scale": 1,
       "Position": 7,
-      "Size": 8
+      "Size": 8,
+      "Offset": 0
     },
     {
       "Name": "Gearbox Oil Pressure",
@@ -696,7 +782,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Injection Stage 3 Duty Cycle",
@@ -704,7 +791,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Injection Stage 4 Duty Cycle",
@@ -712,7 +800,8 @@
       "Units": "%",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Crank Case Pressure",
@@ -720,7 +809,8 @@
       "Units": "kPa",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Race Timer",
@@ -728,7 +818,8 @@
       "Units": "ms",
       "Scale": 1,
       "Position": 0,
-      "Size": 24
+      "Size": 32,
+      "Offset": 0
     },
     {
       "Name": "Ignition Angle Bank 1",
@@ -736,7 +827,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Ignition Angle Bank 2",
@@ -744,7 +836,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Driveshaft RPM Target",
@@ -752,7 +845,8 @@
       "Units": "RPM",
       "Scale": 1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Driveshaft RPM Error",
@@ -760,7 +854,8 @@
       "Units": "RPM",
       "Scale": 1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Driveshaft RPM Target Error Ignition Correction",
@@ -768,7 +863,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Timed Ignition Correction",
@@ -776,7 +872,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Combined Ignition Correction",
@@ -784,7 +881,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Engine RPM Target",
@@ -792,7 +890,8 @@
       "Units": "RPM",
       "Scale": 1,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Engine RPM Target Error",
@@ -800,7 +899,8 @@
       "Units": "RPM",
       "Scale": 1,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Torque Management Engine RPM Target Error Ignition Correction",
@@ -808,7 +908,8 @@
       "Units": "º",
       "Scale": 0.1,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 5",
@@ -816,7 +917,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 6",
@@ -824,7 +926,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 7",
@@ -832,7 +935,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 8",
@@ -840,7 +944,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 9",
@@ -848,7 +953,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 10",
@@ -856,7 +962,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 11",
@@ -864,7 +971,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Sensor 12",
@@ -872,7 +980,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 48,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Overall Average",
@@ -880,7 +989,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Bank 1 Average",
@@ -888,7 +998,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 16,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Wideband Bank 2 Average",
@@ -896,7 +1007,8 @@
       "Units": "",
       "Scale": 0.001,
       "Position": 32,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     },
     {
       "Name": "Injector Pressure Difference",
@@ -904,7 +1016,8 @@
       "Units": "kPa Difference",
       "Scale": 0.1,
       "Position": 0,
-      "Size": 16
+      "Size": 16,
+      "Offset": 0
     }
   ]
   }

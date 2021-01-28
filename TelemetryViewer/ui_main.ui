@@ -553,7 +553,7 @@ QHeaderView::section:vertical
                        <set>QAbstractItemView::NoEditTriggers</set>
                       </property>
                       <property name="columnCount">
-                       <number>6</number>
+                       <number>4</number>
                       </property>
                       <attribute name="horizontalHeaderDefaultSectionSize">
                        <number>150</number>
@@ -680,16 +680,6 @@ QHeaderView::section:vertical
                       <column>
                        <property name="text">
                         <string>Channel</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Position</string>
-                       </property>
-                      </column>
-                      <column>
-                       <property name="text">
-                        <string>Size</string>
                        </property>
                       </column>
                       <item row="0" column="0">
@@ -1256,26 +1246,11 @@ QPushButton:hover {
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>100</width>
-                                <height>58</height>
+                                <width>168</width>
+                                <height>103</height>
                                </rect>
                               </property>
-                              <layout class="QVBoxLayout" name="verticalLayout_15">
-                               <item>
-                                <widget class="QRadioButton" name="radioButton">
-                                 <property name="text">
-                                  <string>RadioButton</string>
-                                 </property>
-                                </widget>
-                               </item>
-                               <item>
-                                <widget class="QRadioButton" name="radioButton_2">
-                                 <property name="text">
-                                  <string>RadioButton</string>
-                                 </property>
-                                </widget>
-                               </item>
-                              </layout>
+                              <layout class="QVBoxLayout" name="verticalLayout_15"/>
                              </widget>
                             </widget>
                            </item>

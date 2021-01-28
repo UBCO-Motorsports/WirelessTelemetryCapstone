@@ -1,12 +1,54 @@
 {
     "logged": [
         {
-            "name": "Throttle Position",
-            "color": "(255, 255, 255, 255)"
+            "Name": "Coolant Pressure",
+            "ID": "0x360",
+            "Units": "kPa",
+            "Scale": 0.1,
+            "Position": 48,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(255, 255, 255, 255)"
         },
         {
-            "name": "Engine Demand",
-            "color": "(255, 255, 255, 255)"
+            "Name": "Engine Demand",
+            "ID": "0x361",
+            "Units": "%",
+            "Scale": 0.1,
+            "Position": 32,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(255, 255, 255, 255)"
+        },
+        {
+            "Name": "Wheel Slip",
+            "ID": "0x363",
+            "Units": "km/h",
+            "Scale": 0.1,
+            "Position": 0,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(255, 255, 255, 255)"
+        },
+        {
+            "Name": "Wideband 1",
+            "ID": "0x368",
+            "Units": "",
+            "Scale": 0.001,
+            "Position": 0,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(255, 255, 255, 255)"
+        },
+        {
+            "Name": "Wideband 3",
+            "ID": "0x368",
+            "Units": "",
+            "Scale": 0.001,
+            "Position": 32,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(255, 255, 255, 255)"
         }
     ]
 }
