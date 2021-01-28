@@ -1,18 +1,8 @@
 {
     "logged": [
         {
-            "Name": "Coolant Pressure",
+            "Name": "Throttle Position",
             "ID": "0x360",
-            "Units": "kPa",
-            "Scale": 0.1,
-            "Position": 48,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(255, 255, 255, 255)"
-        },
-        {
-            "Name": "Engine Demand",
-            "ID": "0x361",
             "Units": "%",
             "Scale": 0.1,
             "Position": 32,
@@ -21,31 +11,11 @@
             "Color": "(255, 255, 255, 255)"
         },
         {
-            "Name": "Wheel Slip",
-            "ID": "0x363",
-            "Units": "km/h",
+            "Name": "Injection Stage 1 Duty Cycle",
+            "ID": "0x362",
+            "Units": "%",
             "Scale": 0.1,
             "Position": 0,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(255, 255, 255, 255)"
-        },
-        {
-            "Name": "Wideband 1",
-            "ID": "0x368",
-            "Units": "",
-            "Scale": 0.001,
-            "Position": 0,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(255, 255, 255, 255)"
-        },
-        {
-            "Name": "Wideband 3",
-            "ID": "0x368",
-            "Units": "",
-            "Scale": 0.001,
-            "Position": 32,
             "Size": 16,
             "Offset": 0,
             "Color": "(255, 255, 255, 255)"
