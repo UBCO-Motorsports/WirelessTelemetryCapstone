@@ -388,6 +388,7 @@ class Ui_MainWindow(object):
         self.listWidget.addItem(item)
         self.verticalLayout_12.addWidget(self.listWidget)
         self.apply_btn = QtWidgets.QPushButton(self.frame_9)
+        self.apply_btn.setEnabled(True)
         self.apply_btn.setMinimumSize(QtCore.QSize(0, 0))
         self.apply_btn.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.apply_btn.setStyleSheet("QPushButton {\n"
@@ -398,7 +399,12 @@ class Ui_MainWindow(object):
 "}\n"
 "QPushButton:hover {\n"
 "    background-color: rgb(85, 170, 255);\n"
+"}\n"
+"QPushButton:!enabled {\n"
+"    \n"
+"    background-color: rgb(125, 125, 125);\n"
 "}")
+        self.apply_btn.setCheckable(False)
         self.apply_btn.setObjectName("apply_btn")
         self.verticalLayout_12.addWidget(self.apply_btn)
         self.horizontalLayout_5.addWidget(self.frame_9)
@@ -557,7 +563,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 168, 198))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")

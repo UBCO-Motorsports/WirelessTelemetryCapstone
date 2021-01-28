@@ -49,6 +49,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
+        self.ui.apply_btn.setEnabled(True)
 
         ##Graph Page
         self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")  # Sets background of graph page

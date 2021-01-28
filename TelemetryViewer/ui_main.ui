@@ -869,6 +869,9 @@ background-color: rgb(60, 60, 60);</string>
                     </item>
                     <item>
                      <widget class="QPushButton" name="apply_btn">
+                      <property name="enabled">
+                       <bool>true</bool>
+                      </property>
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
@@ -890,10 +893,17 @@ background-color: rgb(60, 60, 60);</string>
 }
 QPushButton:hover {
 	background-color: rgb(85, 170, 255);
+}
+QPushButton:!enabled {
+	
+	background-color: rgb(125, 125, 125);
 }</string>
                       </property>
                       <property name="text">
                        <string>Apply</string>
+                      </property>
+                      <property name="checkable">
+                       <bool>false</bool>
                       </property>
                      </widget>
                     </item>
@@ -1246,8 +1256,8 @@ QPushButton:hover {
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>168</width>
-                                <height>198</height>
+                                <width>98</width>
+                                <height>28</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="verticalLayout_15"/>
