@@ -31,10 +31,11 @@
 //For ceil()
 #include "math.h"
 
+#include "data.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
-typedef StaticTask_t osStaticThreadDef_t;
 /* USER CODE BEGIN PTD */
 
 /* USER CODE END PTD */
@@ -115,31 +116,12 @@ const osThreadAttr_t SendCANFrame_attributes = {
   .priority = (osPriority_t) osPriorityHigh,
   .stack_size = 128 * 4
 };
-/* Definitions for ProcessCommand */
-osThreadId_t ProcessCommandHandle;
-const osThreadAttr_t ProcessCommand_attributes = {
-  .name = "ProcessCommand",
-  .priority = (osPriority_t) osPriorityHigh,
-  .stack_size = 128 * 4
-};
 /* Definitions for SendTelemetry */
 osThreadId_t SendTelemetryHandle;
 const osThreadAttr_t SendTelemetry_attributes = {
   .name = "SendTelemetry",
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
-};
-/* Definitions for FeedWDG */
-osThreadId_t FeedWDGHandle;
-uint32_t FeedWDGBuffer[ 128 ];
-osStaticThreadDef_t FeedWDGControlBlock;
-const osThreadAttr_t FeedWDG_attributes = {
-  .name = "FeedWDG",
-  .stack_mem = &FeedWDGBuffer[0],
-  .stack_size = sizeof(FeedWDGBuffer),
-  .cb_mem = &FeedWDGControlBlock,
-  .cb_size = sizeof(FeedWDGControlBlock),
-  .priority = (osPriority_t) osPriorityRealtime7,
 };
 /* Definitions for ProcessCommandSem */
 osSemaphoreId_t ProcessCommandSemHandle;
@@ -212,9 +194,7 @@ static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART1_UART_Init(void);
 void StartSendCANFrame(void *argument);
-void StartProcessCommand(void *argument);
 void StartSendTelemetry(void *argument);
-void StartFeedWDG(void *argument);
 
 static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
@@ -240,18 +220,6 @@ void Init_SBC(void) {
 	HAL_StatusTypeDef result;
 	uint16_t data[1];
 	uint16_t rxdata[1];
-
-	//Setup WDG and Status register
-	data[0] = 0;
-	data[0] = WD_SETUP << 8;
-
-	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
-
-	while (hspi1.State != HAL_SPI_STATE_READY) {
-		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 1);
-	}
-	HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
-
 
 	//Setup Mode Control register
 	data[0] = 0;
@@ -412,14 +380,8 @@ int main(void)
   /* creation of SendCANFrame */
   SendCANFrameHandle = osThreadNew(StartSendCANFrame, NULL, &SendCANFrame_attributes);
 
-  /* creation of ProcessCommand */
-  ProcessCommandHandle = osThreadNew(StartProcessCommand, NULL, &ProcessCommand_attributes);
-
   /* creation of SendTelemetry */
   SendTelemetryHandle = osThreadNew(StartSendTelemetry, NULL, &SendTelemetry_attributes);
-
-  /* creation of FeedWDG */
-  FeedWDGHandle = osThreadNew(StartFeedWDG, NULL, &FeedWDG_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -768,66 +730,25 @@ void StartSendCANFrame(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
+	uint8_t i = 0;
   for(;;)
   {
     osDelay(100);
+    can_tx_data[0] = carData[0][i];
+    can_tx_data[1] = carData[1][i];
+    can_tx_data[2] = carData[2][i];
+    can_tx_data[3] = carData[3][i];
+    can_tx_data[4] = carData[4][i];
+    can_tx_data[5] = carData[5][i];
+    can_tx_data[6] = carData[6][i];
+    can_tx_data[7] = carData[7][i];
+    can_tx_data[8] = carData[8][i];
+    can_tx_data[9] = carData[9][i];
+    i++;
 		uint32_t mailbox;
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header, can_tx_data, &mailbox);
   }
   /* USER CODE END 5 */
-}
-
-/* USER CODE BEGIN Header_StartProcessCommand */
-/**
-* @brief Function implementing the ProcessCommand thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartProcessCommand */
-void StartProcessCommand(void *argument)
-{
-  /* USER CODE BEGIN StartProcessCommand */
-  /* Infinite loop */
-  for(;;)
-  {
-  	//Wait for semaphore passed by UART IRQ when the command buffer is ready for processing
-    osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
-
-    //Evaluate first char of the command buffer to determine command
-		if (cmdbuff[0] == *(uint8_t *)"r") {
-			//Restart command
-			DebugPrint("Rebooting...\r\n\r\n");
-			NVIC_SystemReset();
-
-		} else if (cmdbuff[0] == *(uint8_t *)"d") {
-			//Retreives the last value in message buffer for corrosponding ID
-			int filter = atoi((char *)&cmdbuff[1]);
-			char msg[32] = "";
-			sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
-			DebugPrint(msg);
-
-		} else if (cmdbuff[0] == *(uint8_t *)"f") {
-			//Command f can set a CAN filter and
-			int filter = atoi((char *)&cmdbuff[1]);
-			uint16_t id = atoi((char *)&cmdbuff[3]);
-			uint8_t bit = atoi((char *)&cmdbuff[8]);
-			uint8_t size = atoi((char *)&cmdbuff[11]);
-			messageArray[filter].id = id;
-			messageArray[filter].bit = bit;
-			messageArray[filter].value = -1;
-			messageArray[filter].length = size;
-			messageArray[filter].enabled = MSG_ENABLED;
-			ConfigureCANFilters(messageArray, 16);
-
-		} else if (cmdbuff[0] == *(uint8_t *)"s") {
-			//Shutdown
-			//Set can_tx frame shutdown bit to 1
-			can_tx_data[0] |= CAN_TXFRAME0_SHUTDOWN;
-		}
-		//Resets cmdbuff index
-		cmdbuffind = 0;
-  }
-  /* USER CODE END StartProcessCommand */
 }
 
 /* USER CODE BEGIN Header_StartSendTelemetry */
@@ -846,9 +767,9 @@ void StartSendTelemetry(void *argument)
   	//Transmit at 10hz
     osDelay(100);
 
-
     //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
   	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    /*
     sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
         		messageArray[0].value,
     				messageArray[1].value,
@@ -867,44 +788,9 @@ void StartSendTelemetry(void *argument)
     				messageArray[14].value,
     				messageArray[15].value);
 		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
+		*/
   }
   /* USER CODE END StartSendTelemetry */
-}
-
-/* USER CODE BEGIN Header_StartFeedWDG */
-/**
-* @brief Function implementing the FeedWDG thread.
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_StartFeedWDG */
-void StartFeedWDG(void *argument)
-{
-  /* USER CODE BEGIN StartFeedWDG */
-
-	uint32_t tick;
-	tick = osKernelGetTickCount();
-	tick += 700;
-
-  /* Infinite loop */
-  for(;;)
-  {
-
-    osDelayUntil(tick);
-    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-
-    HAL_StatusTypeDef result;
-
-		uint16_t data[1];
-		uint16_t rxdata[1];
-		data[0] = 0;
-		data[0] = WD_SETUP << 8;
-
-		result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
-
-    tick += 700;
-  }
-  /* USER CODE END StartFeedWDG */
 }
 
  /**
