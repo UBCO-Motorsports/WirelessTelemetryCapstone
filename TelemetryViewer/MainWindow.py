@@ -145,7 +145,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.comboBox_4.addItem(name)
             self.ui.comboBox_5.addItem(name)
             self.ui.comboBox.addItem(name)
-            message="f "+str(i)+" "+str(int(id,16))+" "+str(position)+" "+str(size)
+            message="f "+str(i)+" "+str(int(id,16))+" "+str(position)+" "+str(size)+"\r"
             print(message)
             messagebuffer.append(message)
 
@@ -158,12 +158,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollWidget.setLayout(self.data_layout)
 
     def sendcommandfromList(self):
-        self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text())
+        self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
 
     def sendcommandfromBox(self):
         text=self.ui.commandbox.text()
         self.ui.commandbox.clear()
-        self.GraphManager.SerialModule.sendCommand(text)
+        self.GraphManager.SerialModule.sendCommand(text+"\r")
 
     def menuchange(self, i):
         configtext = (self.ui.graphtype_comboBox.currentText())
