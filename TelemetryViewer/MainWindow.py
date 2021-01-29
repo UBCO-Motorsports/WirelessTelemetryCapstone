@@ -112,15 +112,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.setInterval(20)
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
-        print(self.availableCOMPorts())
 
         # Config menu inits
         self.data_layout = QVBoxLayout()
         self.scrollWidget = QWidget()
         self.ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.ui.checkBox.stateChanged.connect(self.yAutorangeEnable)
+        self.ui.lineEdit_5.setStyleSheet("QLineEdit{background-color: rgb(255,255,255);}QLineEdit:disabled{background-color: rgb(100,100,100);}")
         # self.ui.scrollArea.setWidgetResizable(True)
 
+    def yAutorangeEnable(self):
+        if self.ui.checkBox.isChecked():
+            self.ui.lineEdit_5.setDisabled(True)
+        else:
+            self.ui.lineEdit_5.setDisabled(False)
 
     def applytoConfig(self):
         with open('itemslogged.json', 'r+') as json_file:
@@ -200,28 +206,26 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.serial_btn.setText('Connect')
             self.serialConnected = False
 
-    def editMenuCalled(self, plotWidget):
-        #TODO reset configuration menu to the current plotwidget data\
+    def configMenuCalled(self, plotWidget):
+        # Clears selection border on previous graph
         try:
-            self.currentPlotWidget.setBackground('w')
+            self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None)
         except:
             pass
 
+        # TODO reset configuration menu to the current plotwidget data\
         self.currentPlotWidget = plotWidget
-        self.currentPlotWidget.setBackground('g')
+        self.currentPlotWidget.getPlotItem().getViewBox().setBorder(color=(0,255,0),width=3)
         self.currentPlotWidget.getPlotItem().setLabel('bottom', text='test')
         self.ui.configMenu.show()
 
     def configApply(self):
-        #TODO reconfigure
-        # Set range of plot
-        #if self.ui.radioButton_4.isChecked():
-        #    self.ui.lineEdit_5.setDisabled(True)
-        #    self.currentPlotWidget.enableAutoRange()
-        #else:
-        #    self.ui.lineEdit_5.setDisabled(False)
-        #    self.currentPlotWidget.disableAutoRange()
-        #    # self.currentPlotWidget.setLimits(yMax=int(self.ui.lineEdit_5.text()))
+        # Autorange functionality
+        if self.ui.checkBox.isChecked():
+            self.currentPlotWidget.enableAutoRange(x=True,y=True)
+        else:
+            self.currentPlotWidget.enableAutoRange(x=True,y=False)
+            self.currentPlotWidget.setYRange(-float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_5.text()))
 
         # Set axes labels and title
         try:

@@ -1,6 +1,7 @@
 {
     "logged": [
         {
+<<<<<<< Updated upstream
             "Name": "Oil Pressure",
             "ID": "0x361",
             "Units": "kPa",
@@ -25,6 +26,12 @@
             "ID": "0x362",
             "Units": "%",
             "Scale": 0.1,
+=======
+            "Name": "RPM",
+            "ID": "0x360",
+            "Units": "RPM",
+            "Scale": 1,
+>>>>>>> Stashed changes
             "Position": 0,
             "Size": 16,
             "Offset": 0,
@@ -69,6 +76,7 @@
             "Size": 16,
             "Offset": 0,
             "Color": "(255, 255, 255, 255)"
+<<<<<<< Updated upstream
         },
         {
             "Name": "Ignition Angle",
@@ -119,6 +127,8 @@
             "Size": 16,
             "Offset": 0,
             "Color": "(255, 255, 255, 255)"
+=======
+>>>>>>> Stashed changes
         }
     ]
 }
