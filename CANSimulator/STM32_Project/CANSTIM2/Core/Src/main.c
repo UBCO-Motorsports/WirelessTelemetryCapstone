@@ -173,7 +173,29 @@ uint8_t can_rx_data[8];
 CAN_RxHeaderTypeDef can_rx_header;
 
 uint8_t can_tx_data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
-CAN_TxHeaderTypeDef can_tx_header = {0x200, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+
+//RPM and Throttle Position
+CAN_TxHeaderTypeDef can_tx_header12 = {0x360, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+//Lateral accel
+CAN_TxHeaderTypeDef can_tx_header3 = {0x36B, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+//Oil pressure
+CAN_TxHeaderTypeDef can_tx_header4 = {0x361, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+//Lambda1
+CAN_TxHeaderTypeDef can_tx_header5 = {0x368, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+//ECU_EGTSensor1
+CAN_TxHeaderTypeDef can_tx_header6 = {0x373, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+//ECU_CoolantTemp and Oil temp
+CAN_TxHeaderTypeDef can_tx_header78 = {0x3E0, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+//GPS_Speed
+CAN_TxHeaderTypeDef can_tx_header10 = {0x390, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
 
 
 uint8_t uart_rec_buff[24];
@@ -730,23 +752,85 @@ void StartSendCANFrame(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
-	uint8_t i = 0;
+	uint8_t i = 5;
   for(;;)
   {
     osDelay(100);
-    can_tx_data[0] = carData[0][i];
-    can_tx_data[1] = carData[1][i];
-    can_tx_data[2] = carData[2][i];
-    can_tx_data[3] = carData[3][i];
-    can_tx_data[4] = carData[4][i];
-    can_tx_data[5] = carData[5][i];
-    can_tx_data[6] = carData[6][i];
-    can_tx_data[7] = carData[7][i];
-    can_tx_data[8] = carData[8][i];
-    can_tx_data[9] = carData[9][i];
-    i++;
+    if (i > 148) {
+    	i = 5;
+    }
 		uint32_t mailbox;
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header, can_tx_data, &mailbox);
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header12, can_tx_data, &mailbox);
+
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header3, can_tx_data, &mailbox);
+
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header4, can_tx_data, &mailbox);
+
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header5, can_tx_data, &mailbox);
+
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header6, can_tx_data, &mailbox);
+
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header78, can_tx_data, &mailbox);
+
+		can_tx_data[0] = carData[0][i];
+		can_tx_data[1] = 0;
+		can_tx_data[2] = 0;
+		can_tx_data[3] = 0;
+		can_tx_data[4] = 0;
+		can_tx_data[5] = 0;
+		can_tx_data[6] = 0;
+		can_tx_data[7] = 0;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header10, can_tx_data, &mailbox);
+
+		i++;
   }
   /* USER CODE END 5 */
 }
