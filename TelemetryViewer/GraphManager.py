@@ -65,8 +65,8 @@ class GraphManager(QtGui.QWidget):
         # self.graph_layout.addWidget(self.speed, 0, 1)
         # self.speed.frame_size.setGeometry(-10,-10,320,320)
 
-    def editMenuCalled(self, plotWidget):
-        self.parentWidget.editMenuCalled(plotWidget)
+    def configMenuCalled(self, plotWidget):
+        self.parentWidget.configMenuCalled(plotWidget)
 
     def update(self):
         #TODO
@@ -137,9 +137,9 @@ class PlotWdgt(pg.PlotWidget):
         self.xData = []
         self.yData = []
 
-    def editMenuCalled(self):
+    def configMenuCalled(self):
         # Calls parent widget to open edit menu
-        self.parentWidget.editMenuCalled(self)
+        self.parentWidget.configMenuCalled(self)
 
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentWidget, parent=None):
@@ -150,7 +150,7 @@ class CustomViewBox(pg.ViewBox):
         # Adds edit option to right click menu
         self.menu.addSeparator()
         self.editData = QtGui.QAction("Edit Data", self.menu)
-        self.editData.triggered.connect(self.parentWidget.editMenuCalled) #TODO Maybe return 'self' to link to data selection panel
+        self.editData.triggered.connect(self.parentWidget.configMenuCalled) #TODO Maybe return 'self' to link to data selection panel
         self.menu.addAction(self.editData)
 
 
