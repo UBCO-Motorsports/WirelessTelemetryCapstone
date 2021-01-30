@@ -68,7 +68,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.importlayout_btn.clicked.connect(Open)
         self.ui.savelayout_btn.clicked.connect(Save)
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide) # Hides configuration menu when clicked
-        self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.setBackground('w'))
+        self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None)) # Clears border from currently selected plot
         self.ui.configMenu.hide() # Initially hide configuration menu
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText())) # Change number of graphs shown when combobox value changed
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count()-1) # Initialize number of shown graphs to maximum
@@ -118,9 +118,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.scrollWidget = QWidget()
         self.ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.ui.checkBox.setChecked(True)
         self.ui.checkBox.stateChanged.connect(self.yAutorangeEnable)
+        self.yAutorangeEnable()
         self.ui.lineEdit_5.setStyleSheet("QLineEdit{background-color: rgb(255,255,255);}QLineEdit:disabled{background-color: rgb(100,100,100);}")
-        # self.ui.scrollArea.setWidgetResizable(True)
 
     def yAutorangeEnable(self):
         if self.ui.checkBox.isChecked():
@@ -215,31 +216,43 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # TODO reset configuration menu to the current plotwidget data\
         self.currentPlotWidget = plotWidget
-        self.currentPlotWidget.getPlotItem().getViewBox().setBorder(color=(0,255,0),width=3)
-        self.currentPlotWidget.getPlotItem().setLabel('bottom', text='test')
+        self.currentPlotItem = self.currentPlotWidget.getPlotItem()
+        self.currentPlotItem.getViewBox().setBorder(color=(0,255,0),width=3)
+        self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
+        self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
+        self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
         self.ui.configMenu.show()
 
     def configApply(self):
         # Autorange functionality
         if self.ui.checkBox.isChecked():
+            self.ui.lineEdit_5.setDisabled(True)
             self.currentPlotWidget.enableAutoRange(x=True,y=True)
         else:
+            self.ui.lineEdit_5.setDisabled(False)
             self.currentPlotWidget.enableAutoRange(x=True,y=False)
-            self.currentPlotWidget.setYRange(-float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_5.text()))
+            # self.currentPlotWidget.setYRange(-float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_5.text()))
 
         # Set axes labels and title
         try:
-            self.currentPlotWidget.getPlotItem().setLabel('top', text=self.ui.lineEdit_2.text())
+            self.currentPlotItem.setLabel('top', text=self.ui.lineEdit_2.text())
+            self.currentPlotWidget.title = self.ui.lineEdit_2.text()
         except:
-            self.currentPlotWidget.getPlotItem().setLabel('top', text='Graph')
+            self.currentPlotItem.setLabel('top', text='Graph')
+            self.currentPlotWidget.title = 'Graph'
         try:
-            self.currentPlotWidget.getPlotItem().setLabel('left', text=self.ui.lineEdit_3.text())
+            self.currentPlotItem.setLabel('left', text=self.ui.lineEdit_3.text())
+            self.currentPlotWidget.yLabel = self.ui.lineEdit_3.text()
         except:
-            self.currentPlotWidget.getPlotItem().setLabel('left', text='Y-Axis')
+            self.currentPlotItem.setLabel('left', text='Y-Axis')
+            self.currentPlotWidget.yLabel = 'Y-Axis'
         try:
-            self.currentPlotWidget.getPlotItem().setLabel('bottom', text=self.ui.lineEdit_4.text())
+            self.currentPlotItem.setLabel('bottom', text=self.ui.lineEdit_4.text())
+            self.currentPlotWidget.xLabel = self.ui.lineEdit_4.text()
         except:
-            self.currentPlotWidget.getPlotItem().setLabel('bottom', text='X-Axis')
+            self.currentPlotItem.setLabel('bottom', text='X-Axis')
+            self.currentPlotWidget.xLabel = 'X-Axis'
+
 
     def canJson(self):
         global Canfilename

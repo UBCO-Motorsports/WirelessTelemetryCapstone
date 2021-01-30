@@ -44,8 +44,8 @@ class GraphManager(QtGui.QWidget):
                 self.graph_array[i][j].yData = self.SerialModule.array1
 
                 plotItem = self.graph_array[i][j].getPlotItem()
-                plotItem.setLabel('bottom', text='time')
-                plotItem.setLabel('left', text='y-axis')
+                plotItem.setLabel('bottom', text=self.graph_array[i][j].xLabel)
+                plotItem.setLabel('left', text=self.graph_array[i][j].yLabel)
 
 
 
@@ -91,7 +91,7 @@ class GraphManager(QtGui.QWidget):
             # Iterates through each graph/dial and refreshes its data
             for i, row in enumerate(self.graph_array):
                 for graph in row:
-                    if graph.type == 'xy_graph':
+                    if graph.type == 'time_domain':
                         graph.clear()
                         graph.plot(graph.xData, self.serialArrays[i], pen=self.pen, clear=True)
                         # print('cartesian')
@@ -133,9 +133,13 @@ class PlotWdgt(pg.PlotWidget):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored))
         self.parentWidget = parentWidget
-        self.type = 'xy_graph'
+        self.type = 'time_domain'
         self.xData = []
         self.yData = []
+        self.xLabel = 'X-Axis'
+        self.yLabel = 'Y-Axis'
+        self.title = ''
+        #TODO store the current axis labels, legend, and datasets to populate config menu
 
     def configMenuCalled(self):
         # Calls parent widget to open edit menu
