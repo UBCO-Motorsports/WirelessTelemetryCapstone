@@ -26,55 +26,24 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Better sizing for page selection menu
         self.ui.frame_left_menu.setMinimumWidth(100)
+        # Initialize page selection buttons
+        self.initPageButtons()
 
-        ## Pages-------------------------------------------------------------------------------------------------------
-        ##Home Page
-        self.ui.stackedWidget.setCurrentWidget(self.ui.home_page)
-        self.ui.btn_home.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.home_page))
-        self.ui.btn_home.setCheckable(True)
-        self.ui.btn_home.setChecked(True)
-        self.ui.btn_home.setIcon(QIcon('icons/home.png'))
+        # Initialize Setup Page
+        self.initSetupPage()
+        # Initialize Graph Page
+        self.initGraphPage()
+        # Initialize Command Page
+        self.initCommandPage()
 
-        ##Setup Page
-        self.ui.btn_page_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.setup_page))
-        self.ui.btn_page_2.setCheckable(True)
-        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))  # /wrench /script-attribute-s
-        self.comPortComboBox = comPortComboBox(self)  # Generate custom COM port menu
-        self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox,
-                                                 self.comPortComboBox)  # Places custom COM port menu in setup layout
-        self.ui.port_combobox.close()  # CLoses old COM port menu
-        self.ui.serial_btn.clicked.connect(self.connectSerial)  # Connect functions to serial button
-        self.ui.refresh_btn.clicked.connect(self.comPortComboBox.populateCOMSelect)
-        self.ui.import_btn.clicked.connect(self.canJson)
-        self.ui.tableWidget.cellClicked.connect(self.tabletolist)
-        self.ui.listWidget.itemClicked.connect(self.listremove)
-        self.ui.apply_btn.clicked.connect(self.applytoConfig)
-        self.ui.apply_btn.setEnabled(True)
+        # Timer for testing graphing -> calls update function
+        self.timer = QtCore.QTimer()
+        self.timer.setInterval(20)
+        self.timer.timeout.connect(self.GraphManager.update)
+        self.timer.start()
 
-        ##Graph Page
-        self.ui.graph_page.setStyleSheet("background-color: rgb(35, 35, 35)")  # Sets background of graph page
-        # Initializing GraphManager onto graph page
-        self.GraphManager = GraphManager(self)
-        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu) # Reorganize widgets
-        self.ui.horizontalLayout_7.removeWidget(self.ui.graph_widget) # Reorganize widgets
-        self.ui.horizontalLayout_7.addWidget(self.GraphManager) # Reorganize widgets
-        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu) # Reorganize widgets
-        self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
-        self.ui.btn_page_3.setCheckable(True)
-        self.ui.btn_page_3.setIcon(
-            QIcon('icons/system-monitor.png'))  # /blue-document-block /system-monitor /application-wave
-        # Graph page functions
-        self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
-        self.ui.importlayout_btn.clicked.connect(Open)
-        self.ui.savelayout_btn.clicked.connect(Save)
-        self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide) # Hides configuration menu when clicked
-        self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None)) # Clears border from currently selected plot
-        self.ui.configMenu.hide() # Initially hide configuration menu
-        self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText())) # Change number of graphs shown when combobox value changed
-        self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count()-1) # Initialize number of shown graphs to maximum
-        self.ui.applyconfig_btn.clicked.connect(self.configApply)
-
-
+    def initPageButtons(self):
+        # Add page selection buttons to a group for better control
         ##Command Page
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
@@ -84,16 +53,16 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.pushButton.clicked.connect(lambda: self.sendcommandfromBox())
         self.ui.commandbox.returnPressed.connect(lambda: self.sendcommandfromBox())
         self.ui.listWidget_2.clicked.connect(lambda: self.sendcommandfromList())
-
-        # Add page buttons to a group for better control
         self.page_btn_group = QButtonGroup()
-        self.page_btn_group.setExclusive(True)
+        self.page_btn_group.setExclusive(True)  # Only one button selected at a time
         self.page_btn_group.addButton(self.ui.btn_home)
         self.page_btn_group.addButton(self.ui.btn_page_2)
         self.page_btn_group.addButton(self.ui.btn_page_3)
         self.page_btn_group.addButton(self.ui.btn_page_4)
-        # Set style sheet of all buttons
         for button in self.page_btn_group.buttons():
+            # Make all buttons checkable
+            button.setCheckable(True)
+            # Set style sheet of all buttons
             button.setStyleSheet("QPushButton {\n"
                                  "    color: rgb(255, 255, 255);\n"
                                  "    background-color: rgb(35, 35, 35);\n"
@@ -105,23 +74,71 @@ class MainWindow(QtWidgets.QMainWindow):
                                  "QPushButton:checked {\n"
                                  "    background-color: rgb(100, 100, 100);\n"
                                  "}")
-        ## End of Pages-------------------------------------------------------------------------------------------------------
 
-        # Timer for testing graphing -> calls update function
-        self.timer = QtCore.QTimer()
-        self.timer.setInterval(20)
-        self.timer.timeout.connect(self.GraphManager.update)
-        self.timer.start()
+        # Set home page as initial widget
+        self.ui.stackedWidget.setCurrentWidget(self.ui.home_page)
+        self.ui.btn_home.setChecked(True)
 
-        # Config menu inits
+        # Connect page buttons
+        self.ui.btn_home.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.home_page))
+        self.ui.btn_page_2.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.setup_page))
+        self.ui.btn_page_3.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.graph_page))
+        self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
+
+        # Set icons for each page button
+        self.ui.btn_home.setIcon(QIcon('icons/home.png'))
+        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))  # /wrench /script-attribute-s
+        self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png'))  #  /system-monitor /application-wave
+        self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
+
+    def initSetupPage(self):
+        self.comPortComboBox = comPortComboBox(self)  # Generate custom COM port menu
+        self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox, self.comPortComboBox)  # Places custom COM port menu in setup layout
+        self.ui.port_combobox.close()  # CLoses old COM port menu
+        self.ui.serial_btn.clicked.connect(self.connectSerial)  # Connect functions to serial button
+        self.ui.refresh_btn.clicked.connect(self.comPortComboBox.populateCOMSelect)  # Populate COM port menu when clicked
+        self.ui.import_btn.clicked.connect(self.canJson)
+        self.ui.tableWidget.cellClicked.connect(self.tabletolist)
+        self.ui.listWidget.itemClicked.connect(self.listremove)
+        self.ui.apply_btn.clicked.connect(self.applytoConfig)
+        self.ui.apply_btn.setEnabled(True)
+
+    def initGraphPage(self):
+        # Initializing GraphManager onto graph page
+        self.GraphManager = GraphManager(self)
+        self.ui.horizontalLayout_7.removeWidget(self.ui.configMenu)  # Reorganize widgets
+        self.ui.horizontalLayout_7.removeWidget(self.ui.graph_widget)  # Reorganize widgets
+        self.ui.horizontalLayout_7.addWidget(self.GraphManager)  # Reorganize widgets
+        self.ui.horizontalLayout_7.addWidget(self.ui.configMenu)  # Reorganize widgets
+
+        # Graph page functions
+        self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
+        self.ui.importlayout_btn.clicked.connect(Open)  #TODO
+        self.ui.savelayout_btn.clicked.connect(Save)  #TODO
+        self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
+        self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None))  # Clears border from currently selected plot
+        self.ui.configMenu.hide()  # Initially hide configuration menu
+        self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))  # Change number of graphs shown when combobox value changed
+        self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 1)  # Initialize number of shown graphs to maximum
+        self.ui.applyconfig_btn.clicked.connect(self.configApply)
+
+    def initConfigMenu(self):
+        # Initialize scroll widget for available data channels
         self.data_layout = QVBoxLayout()
         self.scrollWidget = QWidget()
         self.ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+
+        # Set y-ranging to true
         self.ui.checkBox.setChecked(True)
         self.ui.checkBox.stateChanged.connect(self.yAutorangeEnable)
         self.yAutorangeEnable()
+
+        #TODO move style sheet to QtDesigner code
         self.ui.lineEdit_5.setStyleSheet("QLineEdit{background-color: rgb(255,255,255);}QLineEdit:disabled{background-color: rgb(100,100,100);}")
+
+    def initCommandPage(self):
+
 
     def yAutorangeEnable(self):
         if self.ui.checkBox.isChecked():
@@ -229,9 +246,16 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.lineEdit_5.setDisabled(True)
             self.currentPlotWidget.enableAutoRange(x=True,y=True)
         else:
-            self.ui.lineEdit_5.setDisabled(False)
-            self.currentPlotWidget.enableAutoRange(x=True,y=False)
-            # self.currentPlotWidget.setYRange(-float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_5.text()))
+            # Sets y-bounds if a valid value is entered
+            try:
+                self.ui.lineEdit_5.setDisabled(False)
+                self.currentPlotWidget.enableAutoRange(x=True, y=False)
+                self.currentPlotWidget.setYRange(-float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_5.text())) #TODO [lowerbound, upperbound] or [0,upperbound]
+            except:
+                self.ui.lineEdit_5.setDisabled(True)
+                self.currentPlotWidget.enableAutoRange(x=True,y=False)
+                self.ui.lineEdit_5.clear()
+                self.ui.checkBox.setChecked(True)
 
         # Set axes labels and title
         try:
