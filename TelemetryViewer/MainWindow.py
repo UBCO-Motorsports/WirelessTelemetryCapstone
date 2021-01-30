@@ -33,6 +33,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.initSetupPage()
         # Initialize Graph Page
         self.initGraphPage()
+        # Initialize configuration menu
+        self.initConfigMenu()
         # Initialize Command Page
         self.initCommandPage()
 
@@ -138,7 +140,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_5.setStyleSheet("QLineEdit{background-color: rgb(255,255,255);}QLineEdit:disabled{background-color: rgb(100,100,100);}")
 
     def initCommandPage(self):
-
+        self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
+        self.ui.btn_page_4.setCheckable(True)
+        self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
+        self.ui.EmergencyShutdown_btn.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("s\r"))
+        self.ui.pushButton_2.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("r\r"))
+        self.ui.pushButton.clicked.connect(lambda: self.sendcommandfromBox())
+        self.ui.commandbox.returnPressed.connect(lambda: self.sendcommandfromBox())
+        self.ui.listWidget_2.clicked.connect(lambda: self.sendcommandfromList())
 
     def yAutorangeEnable(self):
         if self.ui.checkBox.isChecked():
