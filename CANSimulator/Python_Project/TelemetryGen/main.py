@@ -21,17 +21,15 @@ if __name__ == '__main__':
         print("Not enough arguments!")
     outputdict = {"": [0.1, 0.1, 0.1, 0.1]}
     outputdict.clear()
-    with open(sys.argv[1]) as csvfile:
-        reader = csv.DictReader(csvfile)
-        for row in reader:
-            for header in row:
-                print(header)
-                if header in CANDATA.keys():
-                    if header in outputdict:
-                        # If doesn't exist in output dict yet, add frame data to start of list
-                        outputdict[header].append(float(row[header]))
-                    else:
-                        outputdict[header] = CANDATA[header]
+    for key in CANDATA.keys():
+        with open(sys.argv[1]) as csvfile:
+            reader = csv.DictReader(csvfile)
+            if key in reader.fieldnames:
+                print(key + " found")
+                for row in reader:
+                    if key not in outputdict:
+                        outputdict[key] = CANDATA[key]
+                    outputdict[key].append(float(row[key]))
 
     # Now parse dictionary into C float[][] array
     outputFile = open(sys.argv[2], "w")

@@ -109,11 +109,11 @@ SPI_HandleTypeDef hspi1;
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
-/* Definitions for SendCANFrame */
-osThreadId_t SendCANFrameHandle;
-const osThreadAttr_t SendCANFrame_attributes = {
-  .name = "SendCANFrame",
-  .priority = (osPriority_t) osPriorityHigh,
+/* Definitions for CAN_Tx_MB0 */
+osThreadId_t CAN_Tx_MB0Handle;
+const osThreadAttr_t CAN_Tx_MB0_attributes = {
+  .name = "CAN_Tx_MB0",
+  .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
 /* Definitions for SendTelemetry */
@@ -123,10 +123,29 @@ const osThreadAttr_t SendTelemetry_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
   .stack_size = 128 * 4
 };
+/* Definitions for CAN_Tx_MB1 */
+osThreadId_t CAN_Tx_MB1Handle;
+const osThreadAttr_t CAN_Tx_MB1_attributes = {
+  .name = "CAN_Tx_MB1",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 128 * 4
+};
+/* Definitions for CAN_Tx_MB2 */
+osThreadId_t CAN_Tx_MB2Handle;
+const osThreadAttr_t CAN_Tx_MB2_attributes = {
+  .name = "CAN_Tx_MB2",
+  .priority = (osPriority_t) osPriorityNormal,
+  .stack_size = 128 * 4
+};
 /* Definitions for ProcessCommandSem */
 osSemaphoreId_t ProcessCommandSemHandle;
 const osSemaphoreAttr_t ProcessCommandSem_attributes = {
   .name = "ProcessCommandSem"
+};
+/* Definitions for MailboxAvailable */
+osSemaphoreId_t MailboxAvailableHandle;
+const osSemaphoreAttr_t MailboxAvailable_attributes = {
+  .name = "MailboxAvailable"
 };
 /* USER CODE BEGIN PV */
 
@@ -194,7 +213,7 @@ CAN_TxHeaderTypeDef can_tx_header6 = {0x373, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 CAN_TxHeaderTypeDef can_tx_header78 = {0x3E0, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
 //GPS_Speed
-CAN_TxHeaderTypeDef can_tx_header10 = {0x390, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+CAN_TxHeaderTypeDef can_tx_header10 = {0x370, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 
 
 
@@ -215,8 +234,10 @@ static void MX_CAN_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART1_UART_Init(void);
-void StartSendCANFrame(void *argument);
+void StartCAN_Tx_MB0(void *argument);
 void StartSendTelemetry(void *argument);
+void StartCAN_Tx_MB1(void *argument);
+void StartCAN_Tx_MB2(void *argument);
 
 static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
@@ -308,6 +329,15 @@ void Init_CAN(void) {
 
 	//Enable IRQ's
 	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+	HAL_CAN_ActivateNotification(&hcan, CAN_IT_TX_MAILBOX_EMPTY);
+	HAL_CAN_ActivateNotification(&hcan, CAN_TSR_RQCP0);
+	HAL_CAN_ActivateNotification(&hcan, CAN_TSR_TXOK0);
+
+	HAL_CAN_ActivateNotification(&hcan, CAN_TSR_RQCP1);
+	HAL_CAN_ActivateNotification(&hcan, CAN_TSR_TXOK1);
+
+	HAL_CAN_ActivateNotification(&hcan, CAN_TSR_RQCP2);
+	HAL_CAN_ActivateNotification(&hcan, CAN_TSR_TXOK2);
 
 	//Start receiving - don't think we need this here
 	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
@@ -354,9 +384,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-
-
-
   HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 
@@ -386,6 +413,9 @@ int main(void)
   /* creation of ProcessCommandSem */
   ProcessCommandSemHandle = osSemaphoreNew(1, 1, &ProcessCommandSem_attributes);
 
+  /* creation of MailboxAvailable */
+  MailboxAvailableHandle = osSemaphoreNew(1, 1, &MailboxAvailable_attributes);
+
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
@@ -399,11 +429,17 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of SendCANFrame */
-  SendCANFrameHandle = osThreadNew(StartSendCANFrame, NULL, &SendCANFrame_attributes);
+  /* creation of CAN_Tx_MB0 */
+  CAN_Tx_MB0Handle = osThreadNew(StartCAN_Tx_MB0, NULL, &CAN_Tx_MB0_attributes);
 
   /* creation of SendTelemetry */
   SendTelemetryHandle = osThreadNew(StartSendTelemetry, NULL, &SendTelemetry_attributes);
+
+  /* creation of CAN_Tx_MB1 */
+  CAN_Tx_MB1Handle = osThreadNew(StartCAN_Tx_MB1, NULL, &CAN_Tx_MB1_attributes);
+
+  /* creation of CAN_Tx_MB2 */
+  CAN_Tx_MB2Handle = osThreadNew(StartCAN_Tx_MB2, NULL, &CAN_Tx_MB2_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -739,95 +775,148 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 	}
 }
 
+
+void MailboxAvailable(void) {
+	HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	osSemaphoreRelease(MailboxAvailableHandle);
+}
+
+void HAL_CAN_TxMailbox0CompleteCallback(CAN_HandleTypeDef *hcan) {
+	MailboxAvailable();
+}
+
+void HAL_CAN_TxMailbox1CompleteCallback(CAN_HandleTypeDef *hcan) {
+	MailboxAvailable();
+}
+
+void HAL_CAN_TxMailbox2CompleteCallback(CAN_HandleTypeDef *hcan) {
+	MailboxAvailable();
+}
+
+
+
+
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartSendCANFrame */
+/* USER CODE BEGIN Header_StartCAN_Tx_MB0 */
 /**
-  * @brief  Function implementing the SendCANFrame thread.
+  * @brief  Function implementing the CAN_Tx_MB0 thread.
   * @param  argument: Not used
   * @retval None
   */
-/* USER CODE END Header_StartSendCANFrame */
-void StartSendCANFrame(void *argument)
+/* USER CODE END Header_StartCAN_Tx_MB0 */
+void StartCAN_Tx_MB0(void *argument)
 {
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
+
 	uint8_t i = 5;
   for(;;)
   {
     osDelay(100);
-    if (i > 148) {
+    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+    if (i > 149) {
     	i = 5;
     }
 		uint32_t mailbox;
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
+		uint16_t value;
+
+		//RPM
+		value = (uint16_t)(carData[0][i]);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
+
+		//Throttle Pos
+		value = (uint16_t)(carData[1][i] * 10);
+		can_tx_data[2] = value & 0xFF;
+		can_tx_data[3] = value >> 8;
+
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header12, can_tx_data, &mailbox);
 
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
+
+		//Lat accel
+		value = (int16_t)(carData[2][i] * 10.0 * 9.8);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
 		can_tx_data[2] = 0;
 		can_tx_data[3] = 0;
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header3, can_tx_data, &mailbox);
 
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
+
+		//Oil pressure
+		value = (uint16_t)(carData[3][i] * 10 * 6.89476);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
 		can_tx_data[2] = 0;
 		can_tx_data[3] = 0;
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header4, can_tx_data, &mailbox);
 
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
+		//ECU_Lambda1
+		value = (uint16_t)(carData[4][i] * 1000);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
 		can_tx_data[2] = 0;
 		can_tx_data[3] = 0;
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header5, can_tx_data, &mailbox);
 
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
+		//ECU_EGTSensor1
+		value = (uint16_t)((carData[5][i] + 273.15) * 10);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
 		can_tx_data[2] = 0;
 		can_tx_data[3] = 0;
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header6, can_tx_data, &mailbox);
 
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
+		//ECU_CoolantTemp and Oil temp
+		value = (uint16_t)((carData[6][i] + 273.15) * 10);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
+		value = (uint16_t)((carData[8][i] + 273.15) * 10);
+		can_tx_data[2] = value & 0xFF;
+		can_tx_data[3] = value >> 8;
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header78, can_tx_data, &mailbox);
 
-		can_tx_data[0] = carData[0][i];
-		can_tx_data[1] = 0;
+		//Speed
+		value = (uint16_t)(carData[9][i] * 10);
+		can_tx_data[0] = value & 0xFF;
+		can_tx_data[1] = value >> 8;
 		can_tx_data[2] = 0;
 		can_tx_data[3] = 0;
 		can_tx_data[4] = 0;
 		can_tx_data[5] = 0;
 		can_tx_data[6] = 0;
 		can_tx_data[7] = 0;
+		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
 		HAL_CAN_AddTxMessage(&hcan, &can_tx_header10, can_tx_data, &mailbox);
 
 		i++;
@@ -875,6 +964,42 @@ void StartSendTelemetry(void *argument)
 		*/
   }
   /* USER CODE END StartSendTelemetry */
+}
+
+/* USER CODE BEGIN Header_StartCAN_Tx_MB1 */
+/**
+* @brief Function implementing the CAN_Tx_MB1 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCAN_Tx_MB1 */
+void StartCAN_Tx_MB1(void *argument)
+{
+  /* USER CODE BEGIN StartCAN_Tx_MB1 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartCAN_Tx_MB1 */
+}
+
+/* USER CODE BEGIN Header_StartCAN_Tx_MB2 */
+/**
+* @brief Function implementing the CAN_Tx_MB2 thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartCAN_Tx_MB2 */
+void StartCAN_Tx_MB2(void *argument)
+{
+  /* USER CODE BEGIN StartCAN_Tx_MB2 */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartCAN_Tx_MB2 */
 }
 
  /**

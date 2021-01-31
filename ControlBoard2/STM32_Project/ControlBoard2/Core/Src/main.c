@@ -6,13 +6,13 @@
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
-  * This software component is licensed by ST under Ultimate Liberty license
-  * SLA0044, the "License"; You may not use this file except in compliance with
-  * the License. You may obtain a copy of the License at:
-  *                             www.st.com/SLA0044
+  * This software component is licensed by ST under BSD 3-Clause license,
+  * the "License"; You may not use this file except in compliance with the
+  * License. You may obtain a copy of the License at:
+  *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
   */
@@ -24,6 +24,13 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
+//For sprintf and memcpy
+#include "string.h"
+//For atoi
+#include "stdlib.h"
+//For ceil()
+#include "math.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -34,6 +41,58 @@ typedef StaticTask_t osStaticThreadDef_t;
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+//UJA Register Definitions
+
+#define UJA_REG_WDGANDSTATUS 0
+#define UJA_REG_MODECONTROL 1
+#define UJA_REG_INTCON 2
+#define UJA_REG_INTREAD 3
+
+//WD_and_Status register
+//RO
+#define UJA_RO_RW 0
+#define UJA_RO_R 1
+
+//WMC
+#define UJA_WMC_WND 0
+#define UJA_WMC_TO 1
+
+//NWP
+#define UJA_NWP_8 0
+#define UJA_NWP_16 1
+#define UJA_NWP_32 2
+#define UJA_NWP_64 3
+#define UJA_NWP_128 4
+#define UJA_NWP_256 5
+#define UJA_NWP_1024 6
+#define UJA_NWP_4096 7
+
+
+//Mode_Control register
+#define UJA_MC_STBY 0
+#define UJA_MC_SLP 1
+#define UJA_MC_V2OFF 2
+#define UJA_MC_V2ON 3
+
+//Int_Control register
+#define UJA_V1UIE_OFF 0
+#define UJA_V1UIE_ON 1
+
+#define UJA_V2UIE_OFF 0
+#define UJA_V2UIE_ON 1
+
+
+//Message struct parameter
+#define MSG_ENABLED 1
+#define MSG_DISABLED 0
+
+
+//CAN Output Frame bits
+#define CAN_TXFRAME0_SHUTDOWN 1
+#define CAN_TXFRAME0_BIT2 1<<1
+
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -89,6 +148,60 @@ const osSemaphoreAttr_t ProcessCommandSem_attributes = {
 };
 /* USER CODE BEGIN PV */
 
+struct message {
+	uint32_t id;
+	uint8_t  bit;
+	uint8_t length;
+	int32_t value;
+	uint8_t enabled;
+};
+
+
+struct message messageArray[16];
+
+const struct message defaultMessageArray[16] = {
+
+		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
+
+		{ 0x361,  16,  16,   -1,  MSG_ENABLED  },  //Oil Pressure
+
+		{ 0x3E0,   0,  16,   -1,  MSG_ENABLED  },  //Coolant Temperature
+
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Long Accel
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //GPS Speed
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Oil Temperature
+
+		{ 0x373,   0,  16,   -1,  MSG_ENABLED  },  //EGT 1
+
+		{ 0x368,   0,  16,   -1,  MSG_ENABLED  },  //Wideband
+
+		{ 0x3EB,  32,  16,   -1,  MSG_ENABLED  },  //Ignition Angle
+
+		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED }   //Disabled
+};
+
+
+uint8_t can_rx_data[8];
+CAN_RxHeaderTypeDef can_rx_header;
+
+uint8_t can_tx_data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
+CAN_TxHeaderTypeDef can_tx_header = {0x200, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
+
+
+uint8_t uart_rec_buff[24];
+char uart_tx_buff[128];
+
+uint8_t cmdbuff[24];
+int8_t cmdbuffind = 0;
+
+const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_TO << 3) | (UJA_NWP_1024);
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,10 +219,113 @@ void StartFeedWDG(void *argument);
 static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 
+void DebugPrint(char *msg);
+void Init_SBC(void);
+void ConfigureCANFilters(struct message * messageArray, uint8_t size);
+void Init_CAN(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+//Prints message to UART1 for debugging
+void DebugPrint(char *msg) {
+	HAL_UART_Transmit(&huart1, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+}
+
+
+//Initializes UJA SBC
+void Init_SBC(void) {
+	HAL_StatusTypeDef result;
+	uint16_t data[1];
+	uint16_t rxdata[1];
+
+
+	/*
+	//Setup WDG and Status register
+	data[0] = 0;
+	data[0] = WD_SETUP << 8;
+
+	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+
+	while (hspi1.State != HAL_SPI_STATE_READY) {
+		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 1);
+	}
+	HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
+	*/
+
+
+	//Setup Mode Control register
+	data[0] = 0;
+	data[0] = (UJA_REG_MODECONTROL << 13) | (UJA_RO_RW << 12) | (UJA_MC_V2ON << 10);
+
+	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+
+	while (hspi1.State != HAL_SPI_STATE_READY) {
+		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
+	}
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+}
+
+
+
+//Procedurally generates and sets CAN Filter configurations from the message[] struct array config
+void ConfigureCANFilters(struct message * messageArray, uint8_t size) {
+	uint32_t configuredIDs[size];
+	int uniques = 0;
+	for (int i = 0; i < size; i++) {
+		struct message thismessage = messageArray[i];
+		int create = 1;
+		for (int j = 0; j < size; j++) {
+			if (configuredIDs[j] == thismessage.id) {
+				create = 0;
+			}
+		}
+		if (create == 1 && thismessage.enabled) {
+			//Add this ID to the list of already configured ID's to skip duplicates
+			configuredIDs[uniques] = thismessage.id;
+			DebugPrint("Creating new filter\r\n");
+			CAN_FilterTypeDef filter;
+
+			//This bit shifting was a massive PITA to figure out... see page 1092 of the RM for reasoning
+			filter.FilterIdHigh = ((thismessage.id << 5)  | (thismessage.id >> (32 - 5))) & 0xFFFF;
+			filter.FilterIdLow = (thismessage.id >> (11 - 3)) & 0xFFF8;
+
+			//Masks set to full rank to check every bit against ID
+			filter.FilterMaskIdHigh = 0xFFFF;
+			filter.FilterMaskIdLow = 0xFFFF;
+
+			//Filter options
+			filter.FilterScale = CAN_FILTERSCALE_32BIT;
+			filter.FilterActivation = ENABLE;
+			filter.FilterMode = CAN_FILTERMODE_IDMASK;
+			filter.FilterFIFOAssignment = CAN_FILTER_FIFO0;
+
+			//Set filter bank to the current count of uniques
+			filter.FilterBank = uniques;
+
+			//Finally pass filter to HAL
+			HAL_CAN_ConfigFilter(&hcan, &filter);
+			uniques++;
+		}
+	}
+}
+
+void Init_CAN(void) {
+	//Configure all receive filters from the config array
+	ConfigureCANFilters(messageArray, sizeof(messageArray) / sizeof(struct message));
+
+	//Start CAN operation
+	HAL_CAN_Start(&hcan);
+
+	//Enable IRQ's
+	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
+
+	//Start receiving - don't think we need this here
+	HAL_CAN_GetRxMessage(&hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
+}
+
 
 /* USER CODE END 0 */
 
@@ -149,6 +365,26 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
+
+
+
+
+
+  HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
+	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+
+
+	Init_CAN();
+	Init_SBC();
+
+
+  //Start receiving UART
+	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
+
+
+	//Load default message configuration
+	//memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
+
 
   /* USER CODE END 2 */
 
@@ -448,6 +684,80 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+//IRQ's
+
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+
+	//Check if delete received from debug uart and only delete if theres entered characters
+	if (uart_rec_buff[0] == (uint8_t)127 && huart == &huart1) {
+		if (cmdbuffind > 0) {
+			DebugPrint((char *)uart_rec_buff);
+			cmdbuffind--;
+		}
+	} else {
+		//Send char to debug console
+		DebugPrint((char *)uart_rec_buff);
+
+		//Check if enter or cmdbuff reaches its limit (prevents overflow)
+		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdbuffind > 23) {
+			DebugPrint("\n>");
+			//Pass command onto task
+			osSemaphoreRelease(ProcessCommandSemHandle);
+
+		} else {
+			cmdbuff[cmdbuffind] = uart_rec_buff[0];
+			cmdbuffind++;
+		}
+	}
+	//Start receiving again
+	HAL_UART_Receive_IT(huart, uart_rec_buff, 1);
+}
+
+
+void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
+{
+	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
+	//HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+	//Parse received bytes using message array
+	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
+		if(messageArray[i].id == can_rx_header.StdId){
+			//Calculate which byte position to start at
+			int bytepos = messageArray[i].bit / 8;
+
+			//Calculate number of bytes that need to be checked
+			int bytes = ceil(messageArray[i].length / (float)8);
+
+			uint32_t finalval = 0;
+			int j = 0;
+			//Iterate through all bytes that must be read for this message
+			for (int b = bytepos; b < bytepos + bytes; b++) {
+				uint8_t tempval;
+				//If on last byte we may need to truncate unneeded parts dependent on length of data
+				if (b == bytepos + bytes - 1) {
+					//We need a left shift and a right shift to extract the bits we want
+					uint8_t byteoffset = (messageArray[i].length - ((bytes-1) * 8));
+					uint8_t leftshift = 8 - (messageArray[i].bit - (bytepos * 8)) - byteoffset;
+					uint8_t rightshift = 8 - byteoffset;
+					tempval = (can_rx_data[b] << leftshift) >>  rightshift;
+				} else {
+					//Use the whole byte
+					tempval = can_rx_data[b];
+				}
+				//Calculate the size of the next data section to find the required shift
+				int nextsize = messageArray[i].length - ((j+1) * 8);
+				//Limit it to 0
+				if (nextsize < 0) {
+					nextsize = 0;
+				}
+				finalval += tempval << nextsize;
+				j++;
+			}
+			//Finally set final value into message array struct
+			messageArray[i].value = finalval;
+		}
+	}
+}
+
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_StartSendCANFrame */
@@ -463,7 +773,9 @@ void StartSendCANFrame(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    osDelay(100);
+		uint32_t mailbox;
+		HAL_CAN_AddTxMessage(&hcan, &can_tx_header, can_tx_data, &mailbox);
   }
   /* USER CODE END 5 */
 }
@@ -481,7 +793,42 @@ void StartProcessCommand(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+  	//Wait for semaphore passed by UART IRQ when the command buffer is ready for processing
+    osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
+
+    //Evaluate first char of the command buffer to determine command
+		if (cmdbuff[0] == *(uint8_t *)"r") {
+			//Restart command
+			DebugPrint("Rebooting...\r\n\r\n");
+			NVIC_SystemReset();
+
+		} else if (cmdbuff[0] == *(uint8_t *)"d") {
+			//Retreives the last value in message buffer for corrosponding ID
+			int filter = atoi((char *)&cmdbuff[1]);
+			char msg[32] = "";
+			sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
+			DebugPrint(msg);
+
+		} else if (cmdbuff[0] == *(uint8_t *)"f") {
+			//Command f can set a CAN filter and
+			int filter = atoi((char *)&cmdbuff[1]);
+			uint16_t id = atoi((char *)&cmdbuff[3]);
+			uint8_t bit = atoi((char *)&cmdbuff[8]);
+			uint8_t size = atoi((char *)&cmdbuff[11]);
+			messageArray[filter].id = id;
+			messageArray[filter].bit = bit;
+			messageArray[filter].value = -1;
+			messageArray[filter].length = size;
+			messageArray[filter].enabled = MSG_ENABLED;
+			ConfigureCANFilters(messageArray, 16);
+
+		} else if (cmdbuff[0] == *(uint8_t *)"s") {
+			//Shutdown
+			//Set can_tx frame shutdown bit to 1
+			can_tx_data[0] |= CAN_TXFRAME0_SHUTDOWN;
+		}
+		//Resets cmdbuff index
+		cmdbuffind = 0;
   }
   /* USER CODE END StartProcessCommand */
 }
@@ -499,7 +846,30 @@ void StartSendTelemetry(void *argument)
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+  	//Transmit at 10hz
+    osDelay(100);
+
+
+    HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+  	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
+        		messageArray[0].value,
+    				messageArray[1].value,
+    				messageArray[2].value,
+    				messageArray[3].value,
+    				messageArray[4].value,
+    				messageArray[5].value,
+    				messageArray[6].value,
+    				messageArray[7].value,
+    				messageArray[8].value,
+    				messageArray[9].value,
+    				messageArray[10].value,
+    				messageArray[11].value,
+    				messageArray[12].value,
+    				messageArray[13].value,
+    				messageArray[14].value,
+    				messageArray[15].value);
+		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
   }
   /* USER CODE END StartSendTelemetry */
 }
@@ -514,10 +884,28 @@ void StartSendTelemetry(void *argument)
 void StartFeedWDG(void *argument)
 {
   /* USER CODE BEGIN StartFeedWDG */
+
+	uint32_t tick;
+	tick = osKernelGetTickCount();
+	tick += 700;
+
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+
+    osDelayUntil(tick);
+    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
+    HAL_StatusTypeDef result;
+    /*
+		uint16_t data[1];
+		uint16_t rxdata[1];
+		data[0] = 0;
+		data[0] = WD_SETUP << 8;
+
+		result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+     */
+    tick += 700;
   }
   /* USER CODE END StartFeedWDG */
 }
@@ -551,10 +939,7 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+
   /* USER CODE END Error_Handler_Debug */
 }
 
@@ -570,7 +955,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 {
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+     tex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
