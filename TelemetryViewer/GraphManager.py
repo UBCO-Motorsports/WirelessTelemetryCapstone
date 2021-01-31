@@ -139,6 +139,8 @@ class PlotWdgt(pg.PlotWidget):
         self.xLabel = 'X-Axis'
         self.yLabel = 'Y-Axis'
         self.title = ''
+        self.yRange = 10
+        self.autoRange = True
         #TODO store the current axis labels, legend, and datasets to populate config menu
 
     def configMenuCalled(self):
@@ -154,7 +156,7 @@ class CustomViewBox(pg.ViewBox):
         # Adds edit option to right click menu
         self.menu.addSeparator()
         self.editData = QtGui.QAction("Edit Data", self.menu)
-        self.editData.triggered.connect(self.parentWidget.configMenuCalled) #TODO Maybe return 'self' to link to data selection panel
+        self.editData.triggered.connect(self.parentWidget.configMenuCalled)
         self.menu.addAction(self.editData)
 
 

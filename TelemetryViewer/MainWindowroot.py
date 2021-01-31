@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1031, 802)
+        MainWindow.resize(1035, 811)
         MainWindow.setMinimumSize(QtCore.QSize(500, 0))
         MainWindow.setStyleSheet("background-color: rgb(45, 45, 45);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -563,7 +563,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 28))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 175, 198))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -610,7 +610,13 @@ class Ui_MainWindow(object):
         self.checkBox.setObjectName("checkBox")
         self.horizontalLayout_13.addWidget(self.checkBox)
         self.lineEdit_5 = QtWidgets.QLineEdit(self.frame_23)
-        self.lineEdit_5.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.lineEdit_5.setStyleSheet("QLineEdit{\n"
+"background-color: rgb(255, 255, 255);\n"
+"}\n"
+"QLineEdit:disabled{\n"
+"background-color: rgb(100,100,100);\n"
+"border-width: 0px;\n"
+"}")
         self.lineEdit_5.setObjectName("lineEdit_5")
         self.horizontalLayout_13.addWidget(self.lineEdit_5)
         self.verticalLayout_14.addWidget(self.frame_23)
@@ -975,7 +981,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(2)
         self.configMenuStack.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 

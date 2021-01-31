@@ -46,15 +46,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def initPageButtons(self):
         # Add page selection buttons to a group for better control
-        ##Command Page
-        self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
-        self.ui.btn_page_4.setCheckable(True)
-        self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
-        self.ui.EmergencyShutdown_btn.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("s\r"))
-        self.ui.pushButton_2.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("r\r"))
-        self.ui.pushButton.clicked.connect(lambda: self.sendcommandfromBox())
-        self.ui.commandbox.returnPressed.connect(lambda: self.sendcommandfromBox())
-        self.ui.listWidget_2.clicked.connect(lambda: self.sendcommandfromList())
         self.page_btn_group = QButtonGroup()
         self.page_btn_group.setExclusive(True)  # Only one button selected at a time
         self.page_btn_group.addButton(self.ui.btn_home)
@@ -115,8 +106,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Graph page functions
         self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
-        self.ui.importlayout_btn.clicked.connect(Open)  #TODO
-        self.ui.savelayout_btn.clicked.connect(Save)  #TODO
+        # TODO 'Log Default' functionality
+        self.ui.importlayout_btn.clicked.connect(Open)  # TODO
+        self.ui.savelayout_btn.clicked.connect(Save)  # TODO
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
         self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None))  # Clears border from currently selected plot
         self.ui.configMenu.hide()  # Initially hide configuration menu
@@ -135,9 +127,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.checkBox.setChecked(True)
         self.ui.checkBox.stateChanged.connect(self.yAutorangeEnable)
         self.yAutorangeEnable()
-
-        #TODO move style sheet to QtDesigner code
-        self.ui.lineEdit_5.setStyleSheet("QLineEdit{background-color: rgb(255,255,255);}QLineEdit:disabled{background-color: rgb(100,100,100);}")
 
     def initCommandPage(self):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
@@ -210,7 +199,7 @@ class MainWindow(QtWidgets.QMainWindow):
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
 
-    # TODO This code allows us to see available COM ports and return using the portlist array. (NOT CALLED ATM)
+    # TODO This code allows us to see available COM ports and return using the portlist array.
     # TODO Now just need to know when to call this function (start of running or call, or always?) and also be able to
     # TODO    return the list of ports, also we can send more data back (ask me - Roy)
     def availableCOMPorts(self):  # Generates a list of available COM ports testing
@@ -247,6 +236,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
         self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
         self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
+        # TODO populate current widget range info
+        # if self.currentPlotWidget.autoRange:
+        #     self.ui.checkBox.setChecked(True)
+        # else:
+        #     self.ui.lineEdit_5.setText(self.currentPlotWidget.yRange)
         self.ui.configMenu.show()
 
     def configApply(self):
@@ -259,7 +253,8 @@ class MainWindow(QtWidgets.QMainWindow):
             try:
                 self.ui.lineEdit_5.setDisabled(False)
                 self.currentPlotWidget.enableAutoRange(x=True, y=False)
-                self.currentPlotWidget.setYRange(-float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_5.text())) #TODO [lowerbound, upperbound] or [0,upperbound]
+                self.currentPlotWidget.yRange = float(self.ui.lineEdit_5.text())
+                self.currentPlotWidget.setYRange(-self.currentPlotWidget.yRange, self.currentPlotWidget.yRange) #TODO [lowerbound, upperbound] or [0,upperbound]
             except:
                 self.ui.lineEdit_5.setDisabled(True)
                 self.currentPlotWidget.enableAutoRange(x=True,y=False)
