@@ -62,11 +62,17 @@ class SerialModule():
         self.serialChannel.write(command.encode())  #should work for sending strings
 
     def readSerial(self):
-        data = self.serialChannel.readline()
-        data = data.decode('utf-8')
-        data = data.rstrip()  # gets rid of \n from energia generated code
-        dataapp = data.split(",")
-        # print(dataapp)
+        try:
+            data = self.serialChannel.readline()
+            data = data.decode('utf-8')
+            data = data.rstrip()  # gets rid of \n from energia generated code
+            dataapp = data.split(",")
+            # print(dataapp)
+        except:
+            dataapp = []
+            for i in range(16):
+                dataapp.append(0)
+
 
         self.array1 = self.array1[1:]  # Remove the first y element.
         self.array2 = self.array2[1:]
