@@ -167,9 +167,14 @@ class MainWindow(QtWidgets.QMainWindow):
             data = json.load(json_file)
             json_file.close()
 
+        self.ui.comboBox_5.clear()
+        self.ui.comboBox.clear()
+        self.ui.comboBox_4.clear()
+        self.ui.comboBox_3.clear()
+
         for i in reversed(range(self.data_layout.count())):
             self.data_layout.itemAt(i).widget().setParent(None)
-
+        messagebuffer = []
         self.radiodict={}
         for i in range(len(data["logged"])):
             name = data["logged"][i]['Name']
@@ -202,14 +207,20 @@ class MainWindow(QtWidgets.QMainWindow):
             # List of channels to send to controller
             # f0 0864 00 16
             #f0 000 00 00
-            messagebuffer = []
             message = "f"+str(i)+" "+str(int(id,16)).zfill(4)+" "+str(position).zfill(2)+" "+str(size).zfill(2)+"\r"
-            print(message)
             messagebuffer.append(message)
 
+        if len(messagebuffer)<16:
+            messagefill =16-len(messagebuffer)
+            length=len(messagebuffer)
+
+        for i in range(messagefill):
+            messagebuffer.append("f"+str(i+length)+" 0000 00 00"+"\r")
+
+
         for messages in messagebuffer:
-            self.GraphManager.SerialModule.sendCommand(messages)
-            print("messages")
+            #self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable
+            print(messages)
 
         # Add checkboxes to config menu scroll area
         for i in self.radiodict.items():
