@@ -41,7 +41,7 @@ class SerialModule():
                 # global serialChannel
                 # self.serialChannel = serialChannel
                 print('try serial')
-                self.serialChannel = SerialClass(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=1, xonxoff=False)      #TODO Change  timeout to 15 seconds...
+                self.serialChannel = SerialClass(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=0.1, xonxoff=False)      #TODO Change  timeout to 15 seconds...
 
                 print('COM connected')
                 return True

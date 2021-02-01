@@ -1,14 +1,24 @@
 {
     "logged": [
         {
-            "Name": "RPM",
+            "Name": "Throttle Position",
             "ID": "0x360",
-            "Units": "RPM",
-            "Scale": 1,
-            "Position": 0,
+            "Units": "%",
+            "Scale": 0.1,
+            "Position": 32,
             "Size": 16,
             "Offset": 0,
-            "Color": "(143, 204, 80, 255)"
+            "Color": "(79, 196, 137, 255)"
+        },
+        {
+            "Name": "EGT Sensor 1",
+            "ID": "0x373",
+            "Units": "K",
+            "Scale": 0.1,
+            "Position": 0,
+            "Size": 16,
+            "Offset": -273.15,
+            "Color": "(33, 13, 34, 255)"
         }
     ]
 }

@@ -201,6 +201,8 @@ char uart_tx_buff[128];
 
 uint8_t cmdbuff[24];
 int8_t cmdbuffind = 0;
+uint8_t processingcommand = 0;
+uint8_t cmdlen = 0;
 
 const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_TO << 3) | (UJA_NWP_1024);
 
@@ -696,6 +698,43 @@ static void MX_GPIO_Init(void)
 
 //IRQ's
 
+void ProcessCommand(void) {
+	//Evaluate first char of the command buffer to determine command
+	if (cmdbuff[0] == *(uint8_t *)"r") {
+		//Restart command
+		DebugPrint("Rebooting...\r\n\r\n");
+		NVIC_SystemReset();
+
+	} else if (cmdbuff[0] == *(uint8_t *)"d") {
+		//Retreives the last value in message buffer for corrosponding ID
+		int filter = atoi((char *)&cmdbuff[1]);
+		char msg[32] = "";
+		sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
+		DebugPrint(msg);
+
+	} else if (cmdbuff[0] == *(uint8_t *)"f") {
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		//Command f can set a CAN filter and
+		int filter = atoi((char *)&cmdbuff[1]);
+		uint16_t id = atoi((char *)&cmdbuff[3]);
+		uint8_t bit = atoi((char *)&cmdbuff[8]);
+		uint8_t size = atoi((char *)&cmdbuff[11]);
+		messageArray[filter].id = id;
+		messageArray[filter].bit = bit;
+		messageArray[filter].value = -1;
+		messageArray[filter].length = size;
+		messageArray[filter].enabled = (id != 0)? MSG_ENABLED : MSG_DISABLED;
+		ConfigureCANFilters(messageArray, 16);
+
+	} else if (cmdbuff[0] == *(uint8_t *)"s") {
+		//Shutdown
+		//Set can_tx frame shutdown bit to 1
+		can_tx_data[0] |= CAN_TXFRAME0_SHUTDOWN;
+	}
+
+}
+
+
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	//Check if delete received from debug uart and only delete if theres entered characters
@@ -711,8 +750,13 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 		//Check if enter or cmdbuff reaches its limit (prevents overflow)
 		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdbuffind > 23) {
 			DebugPrint("\n>");
+
 			//Pass command onto task
-			osSemaphoreRelease(ProcessCommandSemHandle);
+			//osSemaphoreRelease(ProcessCommandSemHandle);
+			ProcessCommand();
+
+			//Resets cmdbuff index
+			cmdbuffind = 0;
 
 		} else {
 			cmdbuff[cmdbuffind] = uart_rec_buff[0];
@@ -722,6 +766,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 	//Start receiving again
 	HAL_UART_Receive_IT(huart, uart_rec_buff, 1);
 }
+
+
 
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
@@ -806,44 +852,6 @@ void StartProcessCommand(void *argument)
   	//Wait for semaphore passed by UART IRQ when the command buffer is ready for processing
     osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
 
-    __disable_irq();
-
-    //Evaluate first char of the command buffer to determine command
-		if (cmdbuff[0] == *(uint8_t *)"r") {
-			//Restart command
-			DebugPrint("Rebooting...\r\n\r\n");
-			NVIC_SystemReset();
-
-		} else if (cmdbuff[0] == *(uint8_t *)"d") {
-			//Retreives the last value in message buffer for corrosponding ID
-			int filter = atoi((char *)&cmdbuff[1]);
-			char msg[32] = "";
-			sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
-			DebugPrint(msg);
-
-		} else if (cmdbuff[0] == *(uint8_t *)"f") {
-			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-			//Command f can set a CAN filter and
-			int filter = atoi((char *)&cmdbuff[1]);
-			uint16_t id = atoi((char *)&cmdbuff[3]);
-			uint8_t bit = atoi((char *)&cmdbuff[8]);
-			uint8_t size = atoi((char *)&cmdbuff[11]);
-			messageArray[filter].id = id;
-			messageArray[filter].bit = bit;
-			messageArray[filter].value = -1;
-			messageArray[filter].length = size;
-			messageArray[filter].enabled = (id != 0)? MSG_ENABLED : MSG_DISABLED;
-			ConfigureCANFilters(messageArray, 16);
-
-		} else if (cmdbuff[0] == *(uint8_t *)"s") {
-			//Shutdown
-			//Set can_tx frame shutdown bit to 1
-			can_tx_data[0] |= CAN_TXFRAME0_SHUTDOWN;
-		}
-		//Resets cmdbuff index
-		cmdbuffind = 0;
-
-		__enable_irq();
   }
   /* USER CODE END StartProcessCommand */
 }

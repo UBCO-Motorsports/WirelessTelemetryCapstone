@@ -215,17 +215,17 @@ class MainWindow(QtWidgets.QMainWindow):
             length=len(messagebuffer)
 
         for i in range(messagefill):
-            messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16"+"\r")
-
-
-        for messages in messagebuffer:
-            self.GraphManager.SerialModule.sendCommand(messages)
-            print(messages)
+            messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16\r")
 
         # Add checkboxes to config menu scroll area
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
         self.scrollWidget.setLayout(self.data_layout)
+
+        for messages in messagebuffer:
+            self.GraphManager.SerialModule.sendCommand(messages)
+            time.sleep(0.25)
+            print(messages)
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
