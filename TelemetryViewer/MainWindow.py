@@ -207,7 +207,7 @@ class MainWindow(QtWidgets.QMainWindow):
             # List of channels to send to controller
             # f0 0864 00 16
             #f0 000 00 00
-            message = "f"+str(i)+" "+str(int(id,16)).zfill(4)+" "+str(position).zfill(2)+" "+str(size).zfill(2)+"\r"
+            message = "f" + str(i).zfill(2) + " " + str(int(id,16)).zfill(4) + " " + str(position).zfill(2) + " " + str(size).zfill(2) + "\r"
             messagebuffer.append(message)
 
         if len(messagebuffer)<16:
@@ -215,11 +215,11 @@ class MainWindow(QtWidgets.QMainWindow):
             length=len(messagebuffer)
 
         for i in range(messagefill):
-            messagebuffer.append("f"+str(i+length)+" 0000 00 00"+"\r")
+            messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16"+"\r")
 
 
         for messages in messagebuffer:
-            #self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable
+            self.GraphManager.SerialModule.sendCommand(messages)
             print(messages)
 
         # Add checkboxes to config menu scroll area

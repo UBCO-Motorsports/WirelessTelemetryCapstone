@@ -1,3 +1,14 @@
 {
-    "logged": []
+    "logged": [
+        {
+            "Name": "RPM",
+            "ID": "0x360",
+            "Units": "RPM",
+            "Scale": 1,
+            "Position": 0,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(143, 204, 80, 255)"
+        }
+    ]
 }

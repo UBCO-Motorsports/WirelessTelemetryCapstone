@@ -806,6 +806,8 @@ void StartProcessCommand(void *argument)
   	//Wait for semaphore passed by UART IRQ when the command buffer is ready for processing
     osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
 
+    __disable_irq();
+
     //Evaluate first char of the command buffer to determine command
 		if (cmdbuff[0] == *(uint8_t *)"r") {
 			//Restart command
@@ -820,6 +822,7 @@ void StartProcessCommand(void *argument)
 			DebugPrint(msg);
 
 		} else if (cmdbuff[0] == *(uint8_t *)"f") {
+			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 			//Command f can set a CAN filter and
 			int filter = atoi((char *)&cmdbuff[1]);
 			uint16_t id = atoi((char *)&cmdbuff[3]);
@@ -839,6 +842,8 @@ void StartProcessCommand(void *argument)
 		}
 		//Resets cmdbuff index
 		cmdbuffind = 0;
+
+		__enable_irq();
   }
   /* USER CODE END StartProcessCommand */
 }
@@ -905,7 +910,7 @@ void StartFeedWDG(void *argument)
   {
 
     osDelayUntil(tick);
-    HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
     HAL_StatusTypeDef result;
     /*
