@@ -87,12 +87,17 @@ class SerialModule():
         #     channel[i].append(dataapp[i])
         try:
             self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
-            self.array2.append(float(dataapp[1]))
-            self.array3.append(float(dataapp[2]))
         except:
             self.array1.append(0)
+        try:
+            self.array2.append(float(dataapp[1]))  # Add as many arrays as we want
+        except:
             self.array2.append(0)
+        try:
+            self.array3.append(float(dataapp[2]))  # Add as many arrays as we want
+        except:
             self.array3.append(0)
+
 
 class SerialClass(serial.Serial):
     # def __init__(self,port): # , baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10, xonxoff=False
