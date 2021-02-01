@@ -59,7 +59,7 @@ class SerialModule():
         return
 
     def sendCommand(self, command):
-        self.serialChannel.write(command.encode())  #should work for sending strings
+        self.serialChannel.write(str(command).encode())  #should work for sending strings
 
     def readSerial(self):
         try:

@@ -200,13 +200,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.comboBox.addItem(name)
 
             # List of channels to send to controller
+            # f0 0864 00 16
+            #f0 000 00 00
             messagebuffer = []
-            message="f "+str(i)+" "+str(int(id,16))+" "+str(position)+" "+str(size)+"\r"
+            message = "f"+str(i)+" "+str(int(id,16)).zfill(4)+" "+str(position).zfill(2)+" "+str(size).zfill(2)+"\r"
             print(message)
             messagebuffer.append(message)
 
-        for messages in range(len(messagebuffer)):
-            #self.GraphManager.SerialModule.sendCommand(messages) #TODO reenable
+        for messages in messagebuffer:
+            self.GraphManager.SerialModule.sendCommand(messages)
             print("messages")
 
         # Add checkboxes to config menu scroll area

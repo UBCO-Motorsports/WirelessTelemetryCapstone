@@ -160,7 +160,7 @@ struct message {
 struct message messageArray[16];
 
 const struct message defaultMessageArray[16] = {
-
+		//{ 0x370,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
 		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
 		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
 
@@ -829,7 +829,7 @@ void StartProcessCommand(void *argument)
 			messageArray[filter].bit = bit;
 			messageArray[filter].value = -1;
 			messageArray[filter].length = size;
-			messageArray[filter].enabled = MSG_ENABLED;
+			messageArray[filter].enabled = (id != 0)? MSG_ENABLED : MSG_DISABLED;
 			ConfigureCANFilters(messageArray, 16);
 
 		} else if (cmdbuff[0] == *(uint8_t *)"s") {
