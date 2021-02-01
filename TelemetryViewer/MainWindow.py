@@ -87,16 +87,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
 
     def initSetupPage(self):
+        # Custom COM port menu (combo box)
         self.comPortComboBox = comPortComboBox(self)  # Generate custom COM port menu
         self.ui.horizontalLayout_4.replaceWidget(self.ui.port_combobox, self.comPortComboBox)  # Places custom COM port menu in setup layout
         self.ui.port_combobox.close()  # CLoses old COM port menu
+
         self.ui.serial_btn.clicked.connect(self.connectSerial)  # Connect functions to serial button
         self.ui.refresh_btn.clicked.connect(self.comPortComboBox.populateCOMSelect)  # Populate COM port menu when clicked
         self.ui.import_btn.clicked.connect(self.canJson)
+        self.ui.import_btn.setShortcut('i')
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
+        self.ui.apply_btn.setShortcut('Return')
         self.ui.apply_btn.setEnabled(True)
+
 
     def initGraphPage(self):
         # Initializing GraphManager onto graph page
@@ -112,6 +117,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.importlayout_btn.clicked.connect(Open)  # TODO
         self.ui.savelayout_btn.clicked.connect(Save)  # TODO
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
+        self.ui.hideConfig_btn.setShortcut('h')
         self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None))  # Clears border from currently selected plot
         self.ui.configMenu.hide()  # Initially hide configuration menu
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))  # Change number of graphs shown when combobox value changed
