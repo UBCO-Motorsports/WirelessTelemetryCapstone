@@ -1,10 +1,12 @@
 import sys
+import random
 import time
 import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.Qt import *
 import json
+import re # Useful for stripping characters from strings
 
 from MainWindowroot import Ui_MainWindow
 from FileBrowser import Open
@@ -120,6 +122,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialize scroll widget for available data channels
         self.data_layout = QVBoxLayout()
         self.scrollWidget = QWidget()
+        self.ui.scrollArea.setWidget(self.scrollWidget)
         self.ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
@@ -148,7 +151,7 @@ class MainWindow(QtWidgets.QMainWindow):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             json_file.close()
-        messagebuffer=[]
+
         for i in reversed(range(self.data_layout.count())):
             self.data_layout.itemAt(i).widget().setParent(None)
 
@@ -162,12 +165,27 @@ class MainWindow(QtWidgets.QMainWindow):
             size = data["logged"][i]['Size']
             offset = data["logged"][i]['Offset']
             color = data["logged"][i]['Color']
+
+            # Constructs the check box items in the config menu
             self.radiodict[i]=QCheckBox(name)
+            configPixmap = QPixmap(32, 32)
+            color = re.sub(r'[()]', '', color) # Gets rid of brackets from color value
+            # Orders the RGBA values obtained from JSON
+            colorRGB =[]
+            for value in color.split(','):
+                colorRGB.append(int(value))
+            # Construct and set icon for each checkbox
+            configPixmap.fill(QColor.fromRgb(colorRGB[0], colorRGB[1], colorRGB[2]))
+            self.radiodict[i].setIcon(QIcon(configPixmap))
             self.radiodict[i].setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+
             self.ui.comboBox_3.addItem(name)
             self.ui.comboBox_4.addItem(name)
             self.ui.comboBox_5.addItem(name)
             self.ui.comboBox.addItem(name)
+
+            # List of channels to send to controller
+            messagebuffer = []
             message="f "+str(i)+" "+str(int(id,16))+" "+str(position)+" "+str(size)+"\r"
             print(message)
             messagebuffer.append(message)
@@ -175,9 +193,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for messages in range(len(messagebuffer)):
             #self.GraphManager.SerialModule.sendCommand(messages) #TODO reenable
             print("messages")
+
+        # Add checkboxes to config menu scroll area
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
-        self.ui.scrollArea.setWidget(self.scrollWidget)
         self.scrollWidget.setLayout(self.data_layout)
 
     def sendcommandfromList(self):
@@ -316,7 +335,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.ui.listWidget.item(i).text() == self.ui.tableWidget.item(row, 1).text() and self.ui.listWidget.count()<16:
                 found = True
         if not found and self.ui.listWidget.count()<16:
-            color = QColorDialog.getColor()
+            color = QColorDialog.getColor(QColor.fromRgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
             color2 = color.getRgb()
             if color.isValid():
                 with open(Canfilename, 'r+') as json_file:
@@ -327,6 +346,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.jsonlogged(datafromcan, str(color2), self.ui.listWidget.count())
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
+                item = self.ui.listWidget.item(self.ui.listWidget.count()-1)
+                iconPixmap = QPixmap(32, 32)
+                iconPixmap.fill(QColor(color))
+                item.setIcon(QIcon(iconPixmap))
                 for j in range(self.ui.tableWidget.columnCount()):
                     self.ui.tableWidget.item(row, j).setBackground(QColor.fromRgb(150, 150, 150))
                 if self.ui.listWidget.item(0).text() == "None Selected":
