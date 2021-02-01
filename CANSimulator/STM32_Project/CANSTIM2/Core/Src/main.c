@@ -182,7 +182,7 @@ const struct message defaultMessageArray[16] = {
 
 		{ 0x3EB,  32,  16,   -1,  MSG_ENABLED  },  //Ignition Angle
 
-		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0x200,   0,   1,   -1,  MSG_ENABLED },  //Disabled
 		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
 		{     0,   0,   0,   -1,  MSG_DISABLED }   //Disabled
 };
@@ -387,6 +387,9 @@ int main(void)
   HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 
+	//Load default message configuration
+	memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
+
 
 	Init_CAN();
 	Init_SBC();
@@ -394,10 +397,6 @@ int main(void)
 
   //Start receiving UART
 	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
-
-
-	//Load default message configuration
-	//memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
 
   /* USER CODE END 2 */
@@ -814,112 +813,119 @@ void StartCAN_Tx_MB0(void *argument)
   for(;;)
   {
     osDelay(100);
-    HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
-    if (i > 149) {
-    	i = 5;
+
+
+    if (messageArray[13].value != 1) {
+
+			HAL_GPIO_TogglePin(LD1_GPIO_Port, LD1_Pin);
+			if (i > 149) {
+				i = 5;
+			}
+			uint32_t mailbox;
+			uint16_t value;
+
+
+			//RPM
+			value = (uint16_t)(carData[0][i]);
+			can_tx_data[0] = value >> 8;
+			can_tx_data[1] = value & 0xFF;
+
+			can_tx_data[2] = 0;
+			can_tx_data[3] = 0;
+
+			//Throttle Pos
+			value = (uint16_t)(carData[1][i] * 10);
+			can_tx_data[4] = value >> 8;
+			can_tx_data[5] = value & 0xFF;
+
+			can_tx_data[6] = 0;
+			can_tx_data[7] = 0;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header12, can_tx_data, &mailbox);
+
+
+			//Lat accel
+			value = (int16_t)(carData[2][i] * 10.0 * 9.8);
+			can_tx_data[0] = 0;
+			can_tx_data[1] = 0;
+			can_tx_data[2] = 0;
+			can_tx_data[3] = 0;
+			can_tx_data[4] = 0;
+			can_tx_data[5] = 0;
+			can_tx_data[6] = value >> 8;
+			can_tx_data[7] = value & 0xFF;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header3, can_tx_data, &mailbox);
+
+
+			can_tx_data[0] = 0;
+			can_tx_data[1] = 0;
+			//Oil pressure
+			value = (uint16_t)(carData[3][i] * 10 * 6.89476);
+			can_tx_data[2] = value >> 8;
+			can_tx_data[3] = value & 0xFF;
+
+			can_tx_data[4] = 0;
+			can_tx_data[5] = 0;
+			can_tx_data[6] = 0;
+			can_tx_data[7] = 0;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header4, can_tx_data, &mailbox);
+
+			//ECU_Lambda1
+			value = (uint16_t)(carData[4][i] * 1000);
+			can_tx_data[0] = value >> 8;
+			can_tx_data[1] = value & 0xFF;
+			can_tx_data[2] = 0;
+			can_tx_data[3] = 0;
+			can_tx_data[4] = 0;
+			can_tx_data[5] = 0;
+			can_tx_data[6] = 0;
+			can_tx_data[7] = 0;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header5, can_tx_data, &mailbox);
+
+			//ECU_EGTSensor1
+			value = (uint16_t)((carData[5][i] + 273.15) * 10);
+			can_tx_data[0] = value >> 8;
+			can_tx_data[1] = value & 0xFF;
+			can_tx_data[2] = 0;
+			can_tx_data[3] = 0;
+			can_tx_data[4] = 0;
+			can_tx_data[5] = 0;
+			can_tx_data[6] = 0;
+			can_tx_data[7] = 0;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header6, can_tx_data, &mailbox);
+
+			//ECU_CoolantTemp and Oil temp
+			value = (uint16_t)((carData[6][i] + 273.15) * 10);
+			can_tx_data[0] = value >> 8;
+			can_tx_data[1] = value & 0xFF;
+			can_tx_data[2] = 0;
+			can_tx_data[3] = 0;
+			can_tx_data[4] = 0;
+			can_tx_data[5] = 0;
+			value = (uint16_t)((carData[8][i] + 273.15) * 10);
+			can_tx_data[6] = value >> 8;
+			can_tx_data[7] = value & 0xFF;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header78, can_tx_data, &mailbox);
+
+			//Speed
+			value = (uint16_t)(carData[9][i] * 10);
+			can_tx_data[0] = value >> 8;
+			can_tx_data[1] = value & 0xFF;
+			can_tx_data[2] = 0;
+			can_tx_data[3] = 0;
+			can_tx_data[4] = 0;
+			can_tx_data[5] = 0;
+			can_tx_data[6] = 0;
+			can_tx_data[7] = 0;
+			osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
+			HAL_CAN_AddTxMessage(&hcan, &can_tx_header10, can_tx_data, &mailbox);
+			i++;
     }
-		uint32_t mailbox;
-		uint16_t value;
-
-		//RPM
-		value = (uint16_t)(carData[0][i]);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-
-		//Throttle Pos
-		value = (uint16_t)(carData[1][i] * 10);
-		can_tx_data[2] = value & 0xFF;
-		can_tx_data[3] = value >> 8;
-
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header12, can_tx_data, &mailbox);
-
-
-		//Lat accel
-		value = (int16_t)(carData[2][i] * 10.0 * 9.8);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header3, can_tx_data, &mailbox);
-
-
-		//Oil pressure
-		value = (uint16_t)(carData[3][i] * 10 * 6.89476);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header4, can_tx_data, &mailbox);
-
-		//ECU_Lambda1
-		value = (uint16_t)(carData[4][i] * 1000);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header5, can_tx_data, &mailbox);
-
-		//ECU_EGTSensor1
-		value = (uint16_t)((carData[5][i] + 273.15) * 10);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header6, can_tx_data, &mailbox);
-
-		//ECU_CoolantTemp and Oil temp
-		value = (uint16_t)((carData[6][i] + 273.15) * 10);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-		value = (uint16_t)((carData[8][i] + 273.15) * 10);
-		can_tx_data[2] = value & 0xFF;
-		can_tx_data[3] = value >> 8;
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header78, can_tx_data, &mailbox);
-
-		//Speed
-		value = (uint16_t)(carData[9][i] * 10);
-		can_tx_data[0] = value & 0xFF;
-		can_tx_data[1] = value >> 8;
-		can_tx_data[2] = 0;
-		can_tx_data[3] = 0;
-		can_tx_data[4] = 0;
-		can_tx_data[5] = 0;
-		can_tx_data[6] = 0;
-		can_tx_data[7] = 0;
-		osSemaphoreAcquire(MailboxAvailableHandle, HAL_MAX_DELAY);
-		HAL_CAN_AddTxMessage(&hcan, &can_tx_header10, can_tx_data, &mailbox);
-
-		i++;
   }
   /* USER CODE END 5 */
 }
@@ -937,31 +943,8 @@ void StartSendTelemetry(void *argument)
   /* Infinite loop */
   for(;;)
   {
-  	//Transmit at 10hz
     osDelay(100);
 
-    //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
-  	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-    /*
-    sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
-        		messageArray[0].value,
-    				messageArray[1].value,
-    				messageArray[2].value,
-    				messageArray[3].value,
-    				messageArray[4].value,
-    				messageArray[5].value,
-    				messageArray[6].value,
-    				messageArray[7].value,
-    				messageArray[8].value,
-    				messageArray[9].value,
-    				messageArray[10].value,
-    				messageArray[11].value,
-    				messageArray[12].value,
-    				messageArray[13].value,
-    				messageArray[14].value,
-    				messageArray[15].value);
-		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
-		*/
   }
   /* USER CODE END StartSendTelemetry */
 }

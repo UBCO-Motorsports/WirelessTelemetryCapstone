@@ -172,8 +172,10 @@ const struct message defaultMessageArray[16] = {
 		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Bias
 		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Lat Accel
 		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Long Accel
-		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //GPS Speed
-		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Oil Temperature
+
+		{ 0x370,   0,  16,   -1,  MSG_ENABLED  },  //GPS Speed
+
+		{ 0x3E0,   48,  16,   -1,  MSG_ENABLED  },  //Oil Temperature
 
 		{ 0x373,   0,  16,   -1,  MSG_ENABLED  },  //EGT 1
 
@@ -223,6 +225,7 @@ void DebugPrint(char *msg);
 void Init_SBC(void);
 void ConfigureCANFilters(struct message * messageArray, uint8_t size);
 void Init_CAN(void);
+void ClearCANBuffers(void);
 
 /* USER CODE END PFP */
 
@@ -312,6 +315,12 @@ void ConfigureCANFilters(struct message * messageArray, uint8_t size) {
 	}
 }
 
+void ClearCANBuffers(void) {
+	for (int i = 0; i < 16; i++) {
+		messageArray[i].value = -1;
+	}
+}
+
 void Init_CAN(void) {
 	//Configure all receive filters from the config array
 	ConfigureCANFilters(messageArray, sizeof(messageArray) / sizeof(struct message));
@@ -373,6 +382,9 @@ int main(void)
   HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 
+	//Load default message configuration
+	memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
+
 
 	Init_CAN();
 	Init_SBC();
@@ -382,8 +394,6 @@ int main(void)
 	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
 
 
-	//Load default message configuration
-	//memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
 
   /* USER CODE END 2 */
@@ -717,7 +727,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
-	//HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+	HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
 	//Parse received bytes using message array
 	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
 		if(messageArray[i].id == can_rx_header.StdId){
@@ -850,7 +860,7 @@ void StartSendTelemetry(void *argument)
     osDelay(100);
 
 
-    HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
+    //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
   	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
     sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
         		messageArray[0].value,
@@ -870,6 +880,7 @@ void StartSendTelemetry(void *argument)
     				messageArray[14].value,
     				messageArray[15].value);
 		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
+		ClearCANBuffers();
   }
   /* USER CODE END StartSendTelemetry */
 }
