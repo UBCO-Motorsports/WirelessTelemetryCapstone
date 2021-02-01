@@ -40,6 +40,15 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialize Command Page
         self.initCommandPage()
 
+        self.shortcuttest = QShortcut(QKeySequence('t'), self)
+        self.shortcuttest.activated.connect(lambda: print('test'))
+
+        self.ui.graph_page.applyConfigSC = QShortcut(QKeySequence('Return'), self)
+        self.ui.graph_page.applyConfigSC.activated.connect(self.configApply)
+
+        self.ui.setup_page.applySetup = QShortcut(QKeySequence('Ctrl+Return'), self)
+        self.ui.setup_page.applySetup.activated.connect(self.applytoConfig)
+
         # Timer for testing graphing -> calls update function
         self.timer = QtCore.QTimer()
         self.timer.setInterval(20)

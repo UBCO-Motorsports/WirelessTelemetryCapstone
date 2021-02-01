@@ -133,6 +133,9 @@ class PlotWdgt(pg.PlotWidget):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored))
         self.parentWidget = parentWidget
+        self.getPlotItem().getAxis('top').setStyle(showValues=False)
+
+
         self.type = 'time_domain'
         self.xData = []
         self.yData = []
