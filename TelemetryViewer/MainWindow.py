@@ -366,13 +366,17 @@ class MainWindow(QtWidgets.QMainWindow):
         if not found and self.ui.listWidget.count()<16:
             color = QColorDialog.getColor(QColor.fromRgb(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)))
             color2 = color.getRgb()
+            if self.ui.listWidget.item(0).text()=="None Selected":
+                count=0
+            else:
+                count=self.ui.listWidget.count()
             if color.isValid():
                 with open(Canfilename, 'r+') as json_file:
                     data= json.load(json_file)
                     datafromcan=data["Haltech"][int(row)]
                     json_file.close()
 
-                self.jsonlogged(datafromcan, str(color2), self.ui.listWidget.count())
+                self.jsonlogged(datafromcan, str(color2), count)
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
                 item = self.ui.listWidget.item(self.ui.listWidget.count()-1)
@@ -388,7 +392,7 @@ class MainWindow(QtWidgets.QMainWindow):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             data["logged"].append(datafromcan)
-            data["logged"][i-1]['Color']=color
+            data["logged"][i]['Color']=color
             json_file.seek(0)
             json.dump(data, json_file, indent=4)
             json_file.close()

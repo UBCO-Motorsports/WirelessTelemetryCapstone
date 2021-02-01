@@ -1,33 +1,3 @@
 {
-    "logged": [
-        {
-            "Name": "Injection Stage 1 Duty Cycle",
-            "ID": "0x362",
-            "Units": "%",
-            "Scale": 0.1,
-            "Position": 0,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(219, 100, 78, 255)"
-        },
-        {
-            "Name": "Injection Stage 2 Duty Cycle",
-            "ID": "0x362",
-            "Units": "%",
-            "Scale": 0.1,
-            "Position": 16,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(120, 151, 182, 255)"
-        },
-        {
-            "Name": "Ignition Angle",
-            "ID": "0x362",
-            "Units": "Degrees",
-            "Scale": 0.1,
-            "Position": 32,
-            "Size": 16,
-            "Offset": 0
-        }
-    ]
+    "logged": []
 }
