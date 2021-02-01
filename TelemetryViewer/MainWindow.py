@@ -350,6 +350,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     p = p + 1
                 json_file.close()
             self.ui.listWidget.clear()
+            self.ui.listWidget.addItem("None Selected")
             with open('itemslogged.json', 'w+') as jsonlist:
                 data = {}
                 data['logged'] = []
@@ -387,7 +388,7 @@ class MainWindow(QtWidgets.QMainWindow):
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             data["logged"].append(datafromcan)
-            data["logged"][i]['Color']=color
+            data["logged"][i-1]['Color']=color
             json_file.seek(0)
             json.dump(data, json_file, indent=4)
             json_file.close()
