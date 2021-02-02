@@ -6,13 +6,14 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 from PyQt5.QtWidgets import QColorDialog
 from PyQt5.Qt import *
 import json
+from PyQt5.QtCore import QObject,QThread,pyqtSignal
 import re # Useful for stripping characters from strings
-
 from MainWindowroot import Ui_MainWindow
 from FileBrowser import Open
 from FileSaver import Save
 from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
+from threading import *
 import Serial
 Canfilename=""
 
@@ -221,11 +222,10 @@ class MainWindow(QtWidgets.QMainWindow):
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
         self.scrollWidget.setLayout(self.data_layout)
+        self.thread = SendThread(GraphManager=self.GraphManager,messagebuffer=messagebuffer)
+        self.thread.start()
 
-        for messages in messagebuffer:
-            self.GraphManager.SerialModule.sendCommand(messages)
-            time.sleep(0.25)
-            print(messages)
+
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
@@ -447,7 +447,16 @@ class comPortComboBox(QtWidgets.QComboBox):
             self.parentWidget.ui.serial_btn.setDisabled(False)
             for port in ports:
                 self.addItem(port)
-
+class SendThread(QtCore.QThread):
+    def __init__(self,GraphManager,messagebuffer):
+        QtCore.QThread.__init__(self)
+        self.messagebuffer=messagebuffer
+        self.GraphManager=GraphManager
+    def run(self):
+        for messages in self.messagebuffer:
+            #self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
+            time.sleep(0.25)
+            print(messages)
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

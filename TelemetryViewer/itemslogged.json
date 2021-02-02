@@ -1,24 +1,24 @@
 {
     "logged": [
         {
-            "Name": "Throttle Position",
+            "Name": "Manifold Pressure",
             "ID": "0x360",
-            "Units": "%",
+            "Units": "kPa",
             "Scale": 0.1,
-            "Position": 32,
+            "Position": 16,
             "Size": 16,
             "Offset": 0,
-            "Color": "(79, 196, 137, 255)"
+            "Color": "(181, 40, 169, 255)"
         },
         {
-            "Name": "EGT Sensor 1",
-            "ID": "0x373",
-            "Units": "K",
+            "Name": "Coolant Pressure",
+            "ID": "0x360",
+            "Units": "kPa",
             "Scale": 0.1,
-            "Position": 0,
+            "Position": 48,
             "Size": 16,
-            "Offset": -273.15,
-            "Color": "(33, 13, 34, 255)"
+            "Offset": 0,
+            "Color": "(133, 169, 190, 255)"
         }
     ]
 }
