@@ -56,6 +56,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
 
+        self.messagebuffer = []
+        # self.thread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
+        # self.thread.start()
+
+        self.testThread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
+        self.testThread.start()
+
     def initPageButtons(self):
         # Add page selection buttons to a group for better control
         self.page_btn_group = QButtonGroup()
@@ -175,8 +182,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for i in reversed(range(self.data_layout.count())):
             self.data_layout.itemAt(i).widget().setParent(None)
-        messagebuffer = []
         self.radiodict={}
+        self.messagebuffer.clear()
         for i in range(len(data["logged"])):
             name = data["logged"][i]['Name']
             id = data["logged"][i]['ID']
@@ -209,23 +216,23 @@ class MainWindow(QtWidgets.QMainWindow):
             # f0 0864 00 16
             #f0 000 00 00
             message = "f" + str(i).zfill(2) + " " + str(int(id,16)).zfill(4) + " " + str(position).zfill(2) + " " + str(size).zfill(2) + "\r"
-            messagebuffer.append(message)
+            self.messagebuffer.append(message)
 
-        if len(messagebuffer)<16:
-            messagefill =16-len(messagebuffer)
-            length=len(messagebuffer)
+        if len(self.messagebuffer)<16:
+            messagefill =16-len(self.messagebuffer)
+            length=len(self.messagebuffer)
 
         for i in range(messagefill):
-            messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16\r")
+            self.messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16\r")
 
         # Add checkboxes to config menu scroll area
         for i in self.radiodict.items():
             self.data_layout.addWidget(i[1])
         self.scrollWidget.setLayout(self.data_layout)
-        self.thread = SendThread(GraphManager=self.GraphManager,messagebuffer=messagebuffer)
-        self.thread.start()
 
-
+        # self.thread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
+        # self.thread.start()
+        self.testThread.start()
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
@@ -447,15 +454,33 @@ class comPortComboBox(QtWidgets.QComboBox):
             self.parentWidget.ui.serial_btn.setDisabled(False)
             for port in ports:
                 self.addItem(port)
+
 class SendThread(QtCore.QThread):
-    def __init__(self,GraphManager,messagebuffer):
+
+    def __init__(self,GraphManager,MainWindow):
         QtCore.QThread.__init__(self)
-        self.messagebuffer=messagebuffer
+        self.MainWindow = MainWindow
         self.GraphManager=GraphManager
+        self.times_run = 0
+
     def run(self):
-        for messages in self.messagebuffer:
+        self.times_run+=1
+        print('_________RUN: ' + str(self.times_run))
+        for messages in self.MainWindow.messagebuffer:
+            # self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
+            self.msleep(250)
+            print(messages)
+
+        # print('_________RUN: ' + str(self.times_run))
+        # for i in range(3):
+        #     time.sleep(10)
+        #     print(str((i+1)*10) + 'sec sleep')
+
+
+    def send(self):
+        for messages in self.MainWindow.messagebuffer:
             #self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
-            time.sleep(0.25)
+            self.msleep(250)
             print(messages)
 
 if __name__ == "__main__":
