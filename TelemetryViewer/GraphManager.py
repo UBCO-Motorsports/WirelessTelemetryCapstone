@@ -47,8 +47,6 @@ class GraphManager(QtGui.QWidget):
                 plotItem.setLabel('bottom', text=self.graph_array[i][j].xLabel)
                 plotItem.setLabel('left', text=self.graph_array[i][j].yLabel)
 
-
-
         # self.graph_array[0][0].xData.append(self.x)
         # self.graph_array[0][0].yData.append(self.SerialModule.array1)
         #
@@ -102,7 +100,6 @@ class GraphManager(QtGui.QWidget):
                         pass
                         # print('polar')
 
-
     def showGraphs(self, num_shown):
         if num_shown == '12':
             for row in range(len(self.graph_array)):
@@ -135,7 +132,6 @@ class PlotWdgt(pg.PlotWidget):
         self.parentWidget = parentWidget
         self.getPlotItem().getAxis('top').setStyle(showValues=False)
 
-
         self.type = 'time_domain'
         self.xData = []
         self.yData = []
@@ -161,7 +157,6 @@ class CustomViewBox(pg.ViewBox):
         self.editData = QtGui.QAction("Edit Data", self.menu)
         self.editData.triggered.connect(self.parentWidget.configMenuCalled)
         self.menu.addAction(self.editData)
-
 
 # app = QtWidgets.QApplication(sys.argv)
 # test = GraphManager()

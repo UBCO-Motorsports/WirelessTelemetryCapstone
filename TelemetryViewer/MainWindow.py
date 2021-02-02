@@ -119,7 +119,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.apply_btn.setShortcut('Return')
         self.ui.apply_btn.setEnabled(True)
 
-
     def initGraphPage(self):
         # Initializing GraphManager onto graph page
         self.GraphManager = GraphManager(self)
@@ -199,9 +198,7 @@ class MainWindow(QtWidgets.QMainWindow):
             configPixmap = QPixmap(32, 32)
             color = re.sub(r'[()]', '', color) # Gets rid of brackets from color value
             # Orders the RGBA values obtained from JSON
-            colorRGB =[]
-            for value in color.split(','):
-                colorRGB.append(int(value))
+            colorRGB = [int(c) for c in color.split(',')]
             # Construct and set icon for each checkbox
             configPixmap.fill(QColor.fromRgb(colorRGB[0], colorRGB[1], colorRGB[2]))
             self.radiodict[i].setIcon(QIcon(configPixmap))
@@ -335,7 +332,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotItem.setLabel('bottom', text='X-Axis')
             self.currentPlotWidget.xLabel = 'X-Axis'
 
-
     def canJson(self):
         global Canfilename
         p = 0
@@ -426,7 +422,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")
 
-
 class comPortComboBox(QtWidgets.QComboBox):
     populateCOMSelect = QtCore.pyqtSignal()
 
@@ -477,19 +472,12 @@ class SendThread(QtCore.QThread):
         #     print(str((i+1)*10) + 'sec sleep')
 
 
-    def send(self):
-        for messages in self.MainWindow.messagebuffer:
-            #self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
-            self.msleep(250)
-            print(messages)
-
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
     window = MainWindow()
     loader = Loader()
     loader.show()
-
 
     def loaderProgress():
         # TODO Turn loader back on
@@ -500,7 +488,6 @@ if __name__ == "__main__":
             window.show()
             loader.close()
         loader.progress()
-
 
     # Sets a timer to check loading progress
     timer = QtCore.QTimer()
