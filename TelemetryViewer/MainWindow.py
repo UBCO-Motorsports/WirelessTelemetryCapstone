@@ -293,10 +293,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
         self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
         # TODO populate current widget range info
-        # if self.currentPlotWidget.autoRange:
-        #     self.ui.checkBox.setChecked(True)
-        # else:
-        #     self.ui.lineEdit_5.setText(self.currentPlotWidget.yRange)
+        if self.ui.checkBox.isChecked():
+            self.ui.checkBox.setChecked(True)
+        else:
+            self.ui.lineEdit_5.setText(str(self.currentPlotWidget.yRange[0]))
+            self.ui.lineEdit_6.setText(str(self.currentPlotWidget.yRange[1]))
         self.ui.configMenu.show()
 
     def configApply(self):
