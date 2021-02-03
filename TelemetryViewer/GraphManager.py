@@ -138,7 +138,7 @@ class PlotWdgt(pg.PlotWidget):
         self.xLabel = 'X-Axis'
         self.yLabel = 'Y-Axis'
         self.title = ''
-        self.yRange = 10
+        self.yRange = [0, 10]
         self.autoRange = True
         #TODO store the current axis labels, legend, and datasets to populate config menu
 

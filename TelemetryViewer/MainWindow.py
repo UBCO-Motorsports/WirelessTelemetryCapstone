@@ -15,7 +15,7 @@ from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
 from threading import *
 import Serial
-Canfilename=""
+# Canfilename=""
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -23,6 +23,8 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QWidget.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.defaultFile = 'CANBUS/CANBUS2.json'
+        self.Canfilename = 'CANBUS/CANBUS2.json'
 
         # Serial not initially connected at start up
         self.serialConnected = False
@@ -40,9 +42,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.initConfigMenu()
         # Initialize Command Page
         self.initCommandPage()
-
-        self.shortcuttest = QShortcut(QKeySequence('t'), self)
-        self.shortcuttest.activated.connect(lambda: print('test'))
 
         self.ui.graph_page.applyConfigSC = QShortcut(QKeySequence('Return'), self)
         self.ui.graph_page.applyConfigSC.activated.connect(self.configApply)
@@ -113,6 +112,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.refresh_btn.clicked.connect(self.comPortComboBox.populateCOMSelect)  # Populate COM port menu when clicked
         self.ui.import_btn.clicked.connect(self.canJson)
         self.ui.import_btn.setShortcut('i')
+        self.ui.default_btn.clicked.connect(self.defaultJson)
+        self.ui.default_btn.setShortcut('d')
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
@@ -150,8 +151,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Set y-ranging to true
         self.ui.checkBox.setChecked(True)
+        self.ui.lineEdit_5.setDisabled(True)
+        self.ui.lineEdit_6.setDisabled(True)
         self.ui.checkBox.stateChanged.connect(self.yAutorangeEnable)
-        self.yAutorangeEnable()
 
     def initCommandPage(self):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
@@ -166,8 +168,10 @@ class MainWindow(QtWidgets.QMainWindow):
     def yAutorangeEnable(self):
         if self.ui.checkBox.isChecked():
             self.ui.lineEdit_5.setDisabled(True)
+            self.ui.lineEdit_6.setDisabled(True)
         else:
             self.ui.lineEdit_5.setDisabled(False)
+            self.ui.lineEdit_6.setDisabled(False)
 
     def applytoConfig(self):
         with open('itemslogged.json', 'r+') as json_file:
@@ -197,8 +201,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.radiodict[i]=QCheckBox(name)
             configPixmap = QPixmap(32, 32)
             color = re.sub(r'[()]', '', color) # Gets rid of brackets from color value
-            # Orders the RGBA values obtained from JSON
-            colorRGB = [int(c) for c in color.split(',')]
+            colorRGB = [int(c) for c in color.split(',')] # Orders the RGBA values obtained from JSON
             # Construct and set icon for each checkbox
             configPixmap.fill(QColor.fromRgb(colorRGB[0], colorRGB[1], colorRGB[2]))
             self.radiodict[i].setIcon(QIcon(configPixmap))
@@ -218,6 +221,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if len(self.messagebuffer)<16:
             messagefill =16-len(self.messagebuffer)
             length=len(self.messagebuffer)
+        else:
+            messagefill=0
 
         for i in range(messagefill):
             self.messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16\r")
@@ -298,18 +303,22 @@ class MainWindow(QtWidgets.QMainWindow):
         # Autorange functionality
         if self.ui.checkBox.isChecked():
             self.ui.lineEdit_5.setDisabled(True)
+            self.ui.lineEdit_6.setDisabled(True)
             self.currentPlotWidget.enableAutoRange(x=True,y=True)
         else:
             # Sets y-bounds if a valid value is entered
             try:
                 self.ui.lineEdit_5.setDisabled(False)
+                self.ui.lineEdit_6.setDisabled(False)
                 self.currentPlotWidget.enableAutoRange(x=True, y=False)
-                self.currentPlotWidget.yRange = float(self.ui.lineEdit_5.text())
-                self.currentPlotWidget.setYRange(-self.currentPlotWidget.yRange, self.currentPlotWidget.yRange) #TODO [lowerbound, upperbound] or [0,upperbound]
+                self.currentPlotWidget.yRange = [float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_6.text())]
+                self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1]) #TODO [lowerbound, upperbound] or [0,upperbound]
             except:
                 self.ui.lineEdit_5.setDisabled(True)
-                self.currentPlotWidget.enableAutoRange(x=True,y=False)
+                self.ui.lineEdit_6.setDisabled(True)
                 self.ui.lineEdit_5.clear()
+                self.ui.lineEdit_6.clear()
+                self.currentPlotWidget.enableAutoRange(x=True,y=False)
                 self.ui.checkBox.setChecked(True)
 
         # Set axes labels and title
@@ -332,12 +341,34 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotItem.setLabel('bottom', text='X-Axis')
             self.currentPlotWidget.xLabel = 'X-Axis'
 
+    def defaultJson(self):
+        while (self.ui.tableWidget.rowCount() > 0):
+            self.ui.tableWidget.removeRow(0)
+
+        p = 0
+        with open(self.defaultFile) as json_file:
+            data = json.load(json_file)
+            for i in data["Haltech"]:
+                self.ui.tableWidget.insertRow(p)
+                self.ui.tableWidget.setItem(p, 0, QtGui.QTableWidgetItem("Click to Select"))
+                self.ui.tableWidget.setItem(p, 1, QtGui.QTableWidgetItem(i['Name']))
+                self.ui.tableWidget.setItem(p, 2, QtGui.QTableWidgetItem(str(i['Scale'])))
+                self.ui.tableWidget.setItem(p, 3, QtGui.QTableWidgetItem(i['ID']))
+                p = p + 1
+            json_file.close()
+        self.ui.listWidget.clear()
+        self.ui.listWidget.addItem("None Selected")
+        with open('itemslogged.json', 'w+') as jsonlist:
+            data = {}
+            data['logged'] = []
+            json.dump(data, jsonlist, indent=4)
+            jsonlist.close()
+
     def canJson(self):
-        global Canfilename
         p = 0
         filelookup = Open()
         file = filelookup.openFileNameDialog()
-        Canfilename=file
+        self.Canfilename=file
         if file != "":
             while (self.ui.tableWidget.rowCount() > 0):
                 self.ui.tableWidget.removeRow(0)
@@ -361,7 +392,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 jsonlist.close()
 
     def tabletolist(self, row, column):
-        global Canfilename
         found = False
         for i in range(self.ui.listWidget.count()):
             if self.ui.listWidget.item(i).text() == self.ui.tableWidget.item(row, 1).text() and self.ui.listWidget.count()<16:
@@ -374,7 +404,10 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 count=self.ui.listWidget.count()
             if color.isValid():
-                with open(Canfilename, 'r+') as json_file:
+                # If no CAN file is loaded use the default
+                if self.Canfilename == '':
+                    self.Canfilename = self.defaultFile
+                with open(self.Canfilename, 'r+') as json_file:
                     data= json.load(json_file)
                     datafromcan=data["Haltech"][int(row)]
                     json_file.close()
@@ -382,6 +415,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.jsonlogged(datafromcan, str(color2), count)
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
+                print(self.ui.tableWidget.item(row, 1).text())
                 item = self.ui.listWidget.item(self.ui.listWidget.count()-1)
                 iconPixmap = QPixmap(32, 32)
                 iconPixmap.fill(QColor(color))
