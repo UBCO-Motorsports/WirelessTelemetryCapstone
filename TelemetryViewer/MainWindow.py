@@ -497,7 +497,7 @@ class SendThread(QtCore.QThread):
         self.times_run+=1
         print('_________RUN: ' + str(self.times_run))
         for messages in self.MainWindow.messagebuffer:
-            # self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
+            self.GraphManager.SerialModule.sendCommand(messages)
             self.msleep(250)
             print(messages)
 
