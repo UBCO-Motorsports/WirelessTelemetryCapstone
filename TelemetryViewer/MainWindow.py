@@ -28,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Serial not initially connected at start up
         self.serialConnected = False
+        self.messagebuffer = []
 
         # Better sizing for page selection menu
         self.ui.frame_left_menu.setMinimumWidth(100)
@@ -43,24 +44,25 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialize Command Page
         self.initCommandPage()
 
-        self.ui.graph_page.applyConfigSC = QShortcut(QKeySequence('Return'), self)
+        self.ui.graph_page.applyConfigSC = QShortcut(QKeySequence('a'), self)
         self.ui.graph_page.applyConfigSC.activated.connect(self.configApply)
 
         self.ui.setup_page.applySetup = QShortcut(QKeySequence('Ctrl+Return'), self)
         self.ui.setup_page.applySetup.activated.connect(self.applytoConfig)
 
+        self.sendThread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
+        self.sendThread.start()
+
         # Timer for testing graphing -> calls update function
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(20)
+        self.timer.setInterval(100)
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
 
-        self.messagebuffer = []
-        # self.thread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
-        # self.thread.start()
-
-        self.testThread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
-        self.testThread.start()
+        # self.threadpool = QThreadPool()
+        # print('Multithreading with max of %d threads' % self.threadpool.maxThreadCount())
+        # self.sendWorker = Worker(self.sendMessages, MainWindow=self, GraphManager=self.GraphManager)
+        # self.timer.timeout.connect(lambda: print(f'Current threads: {self.threadpool.activeThreadCount()}\n'))
 
     def initPageButtons(self):
         # Add page selection buttons to a group for better control
@@ -117,7 +119,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
-        self.ui.apply_btn.setShortcut('Return')
+        self.ui.apply_btn.setShortcut('Shift+Return')
         self.ui.apply_btn.setEnabled(True)
 
     def initGraphPage(self):
@@ -232,9 +234,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.data_layout.addWidget(i[1])
         self.scrollWidget.setLayout(self.data_layout)
 
-        # self.thread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
-        # self.thread.start()
-        self.testThread.start()
+        self.sendThread.start()
+
+    def sendMessages(self):
+        for messages in self.messagebuffer:
+            if self.serialConnected:
+                self.GraphManager.SerialModule.sendCommand(messages)
+            time.sleep(0.25)
+            print(messages)
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
@@ -495,9 +502,10 @@ class SendThread(QtCore.QThread):
 
     def run(self):
         self.times_run+=1
-        print('_________RUN: ' + str(self.times_run))
+        # print('_________RUN: ' + str(self.times_run))
         for messages in self.MainWindow.messagebuffer:
-            self.GraphManager.SerialModule.sendCommand(messages)
+            if self.MainWindow.serialConnected:
+                self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
             self.msleep(250)
             print(messages)
 
@@ -505,6 +513,18 @@ class SendThread(QtCore.QThread):
         # for i in range(3):
         #     time.sleep(10)
         #     print(str((i+1)*10) + 'sec sleep')
+
+class Worker(QRunnable):
+    def __init__(self, fn, MainWindow, GraphManager):
+        super(Worker, self).__init__()
+        self.fn = fn
+        self.MainWindow = MainWindow
+        self.GraphManager = GraphManager
+
+    @pyqtSlot()
+    def run(self):
+        # self.GraphManager.update()
+        self.fn()
 
 
 if __name__ == "__main__":

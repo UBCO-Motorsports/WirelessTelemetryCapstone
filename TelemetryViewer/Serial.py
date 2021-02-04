@@ -54,21 +54,17 @@ class SerialModule():
     def getData(self):
         return [self.array1, self.array2, self.array3]
 
-    def filterFormat(self):
-        #TODO ser.write("f %f %f %f %f/r", data1, data2...
-        return
-
     def sendCommand(self, command):
         self.serialChannel.write(str(command).encode())  #should work for sending strings
 
     def readSerial(self):
-        try:
+        if self.serialChannel.is_open:
             data = self.serialChannel.readline()
             data = data.decode('utf-8')
             data = data.rstrip()  # gets rid of \n from energia generated code
             dataapp = data.split(",")
             # print(dataapp)
-        except:
+        else:
             dataapp = []
             for i in range(16):
                 dataapp.append(0)
@@ -78,13 +74,6 @@ class SerialModule():
         self.array2 = self.array2[1:]
         self.array3 = self.array3[1:]
 
-        # # Iterates through current channels (assumes channels are in the same order as received data)
-        # for i, channel in enumerate(self.channels):
-        #     try:
-        #         dataapp[i] = float(dataapp[i])
-        #     except:
-        #         dataapp[i] = 0
-        #     channel[i].append(dataapp[i])
         try:
             self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
         except:
