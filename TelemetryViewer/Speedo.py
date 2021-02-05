@@ -4,10 +4,11 @@ from PyQt5 import QtWidgets, QtCore,QtGui
 
 # GUI File
 from PyQt5.QtWidgets import QMenu
-
+from PyQt5.QtCore import Qt
 from Speedoroot import Ui_Form
 
-Speed = 60
+Speed = 0
+newneedle=0
 
 
 class splashScreen(QtWidgets.QWidget):
@@ -39,7 +40,7 @@ class splashScreen(QtWidgets.QWidget):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
-        newAct = menu.addAction("Test")
+        newAct = menu.addAction("Edit Data")
         quitAct= menu.addAction("Quit")
         action= menu.popup(self.mapToGlobal(event.pos()))
         if action == quitAct:
@@ -47,6 +48,7 @@ class splashScreen(QtWidgets.QWidget):
 
     def animate(self,value):
         global Speed
+        global newneedle
         value=int(Speed)
         htmlText= "{Value} kph"
         newHtml=htmlText.replace("{Value}",str(value))
@@ -60,12 +62,74 @@ class splashScreen(QtWidgets.QWidget):
             value=0
         value=reMap(Speed,120, 0,239,0)
         t.rotate(value)
-        # load your image
-        image = QtGui.QImage("QT Images/needle3.png")
-        pixmap = QtGui.QPixmap.fromImage(image)
+        if newneedle is not 0:
+            pixmap=newneedle
+        else:
+
+            # load your image
+            image=QtGui.QImage("QT Images/needle3.png")
+            pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
         self.ui.Needle.setPixmap(rotated_pixmap)
+    def resizeEvent(self, a0: QtGui.QResizeEvent):
+        global newneedle
+        height=self.height()
+        width=self.width()
+        if height>width:
+            length=width
+        else:
+            length=height
+        self.ui.frame.setGeometry(QtCore.QRect(0, 0, length, length))
+        self.ui.frame_2.setGeometry(QtCore.QRect(5, 5, length - 10, length - 10))
+        self.ui.frame_3.setGeometry(QtCore.QRect(0,0,length,length))
+        bcircle= """QFrame{
+                        border-radius: {Value};
+                        background-color: rgb(247,247,247);
+                        }"""
+        bcircle=bcircle.replace("{Value}", (str(int(int(length)/2))))
+        self.ui.frame_3.setStyleSheet(bcircle)
+        self.ui.frame_4.setGeometry(QtCore.QRect(5,5,length-10,length-10))
+        scircle = """QFrame{
+                                border-radius: {Value};
+                                background-color: rgb(0,0,0);
+                                }"""
+        scircle = scircle.replace("{Value}", (str(int(int(length-10) / 2))))
+        self.ui.frame_4.setStyleSheet(scircle)
+
+        lines=QtGui.QPixmap("QT Images/speedolines2.png")
+        lines=lines.scaled(length+30, length+30, Qt.KeepAspectRatio,Qt.FastTransformation)
+        self.ui.label.setGeometry(-15,-15,length+30,length+30)
+        self.ui.label.setPixmap(lines)
+
+        numbers = QtGui.QPixmap("QT Images/Speedometer2.png")
+        numbers = numbers.scaled(length, length, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.ui.label_2.setGeometry(0, -length/10, length, length)
+        self.ui.label_2.setPixmap(numbers)
+
+        pointer = QtGui.QPixmap("QT Images/Pointer2.png")
+        pointer = pointer.scaled(length, length, Qt.KeepAspectRatio, Qt.FastTransformation)
+        self.ui.label_4.setGeometry(0, 5, length, length)
+        self.ui.label_4.setPixmap(pointer)
+
+        self.ui.label_3.setGeometry(0,length/5,length,length)
+        self.ui.label_3.setAlignment(QtCore.Qt.AlignCenter)
+        self.ui.label_3.setFont(QtGui.QFont('Bahnschrift SemiCondensed',length/15))
+
+        self.ui.Needle.setGeometry(0,0,length,length)
+        needle= QtGui.QPixmap("QT Images/needle3.png")
+        needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
+        newneedle=needle
+        self.ui.frame_2.raise_()
+        self.ui.frame_3.raise_()
+        self.ui.frame_4.raise_()
+        self.ui.label.raise_()
+        self.ui.label_2.raise_()
+        self.ui.Needle.raise_()
+        self.ui.label_4.raise_()
+        self.ui.label_3.raise_()
+
+
 
 
 def reMap(value, maxInput, minInput, maxOutput, minOutput):

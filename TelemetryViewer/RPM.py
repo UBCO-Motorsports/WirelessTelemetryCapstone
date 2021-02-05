@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QMenu
 from RPMroot import Ui_Form
 
 RPM = 0
-resizeval=0
+newneedle=0
 
 
 class RPMGauge(QtWidgets.QWidget):
@@ -30,9 +30,9 @@ class RPMGauge(QtWidgets.QWidget):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
-        newAct = menu.addAction("Test")
-        quitAct= menu.addAction("Quit")
-        action= menu.popup(self.mapToGlobal(event.pos()))
+        newAct = menu.addAction("Edit Data")
+        quitAct = menu.addAction("Quit")
+        action = menu.popup(self.mapToGlobal(event.pos()))
         quitAct.triggered.connect(self.close)
 
 
@@ -49,6 +49,7 @@ class RPMGauge(QtWidgets.QWidget):
 
 
     def resizeEvent(self, a0: QtGui.QResizeEvent):
+        global newneedle
         height=self.height()
         width=self.width()
         if height>width:
@@ -61,23 +62,21 @@ class RPMGauge(QtWidgets.QWidget):
                         border-radius: {Value};
                         background-color: rgb(247,247,247);
                         }"""
-        scircle = scircle.replace("{Value}", str(int((length-10)/2)))
+        scircle = scircle.replace("{Value}", str(int(int((length-10)/2))))
         self.ui.frame_2.setStyleSheet(scircle)
         self.ui.frame_3.setGeometry(QtCore.QRect(0, 0, length,length))
         bcircle = """QFrame{
                         border-radius: {Value};
                         background-color: rgb(0,0,0);
                         }"""
-        bcircle = bcircle.replace("{Value}", (str(int((length)/2))))
+        bcircle = bcircle.replace("{Value}", (str(int(int((length)/2)))))
         self.ui.frame_3.setStyleSheet(bcircle)
         self.ui.frame_4.setGeometry(QtCore.QRect(0, 0, length,length))
-        smallneedle = QtGui.QPixmap("QT Images/needle3.png")
-        smallneedle=smallneedle.scaled(length,length, Qt.KeepAspectRatio, Qt.FastTransformation)
-        t = QtGui.QTransform()
-        t.rotate(resizeval)
-        smallneedle=smallneedle.transformed(t)
-        self.ui.Needle.setGeometry(QtCore.QRect(0, 0, length,length))
-        self.ui.Needle.setPixmap(smallneedle)
+
+        self.ui.Needle.setGeometry(0, length/5, length,length)
+        needle=QtGui.QPixmap("QT Images/needle3.png")
+        needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
+        newneedle=needle
 
         tach = QtGui.QPixmap("QT Images/Tachlinesr.png")
         tach = tach.scaled(length+30, length+30, Qt.KeepAspectRatio,Qt.FastTransformation)
@@ -89,7 +88,10 @@ class RPMGauge(QtWidgets.QWidget):
         numbers = numbers.scaled(length+20, length+20, Qt.KeepAspectRatio,Qt.FastTransformation)
         self.ui.label_2.setGeometry(-10, -45, length+30, length+30)
         self.ui.label_2.setPixmap(numbers)
-        self.ui.RPMtext.setGeometry(QtCore.QRect(0, length*250/320, length, 50))
+
+        self.ui.RPMtext.setGeometry(0, length/5,length,length)
+        self.ui.RPMtext.setAlignment(QtCore.Qt.AlignCenter)
+        self.ui.RPMtext.setFont(QtGui.QFont('Bahnschrift SemiCondensed',length/15))
 
         pointer = QtGui.QPixmap("QT Images/Pointer2.png")
         pointer = pointer.scaled(length, length, Qt.KeepAspectRatio, Qt.FastTransformation)
@@ -108,8 +110,7 @@ class RPMGauge(QtWidgets.QWidget):
 
     def animate(self,value):
         global RPM
-        global resizeval
-        global needleimage
+        global newneedle
         value=RPM
         htmlText="{Value}"
         newHtml=htmlText.replace("{Value}",str(value))
@@ -122,11 +123,13 @@ class RPMGauge(QtWidgets.QWidget):
         if value<0:
             value=0
         value=reMap(RPM,16000,0,253,-15)
-        resizeval = value
         t.rotate(value)
-        # load your image
-        image = QtGui.QImage("QT Images/needle3.png")
-        pixmap = QtGui.QPixmap.fromImage(image)
+        if newneedle is not 0:
+            pixmap=newneedle
+        else:
+            # load your image
+            image = QtGui.QImage("QT Images/needle3.png")
+            pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
         self.ui.Needle.setPixmap(rotated_pixmap)
