@@ -7,36 +7,43 @@ from PyQt5.QtWidgets import QMenu
 from PyQt5.QtCore import Qt
 from Speedoroot import Ui_Form
 
-Speed = 0
 newneedle=0
 
 
 class splashScreen(QtWidgets.QWidget):
+    raisesignal = QtCore.pyqtSignal()
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        # QtWidgets.QWidget.__init__(self)
+        super(splashScreen, self).__init__()
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+        self.Speed = 0
         self.animate(0)
 
         self.frame_size = self.ui.frame
 
-        self.timer = QtCore.QTimer()
-        self.timer.timeout.connect(self.accellerate)
-        self.timer.start(15)
+        # self.timer = QtCore.QTimer()
+        # self.timer.timeout.connect(self.accellerate)
+        # self.timer.start(15)
 
-        self.type = 'dial'
+        self.type = 'Speedo Gauge'
 
         self.show()
+
+    # Don't delete! needed to run GUITest
+    def plot(self, x, y):
+        # Needed to run GUITest
+        pass
+
     def accellerate (self):
-        global Speed
-        value=Speed
+        value=self.Speed
 
         self.animate(value)
-        if Speed > 150:
-            self.timer.stop()
-
+        if self.Speed > 150:
+            # self.timer.stop()
+            #
             self.close()
-        Speed += 0
+        self.Speed += 0
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
@@ -47,9 +54,8 @@ class splashScreen(QtWidgets.QWidget):
             self.close()
 
     def animate(self,value):
-        global Speed
         global newneedle
-        value=int(Speed)
+        value=self.Speed
         htmlText= "{Value} kph"
         newHtml=htmlText.replace("{Value}",str(value))
         self.ui.label_3.setText(newHtml)
@@ -60,7 +66,7 @@ class splashScreen(QtWidgets.QWidget):
             value=120
         if value<0:
             value=0
-        value=reMap(Speed,120, 0,239,0)
+        value=reMap(self.Speed,120, 0,239,0)
         t.rotate(value)
         if newneedle is not 0:
             pixmap=newneedle
@@ -120,6 +126,7 @@ class splashScreen(QtWidgets.QWidget):
         needle= QtGui.QPixmap("QT Images/needle3.png")
         needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
         newneedle=needle
+
         self.ui.frame_2.raise_()
         self.ui.frame_3.raise_()
         self.ui.frame_4.raise_()
@@ -129,7 +136,7 @@ class splashScreen(QtWidgets.QWidget):
         self.ui.label_4.raise_()
         self.ui.label_3.raise_()
 
-
+        self.raisesignal.emit()
 
 
 def reMap(value, maxInput, minInput, maxOutput, minOutput):
@@ -146,5 +153,8 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    mainwindow = QtWidgets.QMainWindow()
     window = splashScreen()
+    mainwindow.setCentralWidget(window)
+    mainwindow.show()
     sys.exit(app.exec_())

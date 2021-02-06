@@ -32,6 +32,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Better sizing for page selection menu
         self.ui.frame_left_menu.setMinimumWidth(100)
+        # self.ui.frame_pages.setStyleSheet('background-color: rgb(85,85,85);')
+
         # Initialize page selection buttons
         self.initPageButtons()
 
@@ -299,7 +301,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
         self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
         self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
-        # TODO populate current widget range info
         if self.ui.checkBox.isChecked():
             self.ui.checkBox.setChecked(True)
         else:
@@ -530,24 +531,30 @@ class Worker(QRunnable):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
-    window = MainWindow()
-    loader = Loader()
-    loader.show()
+    # window = MainWindow()
+    # loader = Loader()
+    # loader.show()
+    #
+    # def loaderProgress():
+    #     # TODO Turn loader back on
+    #     loader.counter = 100
+    #
+    #     if loader.counter == 100:
+    #         timer.stop()
+    #         window.show()
+    #         loader.close()
+    #     loader.progress()
+    #
+    # # Sets a timer to check loading progress
+    # timer = QtCore.QTimer()
+    # timer.timeout.connect(loaderProgress)
+    # timer.start(5)
 
-    def loaderProgress():
-        # TODO Turn loader back on
-        loader.counter = 100
-
-        if loader.counter == 100:
-            timer.stop()
-            window.show()
-            loader.close()
-        loader.progress()
-
-    # Sets a timer to check loading progress
-    timer = QtCore.QTimer()
-    timer.timeout.connect(loaderProgress)
-    timer.start(5)
+    testMain = MainWindow()
+    testWindow = QMainWindow()
+    testWindow.setCentralWidget(testMain.ui.Content)
+    testWindow.show()
+    # testWindow.centralWidget().setStyleSheet('background-color: rgb(85,85,85);')
 
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
     sys.exit(app.exec_())

@@ -51,8 +51,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.homeLayout.addWidget(self.homePicture, 1, 0, Qt.AlignCenter)
 
         # Init graphs using graphing class
-        self.GraphClass = GraphManager()
-        self.Stack.addWidget(self.GraphClass)
+        self.GraphManager = GraphManager(self)
+        self.Stack.addWidget(self.GraphManager)
 
         # Generate initial plot data
         self.x = list(range(200))  # 100 time points
@@ -65,9 +65,9 @@ class MainWindow(QtWidgets.QMainWindow):
         self.pen = pg.mkPen(color=(255,0,0),width=2)
 
         # Generate graphs
-        for row in self.GraphClass.graph_array:
-            for graph in row:
-                graph.plot(self.x, self.y, pen=self.pen)
+        # for row in self.GraphManager.graph_array:
+        #     for graph in row:
+        #         graph.plot(self.x, self.y, pen=self.pen)
 
         # Set refresh rate for graph
         self.timer = QtCore.QTimer()
@@ -189,14 +189,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.sin = self.sin[1:]
         # self.sin.append(np.sin(self.x[-1]) + 50)
 
-        for row in self.GraphClass.graph_array:
+        for row in self.GraphManager.graph_array:
             # Process events from OS to reduce input lag
             QApplication.processEvents()
             for graph in row:
                 graph.plot(self.x, self.y, pen=self.pen, clear=True)
 
     def graphshift(self):
-        self.GraphClass.showGraphs(self.comboBox.currentText())
+        self.GraphManager.showGraphs(self.comboBox.currentText())
         self.graphs_shown = int(self.comboBox.currentText())
         if self.graphs_shown == 1:
             for i in range(1,16):

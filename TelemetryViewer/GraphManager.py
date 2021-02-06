@@ -36,32 +36,39 @@ class GraphManager(QtGui.QWidget):
         for i in range(3):
             for j in range(4):
                 self.graph_array[i].append(PlotWdgt(self))
-                self.graph_layout.addWidget(self.graph_array[i][j], i, j)
-                self.graph_array[i][j].showGrid(x=True, y=True)
-                self.graph_array[i][j].setBackground('w')
+                current_graph = self.graph_array[i][j]
+                self.graph_layout.addWidget(current_graph, i, j)
+                current_graph.showGrid(x=True, y=True)
+                current_graph.setBackground('w')
 
-                self.graph_array[i][j].xData = self.x
-                self.graph_array[i][j].yData = self.SerialModule.array1
+                current_graph.xData = self.x
+                current_graph.yData = self.SerialModule.array1
 
-                plotItem = self.graph_array[i][j].getPlotItem()
-                plotItem.setLabel('bottom', text=self.graph_array[i][j].xLabel)
+                plotItem = current_graph.getPlotItem()
+                plotItem.setLabels(top=self.graph_array[i][j].title, bottom=current_graph.xLabel)
+                # plotItem.setLabel('top', text=self.graph_array[i][j].title)
+                # plotItem.setLabel('bottom', text=self.graph_array[i][j].xLabel)
                 plotItem.setLabel('left', text=self.graph_array[i][j].yLabel)
 
         # self.graph_array[0][0].xData.append(self.x)
         # self.graph_array[0][0].yData.append(self.SerialModule.array1)
         #
-        # self.dial = RPMGauge(self)
+        # self.dial = RPMGauge()
         # self.graph_array[0][0].hide()
+        # self.graph_layout.removeWidget (self.graph_array[0][0])
+        # self.graph_array[0][0].close()
         # self.graph_array[0][0] = self.dial
         # self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
 
-        # self.speed = splashScreen()
-        # self.graph_layout.removeWidget(self.graph_array[0][1])
-        # self.graph_array[0][1].close()
-        # self.graph_array[0][1] = self.speed
-        # self.graph_layout.addWidget(self.speed, 0, 1)
-        # self.speed.frame_size.setGeometry(-10,-10,320,320)
+        self.speedo = splashScreen()
+        self.speed = 0
+        # self.speedo.raise_()
+        self.graph_layout.removeWidget(self.graph_array[0][1])
+        self.graph_array[0][1].close()
+        self.graph_array[0][1] = self.speedo
+        self.graph_layout.addWidget(self.speedo, 0, 1)
+        # # self.speedo.frame_size.setGeometry(-10,-10,320,320)
 
     def configMenuCalled(self, plotWidget):
         self.parentWidget.configMenuCalled(plotWidget)
@@ -85,6 +92,8 @@ class GraphManager(QtGui.QWidget):
 
             # Gets a sample of the latest arrays
             self.serialArrays = self.SerialModule.getData()
+            dialtest = self.serialArrays[2]
+            self.speedo.Speed = dialtest[-1]
 
             # Iterates through each graph/dial and refreshes its data
             for i, row in enumerate(self.graph_array):
@@ -93,9 +102,14 @@ class GraphManager(QtGui.QWidget):
                         graph.clear()
                         graph.plot(graph.xData, self.serialArrays[i], pen=self.pen, clear=True)
                         # print('cartesian')
-                    elif graph.type == 'dial':
-                        pass
-                        # print('dial')
+                    elif graph.type == 'Speedo Gauge':
+                        if self.speedo.Speed < 150:
+                            print('increase')
+                            self.speedo.animate(self.speedo.Speed)
+                            # self.speedo.Speed += 1
+                        else:
+                            print('set zero')
+                            self.speedo.Speed = 0
                     elif graph.type == 'polar':
                         pass
                         # print('polar')
@@ -130,14 +144,17 @@ class PlotWdgt(pg.PlotWidget):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored))
         self.parentWidget = parentWidget
-        self.getPlotItem().getAxis('top').setStyle(showValues=False)
+        self.plot_item = self.getPlotItem()
+        self.plot_item.getAxis('top').setStyle(showValues=False)
+
+        self.legend = self.plot_item.addLegend()
 
         self.type = 'time_domain'
         self.xData = []
         self.yData = []
         self.xLabel = 'X-Axis'
         self.yLabel = 'Y-Axis'
-        self.title = ''
+        self.title = 'X vs. Y'
         self.yRange = [0, 1]
         self.autoRange = True
         #TODO store the current axis labels, legend, and datasets to populate config menu
