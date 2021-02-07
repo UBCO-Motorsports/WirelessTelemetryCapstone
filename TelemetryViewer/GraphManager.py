@@ -12,7 +12,7 @@ from Serial import SerialModule     #dont comment or delete > needed for Serial 
 class GraphManager(QtGui.QWidget):
 
     def __init__(self, parentWidget):
-        super(GraphManager, self).__init__()
+        super(GraphManager, self).__init__(parentWidget)
         self.parentWidget = parentWidget
         self.SerialModule = SerialModule()
         # self.SerialModule.connectSerial()
@@ -61,7 +61,7 @@ class GraphManager(QtGui.QWidget):
         # self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
 
-        self.speedo = splashScreen()
+        self.speedo = splashScreen(self)
         self.speed = 0
         # self.speedo.raise_()
         self.graph_layout.removeWidget(self.graph_array[0][1])

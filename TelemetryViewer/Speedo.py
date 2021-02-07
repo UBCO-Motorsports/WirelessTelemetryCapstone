@@ -12,9 +12,9 @@ newneedle=0
 
 class splashScreen(QtWidgets.QWidget):
     raisesignal = QtCore.pyqtSignal()
-    def __init__(self):
+    def __init__(self, parent):
         # QtWidgets.QWidget.__init__(self)
-        super(splashScreen, self).__init__()
+        super(splashScreen, self).__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.Speed = 0

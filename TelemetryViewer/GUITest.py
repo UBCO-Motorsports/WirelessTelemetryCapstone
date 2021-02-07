@@ -27,6 +27,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Init stack widget and add widgets to it
         self.Stack = QStackedWidget(self)
+        # self.Stack.setStyleSheet('background-color: rgb(85,85,85);')
         self.homeWidget = QtGui.QWidget()
         self.Stack.addWidget(self.homeWidget)
 

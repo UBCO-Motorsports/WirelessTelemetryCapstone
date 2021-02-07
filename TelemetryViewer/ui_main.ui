@@ -226,6 +226,9 @@ QPushButton:hover {
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
             <property name="currentIndex">
              <number>2</number>
             </property>
@@ -1085,6 +1088,9 @@ QPushButton:hover {
              </layout>
             </widget>
             <widget class="QWidget" name="graph_page">
+             <property name="styleSheet">
+              <string notr="true"/>
+             </property>
              <layout class="QVBoxLayout" name="verticalLayout_8">
               <item>
                <widget class="QLabel" name="label">
