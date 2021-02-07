@@ -1,34 +1,44 @@
 {
     "logged": [
         {
-            "Name": "RPM",
+            "Name": "Coolant Pressure",
             "ID": "0x360",
-            "Units": "RPM",
-            "Scale": 1,
-            "Position": 0,
+            "Units": "kPa",
+            "Scale": 0.1,
+            "Position": 48,
             "Size": 16,
             "Offset": 0,
-            "Color": "(223, 145, 99, 255)"
+            "Color": "(120, 248, 30, 255)"
         },
         {
-            "Name": "Throttle Position",
-            "ID": "0x360",
+            "Name": "Engine Demand",
+            "ID": "0x361",
             "Units": "%",
             "Scale": 0.1,
             "Position": 32,
             "Size": 16,
             "Offset": 0,
-            "Color": "(79, 203, 85, 255)"
+            "Color": "(176, 67, 200, 255)"
         },
         {
-            "Name": "Vehicle Speed",
-            "ID": "0x370",
-            "Units": "km/h",
+            "Name": "Wastegate Pressure",
+            "ID": "0x361",
+            "Units": "kPa",
             "Scale": 0.1,
-            "Position": 0,
+            "Position": 48,
             "Size": 16,
             "Offset": 0,
-            "Color": "(200, 157, 109, 255)"
+            "Color": "(199, 6, 146, 255)"
+        },
+        {
+            "Name": "Injection Stage 2 Duty Cycle",
+            "ID": "0x362",
+            "Units": "%",
+            "Scale": 0.1,
+            "Position": 16,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(210, 209, 179, 255)"
         }
     ]
 }

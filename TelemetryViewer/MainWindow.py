@@ -182,6 +182,14 @@ class MainWindow(QtWidgets.QMainWindow):
             data = json.load(json_file)
             json_file.close()
 
+        self.datadict = data
+        self.datadict["logged"][0]["buffer"]=["heloo","test"]
+        print(self.datadict["logged"][0])
+        print(self.datadict["logged"][0]["ID"])
+
+
+
+
         self.ui.comboBox_5.clear()
         self.ui.comboBox.clear()
         self.ui.comboBox_4.clear()
@@ -531,30 +539,24 @@ class Worker(QRunnable):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
-    # window = MainWindow()
-    # loader = Loader()
-    # loader.show()
-    #
-    # def loaderProgress():
-    #     # TODO Turn loader back on
-    #     loader.counter = 100
-    #
-    #     if loader.counter == 100:
-    #         timer.stop()
-    #         window.show()
-    #         loader.close()
-    #     loader.progress()
-    #
-    # # Sets a timer to check loading progress
-    # timer = QtCore.QTimer()
-    # timer.timeout.connect(loaderProgress)
-    # timer.start(5)
+    window = MainWindow()
+    loader = Loader()
+    loader.show()
 
-    testMain = MainWindow()
-    testWindow = QMainWindow()
-    testWindow.setCentralWidget(testMain.ui.Content)
-    testWindow.show()
-    # testWindow.centralWidget().setStyleSheet('background-color: rgb(85,85,85);')
+    def loaderProgress():
+        # TODO Turn loader back on
+        loader.counter = 100
+
+        if loader.counter == 100:
+            timer.stop()
+            window.show()
+            loader.close()
+        loader.progress()
+
+    # Sets a timer to check loading progress
+    timer = QtCore.QTimer()
+    timer.timeout.connect(loaderProgress)
+    timer.start(5)
 
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
     sys.exit(app.exec_())
