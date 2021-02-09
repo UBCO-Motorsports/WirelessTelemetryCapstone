@@ -204,7 +204,7 @@ int8_t cmdbuffind = 0;
 uint8_t processingcommand = 0;
 uint8_t cmdlen = 0;
 
-const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_TO << 3) | (UJA_NWP_1024);
+const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_1024);
 
 /* USER CODE END PV */
 
@@ -240,37 +240,33 @@ void DebugPrint(char *msg) {
 }
 
 
-//Initializes UJA SBC
+//Initializes SBC
 void Init_SBC(void) {
 	HAL_StatusTypeDef result;
-	uint16_t data[1];
-	uint16_t rxdata[1];
+	uint8_t txdata[2];
+	uint8_t rxdata[2];
 
+	//Force SBC in standby mode
+	txdata[0] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_STBY << 2);
+	txdata[1] = 0;
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+	result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
 
-	/*
 	//Setup WDG and Status register
-	data[0] = 0;
-	data[0] = WD_SETUP << 8;
+	txdata[0] = WD_SETUP;
+	txdata[1] = 0;
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+	result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
 
-	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
+	//Set normal mode and enable CAN voltage
+	txdata[0] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_V2ON << 2);
+	txdata[1] = 0;
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+	result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
 
-	while (hspi1.State != HAL_SPI_STATE_READY) {
-		HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 1);
-	}
-	HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
-	*/
-
-
-	//Setup Mode Control register
-	data[0] = 0;
-	data[0] = (UJA_REG_MODECONTROL << 13) | (UJA_RO_RW << 12) | (UJA_MC_V2ON << 10);
-
-	result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
-
-	while (hspi1.State != HAL_SPI_STATE_READY) {
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 1);
-	}
-	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
 }
 
 
@@ -378,18 +374,19 @@ int main(void)
   /* USER CODE BEGIN 2 */
 
 
-
-
-
   HAL_GPIO_WritePin(LD1_GPIO_Port, LD1_Pin, 0);
 	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, 0);
+	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+
+	Init_SBC();
+
 
 	//Load default message configuration
+	//NOTE: This operation takes approximately 100ms!!!!!
 	memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
-
+	//Initialize CAN and all filters
 	Init_CAN();
-	Init_SBC();
 
 
   //Start receiving UART
@@ -577,11 +574,11 @@ static void MX_SPI1_Init(void)
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_16BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi1.Init.NSS = SPI_NSS_HARD_OUTPUT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_64;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -683,10 +680,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|LD1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, UJA_CS_Pin|LD2_Pin|LD1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : LD2_Pin LD1_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|LD1_Pin;
+  /*Configure GPIO pins : UJA_CS_Pin LD2_Pin LD1_Pin */
+  GPIO_InitStruct.Pin = UJA_CS_Pin|LD2_Pin|LD1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -918,17 +915,20 @@ void StartFeedWDG(void *argument)
   {
 
     osDelayUntil(tick);
-    //HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 
     HAL_StatusTypeDef result;
-    /*
-		uint16_t data[1];
-		uint16_t rxdata[1];
-		data[0] = 0;
-		data[0] = WD_SETUP << 8;
 
-		result = HAL_SPI_TransmitReceive(&hspi1, (uint8_t *)data, (uint8_t *)rxdata, 1, 100);
-     */
+    uint8_t rxdata[2];
+    uint8_t txdata[2];
+
+    txdata[0] = WD_SETUP;
+		txdata[1] = 0;
+		HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
+		result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+		HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
+
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
     tick += 700;
   }
   /* USER CODE END StartFeedWDG */
