@@ -1,32 +1,35 @@
 import serial, time, csv, datetime
-from serial import Serial             #Serial code
+from serial import Serial  # Serial code
 from serial import SerialException
-from MainWindowroot import Ui_MainWindow
 
+dataDict = 0
 
-#TODO 1. We need to make sure theres an algoithim for connection status: Like if COM disconnects then it needs to
-#TODO    either reconnect or prompt, etc. Jan 20
-#TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
-#TODO    Royden's TIVA board. Jan 20
-#TODO
-#TODO
-#TODO
-#TODO 3. (COMPLETED) Need a Disconnect Method -> see serial_btn in MainWindow + tryConnectSerial
-#TODO 4. Scaling Function - to expand or shrink data points
-#TODO
-#TODO More to the END, Use Threading for updating graphs, checking serial ports, etc. Or Multiprocessing
-
+# TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
+# TODO    Royden's TIVA board. Jan 20
+# TODO 4. Scaling Function - to expand or shrink data points
+# TODO More to the END, Use Threading for updating graphs, checking serial ports, etc. Or Multiprocessing
 
 class SerialModule():
-
     def __init__(self):
-
         self.array1 = [0 for _ in range(200)]
         self.array2 = [0 for _ in range(200)]
         self.array3 = [0 for _ in range(200)]
+        self.array4 = [0 for _ in range(200)]
+        self.array5 = [0 for _ in range(200)]
+        self.array6 = [0 for _ in range(200)]
+        self.array7 = [0 for _ in range(200)]
+        self.array8 = [0 for _ in range(200)]
+        self.array9 = [0 for _ in range(200)]
+        self.array10 = [0 for _ in range(200)]
+        self.array11 = [0 for _ in range(200)]
+        self.array12 = [0 for _ in range(200)]
+        self.array13 = [0 for _ in range(200)]
+        self.array14 = [0 for _ in range(200)]
+        self.array15 = [0 for _ in range(200)]
+        self.array16 = [0 for _ in range(200)]
 
-        self.arrays = [self.array1, self.array2, self.array3]
-
+        self.arrays = [self.array1, self.array2, self.array3, self.array4, self.array5, self.array6, self.array7, self.array8, self.array9, self.array10, self.array11, self.array12, self.array13, self.array14, self.array15, self.array16] ###
+        # self.datadictionary = {}
     # filter0 = rpm
     # filter1 = speed
     # for filter in filters:
@@ -41,52 +44,126 @@ class SerialModule():
                 # global serialChannel
                 # self.serialChannel = serialChannel
                 print('try serial')
-                self.serialChannel = SerialClass(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=0.1, xonxoff=False)      #TODO Change  timeout to 15 seconds...
-
+                self.serialChannel = SerialClass(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1,
+                                                 timeout=0.1, xonxoff=False)  # TODO Change  timeout to 15 seconds...
                 print('COM connected')
                 return True
             except SerialException:
                 # del self
                 print("COM failed -> closed")
-                #self.close() # close instance if failed
+                # self.close() # close instance if failed
                 return False
 
     def getData(self):
-        return [self.array1, self.array2, self.array3]
+        return [self.array1, self.array2, self.array3] ##############
 
     def sendCommand(self, command):
-        self.serialChannel.write(str(command).encode())  #should work for sending strings
+        self.serialChannel.write(str(command).encode())  # should work for sending strings
+
+    def recievedataDict(self, data):        #Saves dataDict from Setup page to use for scaling in readSerial()
+        global dataDict
+        dataDict = data
+        # self.datadictionary['logged'] = data['logged']
+        # self.datadictionary = data
+        # print(len(data["logged"]))
+        # print(self.datadictionary)
+        # print(dataDict)
+        # print(len(self.datadictionary["logged"]))
+        # return self.datadictionary
 
     def readSerial(self):
+        global dataDict
+
         if self.serialChannel.is_open:
-            data = self.serialChannel.readline()
-            data = data.decode('utf-8')
-            data = data.rstrip()  # gets rid of \n from energia generated code
-            dataapp = data.split(",")
-            # print(dataapp)
+            dataa = self.serialChannel.readline()
+            dataa = dataa.decode('utf-8')
+            dataa = dataa.rstrip()  # gets rid of \n from energia generated code
+            dataapp = dataa.split(",")
         else:
             dataapp = []
             for i in range(16):
                 dataapp.append(0)
-
-
         self.array1 = self.array1[1:]  # Remove the first y element.
         self.array2 = self.array2[1:]
         self.array3 = self.array3[1:]
+        self.array4 = self.array4[1:]
+        self.array5 = self.array5[1:]
+        self.array6 = self.array6[1:]
+        self.array7 = self.array7[1:]  # Remove the first y element.
+        self.array8 = self.array8[1:]
+        self.array9 = self.array9[1:]
+        self.array10 = self.array10[1:]
+        self.array11 = self.array11[1:]
+        self.array12 = self.array12[1:]
+        self.array13 = self.array13[1:]
+        self.array14 = self.array14[1:]
+        self.array15 = self.array15[1:]
+        self.array16 = self.array16[1:]
 
         try:
-            self.array1.append(float(dataapp[0]))  # Add as many arrays as we want
+            self.array1.append(float(dataapp[0])*float(dataDict['logged'][0]['Scale'])+float(dataDict['logged'][0]['Offset']))  # Add as many arrays as we want
         except:
             self.array1.append(0)
         try:
-            self.array2.append(float(dataapp[1]))  # Add as many arrays as we want
+            self.array2.append(float(dataapp[1])*float(dataDict['logged'][1]['Scale'])+float(dataDict['logged'][1]['Offset']))  # Add as many arrays as we want
         except:
             self.array2.append(0)
         try:
-            self.array3.append(float(dataapp[2]))  # Add as many arrays as we want
+            self.array3.append(float(dataapp[2])*float(dataDict['logged'][2]['Scale'])+float(dataDict['logged'][2]['Offset']))  # Add as many arrays as we want
         except:
             self.array3.append(0)
-
+        try:
+            self.array4.append(float(dataapp[3])*float(dataDict['logged'][3]['Scale'])+float(dataDict['logged'][3]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array4.append(0)
+        try:
+            self.array5.append(float(dataapp[4])*float(dataDict['logged'][4]['Scale'])+float(dataDict['logged'][4]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array5.append(0)
+        try:
+            self.array6.append(float(dataapp[5])*float(dataDict['logged'][5]['Scale'])+float(dataDict['logged'][5]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array6.append(0)
+        try:
+            self.array7.append(float(dataapp[6])*float(dataDict['logged'][6]['Scale'])+float(dataDict['logged'][6]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array7.append(0)
+        try:
+            self.array8.append(float(dataapp[7])*float(dataDict['logged'][7]['Scale'])+float(dataDict['logged'][7]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array8.append(0)
+        try:
+            self.array9.append(float(dataapp[8])*float(dataDict['logged'][8]['Scale'])+float(dataDict['logged'][8]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array9.append(0)
+        try:
+            self.array10.append(float(dataapp[9])*float(dataDict['logged'][9]['Scale'])+float(dataDict['logged'][9]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array10.append(0)
+        try:
+            self.array11.append(float(dataapp[10])*float(dataDict['logged'][10]['Scale'])+float(dataDict['logged'][10]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array11.append(0)
+        try:
+            self.array12.append(float(dataapp[11])*float(dataDict['logged'][11]['Scale'])+float(dataDict['logged'][11]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array12.append(0)
+        try:
+            self.array13.append(float(dataapp[12])*float(dataDict['logged'][12]['Scale'])+float(dataDict['logged'][12]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array13.append(0)
+        try:
+            self.array14.append(float(dataapp[13])*float(dataDict['logged'][13]['Scale'])+float(dataDict['logged'][13]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array14.append(0)
+        try:
+            self.array15.append(float(dataapp[14])*float(dataDict['logged'][14]['Scale'])+float(dataDict['logged'][14]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array15.append(0)
+        try:
+            self.array16.append(float(dataapp[15])*float(dataDict['logged'][15]['Scale'])+float(dataDict['logged'][15]['Offset']))  # Add as many arrays as we want
+        except:
+            self.array16.append(0)
 
 class SerialClass(serial.Serial):
     # def __init__(self,port): # , baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10, xonxoff=False
@@ -104,85 +181,3 @@ class SerialClass(serial.Serial):
     def __exit__(self, exc_type, exc_val, exc_tb):
         print('time out ')
         super(SerialClass, self).__exit__(self, exc_type, exc_val, exc_tb)
-
-
-# global array1               #Add as many arrays as we want
-# global array2
-# global array3
-# array1 = []                 #Add as many arrays as we want
-# array2 = []
-# array3 = []
-#
-# def trialplz():             #to test if COMx port is open
-#     try:
-#         global ser
-#         ser = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,
-#                             xonxoff=False)
-#         print("Com port is now open")
-#         printprompt()
-#
-#     except IOError:
-#         print("Com port is not open, Check again? y or n")
-#         checkport = input()
-#         if checkport == "y":
-#             trialplz()
-#         elif checkport == "n":
-#             exit()
-#
-#
-# def printprompt():          #prompt to save or just view incoming data
-#     print("Would you like to save to cvs???  y or n")
-#     recordtocvs = input()
-#     if recordtocvs == "y":
-#         print("Record and Print Data")
-#         recandprint()
-#     elif recordtocvs == "n":
-#         print("Just Print Data")
-#         justprint()
-#     else:
-#         print("Sorry, that was an invalid entry; y or n?")
-#         printprompt()
-#
-#
-# def recandprint():          #code that views,saves to arrays and to csv
-#     with open('serialcsvdata.csv', 'w', newline='', encoding='utf8') as csvfile:
-#         t = datetime.datetime.now()
-#         writer = csv.writer(csvfile, delimiter=' ')
-#         writer.writerow(['RPM', 'Lateral Acc', 'ThrottlePos', ':', 'Time started:',t.strftime("%H:%M:%S")])
-#                                             # Writing the headers to csv
-#         for _ in ser:
-#             data = ser.readline()
-#             data = data.decode('utf-8')
-#             data = data.rstrip()            #gets rid of \n from energia generated code
-#             dataapp = data.split(',')
-#             print(dataapp)
-#             array1.append(dataapp[0])       #writing to arrays
-#             array2.append(dataapp[1])           #Add as many arrays as we want
-#             array3.append(dataapp[2])
-#             writer.writerows([dataapp])     #the actual writing to csv
-#
-#
-# def justprint():            #code that only views and saves to arrays
-#     for _ in ser:
-#         data = ser.readline()
-#         data = data.decode('utf-8')
-#         data = data.rstrip()  # gets rid of \n from energia generated code
-#         dataapp = data.split(",")
-#         print(dataapp)
-#         array1.append(dataapp[0])           #Add as many arrays as we want
-#         array2.append(dataapp[1])
-#         array3.append(dataapp[2])
-#
-#
-# # try:                    #FIRST try to see it the port it open, if not, it goes to excep->trialplz()
-# #     ser = serial.Serial(port='COM4', baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=2,xonxoff=False)
-# #     # 'timeout' is how long the code will wait for input data until it stops running, want to see if we
-# #             #  can make it something else...
-# #     print("Com port is open")
-# #     serial.Serial.reset_output_buffer(ser)  # clears input
-# #     printprompt()
-# #
-# # except:
-# #     trialplz()
-
-

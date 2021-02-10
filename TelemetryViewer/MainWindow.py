@@ -184,11 +184,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.datadict = data
         self.datadict["logged"][0]["buffer"]=["heloo","test"]
-        print(self.datadict["logged"][0])
-        print(self.datadict["logged"][0]["ID"])
 
-
-
+        Serial.SerialModule().recievedataDict(self.datadict)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
+        # print(self.datadict["logged"][0])
+        # print(self.datadict["logged"][0]["ID"])
 
         self.ui.comboBox_5.clear()
         self.ui.comboBox.clear()
