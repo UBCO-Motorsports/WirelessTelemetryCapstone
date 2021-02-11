@@ -11,9 +11,9 @@ from Serial import SerialModule     #dont comment or delete > needed for Serial 
 
 class GraphManager(QtGui.QWidget):
 
-    def __init__(self, parentWidget):
-        super(GraphManager, self).__init__(parentWidget)
-        self.parentWidget = parentWidget
+    def __init__(self, parentwidget):
+        super(GraphManager, self).__init__(parentwidget)
+        self.parentwidget = parentwidget
         self.SerialModule = SerialModule()
         # self.SerialModule.connectSerial()
 
@@ -39,7 +39,6 @@ class GraphManager(QtGui.QWidget):
                 current_graph = self.graph_array[i][j]
                 self.graph_layout.addWidget(current_graph, i, j)
                 current_graph.showGrid(x=True, y=True)
-                current_graph.setBackground('w')
 
                 current_graph.xData = self.x
                 current_graph.yData = self.SerialModule.array1
@@ -70,8 +69,42 @@ class GraphManager(QtGui.QWidget):
         self.graph_layout.addWidget(self.speedo, 0, 1)
         # # self.speedo.frame_size.setGeometry(-10,-10,320,320)
 
+    #TODO
+    def updateWidget(self, current_widget, applied_type):
+        if current_widget.type != applied_type:
+            position = self.findWidgetPosition(current_widget)
+            if applied_type == 'Time Domain':
+                new_widget = PlotWdgt(self)
+            elif applied_type == 'Polar Plot':
+                new_widget = PlotWdgt(self) #TODO make polarplot widget
+                new_widget.type = 'Polar Plot'
+                pass
+            elif applied_type == 'RPM Gauge':
+                new_widget = RPMGauge(self)
+                pass
+            elif applied_type == 'Speedo Gauge':
+                new_widget = splashScreen(self)
+                pass
+            else:
+                print('widget update failed')
+                pass
+            self.graph_array[position[0]][position[1]] = new_widget
+            self.graph_layout.replaceWidget(current_widget, self.graph_array[position[0]][position[1]])
+            current_widget.close()
+        else:
+            new_widget = current_widget
+        return new_widget
+
+    def findWidgetPosition(self, current_widget):
+        for i, row in enumerate(self.graph_array):
+            for j, widget in enumerate(row):
+                if widget == current_widget:
+                    return (i, j) # row,column
+        print("Couldn't find widget in layout: see findWidgetPostition")
+
     def configMenuCalled(self, plotWidget):
-        self.parentWidget.configMenuCalled(plotWidget)
+        self.current_widget = plotWidget
+        self.parentwidget.configMenuCalled(plotWidget)
 
     def update(self):
         #TODO
@@ -87,7 +120,7 @@ class GraphManager(QtGui.QWidget):
         self.z.append(self.z[-1] - 1)
 
         # Read latest data if serial is connected
-        if self.parentWidget.serialConnected:
+        if self.parentwidget.serialConnected:
             self.SerialModule.readSerial()
 
             # Gets a sample of the latest arrays
@@ -140,16 +173,17 @@ class GraphManager(QtGui.QWidget):
             self.graph_array[1][0].hide()
 
 class PlotWdgt(pg.PlotWidget):
-    def __init__(self, parentWidget, parent=None):
+    def __init__(self, parentwidget, parent=None):
         super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored))
-        self.parentWidget = parentWidget
+        self.parentwidget = parentwidget
         self.plot_item = self.getPlotItem()
         self.plot_item.getAxis('top').setStyle(showValues=False)
+        self.setBackground('w')
 
         self.legend = self.plot_item.addLegend()
 
-        self.type = 'time_domain'
+        self.type = 'Time Domain'
         self.xData = []
         self.yData = []
         self.xLabel = 'X-Axis'
@@ -161,18 +195,18 @@ class PlotWdgt(pg.PlotWidget):
 
     def configMenuCalled(self):
         # Calls parent widget to open edit menu
-        self.parentWidget.configMenuCalled(self)
+        self.parentwidget.configMenuCalled(self)
 
 class CustomViewBox(pg.ViewBox):
-    def __init__(self, parentWidget, parent=None):
+    def __init__(self, parentwidget, parent=None):
         super(CustomViewBox, self).__init__(parent)
         self.menu = pg.ViewBoxMenu.ViewBoxMenu(self)
-        self.parentWidget = parentWidget
+        self.parentwidget = parentwidget
 
         # Adds edit option to right click menu
         self.menu.addSeparator()
         self.editData = QtGui.QAction("Edit Data", self.menu)
-        self.editData.triggered.connect(self.parentWidget.configMenuCalled)
+        self.editData.triggered.connect(self.parentwidget.configMenuCalled)
         self.menu.addAction(self.editData)
 
 # app = QtWidgets.QApplication(sys.argv)

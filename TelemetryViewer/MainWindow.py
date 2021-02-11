@@ -25,6 +25,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
         self.defaultFile = 'CANBUS/CANBUS2.json'
         self.Canfilename = 'CANBUS/CANBUS2.json'
+        self.selected_channels = []
 
         # Serial not initially connected at start up
         self.serialConnected = False
@@ -53,7 +54,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.setup_page.applySetup.activated.connect(self.applytoConfig)
 
         self.sendThread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
-        self.sendThread.start()
+        # self.sendThread.start()
 
         # Timer for testing graphing -> calls update function
         self.timer = QtCore.QTimer()
@@ -182,10 +183,14 @@ class MainWindow(QtWidgets.QMainWindow):
             data = json.load(json_file)
             json_file.close()
 
-        self.datadict = data
-        self.datadict["logged"][0]["buffer"]=["heloo","test"]
+        # self.datadict = data
+        # # self.datadict["logged"][0]["buffer"]=["heloo","test"]
+        #TODO update selected_channels while keeping buffers coherent
+        self.selected_channels.clear()
+        self.selected_channels = data["logged"]
+        print(self.selected_channels)
 
-        Serial.SerialModule().recievedataDict(self.datadict)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
+        Serial.SerialModule().recievedataDict(self.selected_channels)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
         # print(self.datadict["logged"][0])
         # print(self.datadict["logged"][0]["ID"])
 
@@ -271,14 +276,12 @@ class MainWindow(QtWidgets.QMainWindow):
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
 
-    # TODO This code allows us to see available COM ports and return using the portlist array.
-    # TODO Now just need to know when to call this function (start of running or call, or always?) and also be able to
-    # TODO    return the list of ports, also we can send more data back (ask me - Roy)
+    # This code allows us to see available COM ports and return using the portlist array.
     def availableCOMPorts(self):  # Generates a list of available COM ports testing
         portlist = serial.tools.list_ports.comports(include_links=False)
         portlistarray = []
-        for element in portlist:
-            portlistarray.append(element.device)
+        for port in portlist:
+            portlistarray.append(port.device)
         return portlistarray  # Should return a list of strings if possible -> ['COM1', 'COM4']
 
     def connectSerial(self):
@@ -316,46 +319,51 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.configMenu.show()
 
     def configApply(self):
+        self.currentPlotWidget = self.GraphManager.updateWidget(self.currentPlotWidget, self.ui.graphtype_comboBox.currentText())
+
+
         # Autorange functionality
-        if self.ui.checkBox.isChecked():
-            self.ui.lineEdit_5.setDisabled(True)
-            self.ui.lineEdit_6.setDisabled(True)
-            self.currentPlotWidget.enableAutoRange(x=True,y=True)
-        else:
-            # Sets y-bounds if a valid value is entered
-            try:
-                self.ui.lineEdit_5.setDisabled(False)
-                self.ui.lineEdit_6.setDisabled(False)
-                self.currentPlotWidget.enableAutoRange(x=True, y=False)
-                self.currentPlotWidget.yRange = [float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_6.text())]
-                self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1]) #TODO [lowerbound, upperbound] or [0,upperbound]
-            except:
+        if self.currentPlotWidget.type == 'Time Domain':
+            if self.ui.checkBox.isChecked():
                 self.ui.lineEdit_5.setDisabled(True)
                 self.ui.lineEdit_6.setDisabled(True)
-                self.ui.lineEdit_5.clear()
-                self.ui.lineEdit_6.clear()
-                self.currentPlotWidget.enableAutoRange(x=True,y=False)
-                self.ui.checkBox.setChecked(True)
+                self.currentPlotWidget.enableAutoRange(x=True,y=True)
+            else:
+                # Sets y-bounds if a valid value is entered
+                try:
+                    self.ui.lineEdit_5.setDisabled(False)
+                    self.ui.lineEdit_6.setDisabled(False)
+                    self.currentPlotWidget.enableAutoRange(x=True, y=False)
+                    self.currentPlotWidget.yRange = [float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_6.text())]
+                    self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1]) #TODO [lowerbound, upperbound] or [0,upperbound]
+                except:
+                    self.ui.lineEdit_5.setDisabled(True)
+                    self.ui.lineEdit_6.setDisabled(True)
+                    self.ui.lineEdit_5.clear()
+                    self.ui.lineEdit_6.clear()
+                    self.currentPlotWidget.enableAutoRange(x=True,y=False)
+                    self.ui.checkBox.setChecked(True)
 
-        # Set axes labels and title
-        try:
-            self.currentPlotItem.setLabel('top', text=self.ui.lineEdit_2.text())
-            self.currentPlotWidget.title = self.ui.lineEdit_2.text()
-        except:
-            self.currentPlotItem.setLabel('top', text='Graph')
-            self.currentPlotWidget.title = 'Graph'
-        try:
-            self.currentPlotItem.setLabel('left', text=self.ui.lineEdit_3.text())
-            self.currentPlotWidget.yLabel = self.ui.lineEdit_3.text()
-        except:
-            self.currentPlotItem.setLabel('left', text='Y-Axis')
-            self.currentPlotWidget.yLabel = 'Y-Axis'
-        try:
-            self.currentPlotItem.setLabel('bottom', text=self.ui.lineEdit_4.text())
-            self.currentPlotWidget.xLabel = self.ui.lineEdit_4.text()
-        except:
-            self.currentPlotItem.setLabel('bottom', text='X-Axis')
-            self.currentPlotWidget.xLabel = 'X-Axis'
+            # Set axes labels and title
+            self.currentPlotItem = self.currentPlotWidget.getPlotItem()
+            try:
+                self.currentPlotItem.setLabel('top', text=self.ui.lineEdit_2.text())
+                self.currentPlotWidget.title = self.ui.lineEdit_2.text()
+            except:
+                self.currentPlotItem.setLabel('top', text='Graph')
+                self.currentPlotWidget.title = 'Graph'
+            try:
+                self.currentPlotItem.setLabel('left', text=self.ui.lineEdit_3.text())
+                self.currentPlotWidget.yLabel = self.ui.lineEdit_3.text()
+            except:
+                self.currentPlotItem.setLabel('left', text='Y-Axis')
+                self.currentPlotWidget.yLabel = 'Y-Axis'
+            try:
+                self.currentPlotItem.setLabel('bottom', text=self.ui.lineEdit_4.text())
+                self.currentPlotWidget.xLabel = self.ui.lineEdit_4.text()
+            except:
+                self.currentPlotItem.setLabel('bottom', text='X-Axis')
+                self.currentPlotWidget.xLabel = 'X-Axis'
 
     def defaultJson(self):
         while (self.ui.tableWidget.rowCount() > 0):
@@ -431,11 +439,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.jsonlogged(datafromcan, str(color2), count)
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
-                print(self.ui.tableWidget.item(row, 1).text())
+                # print(self.ui.tableWidget.item(row, 1).text())
+
                 item = self.ui.listWidget.item(self.ui.listWidget.count()-1)
                 iconPixmap = QPixmap(32, 32)
                 iconPixmap.fill(QColor(color))
                 item.setIcon(QIcon(iconPixmap))
+
                 for j in range(self.ui.tableWidget.columnCount()):
                     self.ui.tableWidget.item(row, j).setBackground(QColor.fromRgb(150, 150, 150))
                 if self.ui.listWidget.item(0).text() == "None Selected":
@@ -468,6 +478,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 json_file.close()
 
             self.ui.listWidget.takeItem(i)
+            del self.selected_channels[i]
 
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")
