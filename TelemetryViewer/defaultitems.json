@@ -1,0 +1,84 @@
+{
+    "logged": [
+        {
+            "Name": "RPM",
+            "ID": "0x360",
+            "Units": "RPM",
+            "Scale": 1,
+            "Position": 0,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(134, 154, 63, 255)"
+        },
+        {
+            "Name": "Throttle Position",
+            "ID": "0x360",
+            "Units": "%",
+            "Scale": 0.1,
+            "Position": 32,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(109, 84, 190, 255)"
+        },
+        {
+            "Name": "Oil Pressure",
+            "ID": "0x361",
+            "Units": "kPa",
+            "Scale": 0.1,
+            "Position": 16,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(28, 101, 197, 255)"
+        },
+        {
+            "Name": "Lateral G",
+            "ID": "0x36B",
+            "Units": "m/s^2",
+            "Scale": 0.1,
+            "Position": 48,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(78, 114, 151, 255)"
+        },
+        {
+            "Name": "Longitudinal G",
+            "ID": "0x36E",
+            "Units": "m/s^2",
+            "Scale": 0.1,
+            "Position": 48,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(231, 28, 248, 255)"
+        },
+        {
+            "Name": "Vehicle Speed",
+            "ID": "0x370",
+            "Units": "km/h",
+            "Scale": 0.1,
+            "Position": 0,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(79, 87, 67, 255)"
+        },
+        {
+            "Name": "EGT Sensor 1",
+            "ID": "0x373",
+            "Units": "K",
+            "Scale": 0.1,
+            "Position": 0,
+            "Size": 16,
+            "Offset": -273.15,
+            "Color": "(170, 0, 0, 255)"
+        },
+        {
+            "Name": "Oil Temperature",
+            "ID": "0x3E0",
+            "Units": "K",
+            "Scale": 0.1,
+            "Position": 48,
+            "Size": 16,
+            "Offset": -273.15,
+            "Color": "(0, 0, 0, 255)"
+        }
+    ]
+}

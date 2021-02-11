@@ -124,6 +124,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
         self.ui.apply_btn.setShortcut('Shift+Return')
         self.ui.apply_btn.setEnabled(True)
+        self.ui.savetodefault.clicked.connect(self.savetodefaultlist)
+        self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
 
     def initGraphPage(self):
         # Initializing GraphManager onto graph page
@@ -177,6 +179,33 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.ui.lineEdit_5.setDisabled(False)
             self.ui.lineEdit_6.setDisabled(False)
+
+    def connectdefaulttolist(self):
+        with open('defaultitems.json', 'r+') as json_1:
+            data = json.load(json_1)
+            json_1.close()
+        with open('itemslogged.json', 'w+') as json_2:
+            json.dump(data, json_2, indent=4)
+            json_2.close()
+        self.ui.listWidget.clear()
+        for i in range(len(data["logged"])):
+            self.ui.listWidget.addItem(data["logged"][i]["Name"])
+            item = self.ui.listWidget.item(i)
+            color = data["logged"][i]['Color']
+            color = re.sub(r'[()]', '', color)  # Gets rid of brackets from color value
+            colorRGB = [int(c) for c in color.split(',')]  # Orders the RGBA values obtained from JSON
+            iconPixmap = QPixmap(32, 32)
+            iconPixmap.fill(QColor.fromRgb(colorRGB[0],colorRGB[1],colorRGB[2]))
+            item.setIcon(QIcon(iconPixmap))
+
+    def savetodefaultlist(self):
+        with open('itemslogged.json', 'r+') as json_1:
+            data = json.load(json_1)
+            json_1.close()
+        with open('defaultitems.json', 'w+') as json_2:
+            json.dump(data, json_2, indent=4)
+            json_2.close()
+
 
     def applytoConfig(self):
         with open('itemslogged.json', 'r+') as json_file:
@@ -478,7 +507,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 json_file.close()
 
             self.ui.listWidget.takeItem(i)
-            del self.selected_channels[i]
 
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")

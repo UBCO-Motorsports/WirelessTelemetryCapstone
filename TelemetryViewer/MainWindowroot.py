@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1039, 820)
+        MainWindow.resize(1256, 896)
         MainWindow.setMinimumSize(QtCore.QSize(500, 0))
         MainWindow.setStyleSheet("background-color: rgb(45, 45, 45);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -104,6 +104,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_5 = QtWidgets.QVBoxLayout(self.widget_pages)
         self.verticalLayout_5.setObjectName("verticalLayout_5")
         self.stackedWidget = QtWidgets.QStackedWidget(self.widget_pages)
+        self.stackedWidget.setStyleSheet("")
         self.stackedWidget.setObjectName("stackedWidget")
         self.home_page = QtWidgets.QWidget()
         self.home_page.setObjectName("home_page")
@@ -199,14 +200,14 @@ class Ui_MainWindow(object):
         self.frame_7.setObjectName("frame_7")
         self.horizontalLayout_5 = QtWidgets.QHBoxLayout(self.frame_7)
         self.horizontalLayout_5.setObjectName("horizontalLayout_5")
-        self.frame_8 = QtWidgets.QFrame(self.frame_7)
-        self.frame_8.setMinimumSize(QtCore.QSize(650, 0))
-        self.frame_8.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_8.setFrameShadow(QtWidgets.QFrame.Raised)
-        self.frame_8.setObjectName("frame_8")
-        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.frame_8)
+        self.select_dft_btn = QtWidgets.QFrame(self.frame_7)
+        self.select_dft_btn.setMinimumSize(QtCore.QSize(650, 0))
+        self.select_dft_btn.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.select_dft_btn.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.select_dft_btn.setObjectName("select_dft_btn")
+        self.verticalLayout_10 = QtWidgets.QVBoxLayout(self.select_dft_btn)
         self.verticalLayout_10.setObjectName("verticalLayout_10")
-        self.label_8 = QtWidgets.QLabel(self.frame_8)
+        self.label_8 = QtWidgets.QLabel(self.select_dft_btn)
         self.label_8.setMinimumSize(QtCore.QSize(0, 0))
         font = QtGui.QFont()
         font.setPointSize(13)
@@ -216,7 +217,7 @@ class Ui_MainWindow(object):
         self.label_8.setAlignment(QtCore.Qt.AlignCenter)
         self.label_8.setObjectName("label_8")
         self.verticalLayout_10.addWidget(self.label_8)
-        self.tableWidget = QtWidgets.QTableWidget(self.frame_8)
+        self.tableWidget = QtWidgets.QTableWidget(self.select_dft_btn)
         self.tableWidget.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.tableWidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.tableWidget.setStyleSheet("QTableWidget::item:selected{\n"
@@ -351,7 +352,7 @@ class Ui_MainWindow(object):
         self.tableWidget.horizontalHeader().setStretchLastSection(True)
         self.tableWidget.verticalHeader().setVisible(False)
         self.verticalLayout_10.addWidget(self.tableWidget)
-        self.horizontalLayout_5.addWidget(self.frame_8)
+        self.horizontalLayout_5.addWidget(self.select_dft_btn)
         self.frame_9 = QtWidgets.QFrame(self.frame_7)
         self.frame_9.setMinimumSize(QtCore.QSize(300, 0))
         self.frame_9.setMaximumSize(QtCore.QSize(300, 16777215))
@@ -367,6 +368,7 @@ class Ui_MainWindow(object):
         self.label_9.setFont(font)
         self.label_9.setStyleSheet("color:rgb(255,255,255);\n"
 "background-color: rgb(60, 60, 60);")
+        self.label_9.setScaledContents(True)
         self.label_9.setAlignment(QtCore.Qt.AlignCenter)
         self.label_9.setObjectName("label_9")
         self.verticalLayout_12.addWidget(self.label_9)
@@ -443,6 +445,32 @@ class Ui_MainWindow(object):
 "}")
         self.default_btn.setObjectName("default_btn")
         self.horizontalLayout_4.addWidget(self.default_btn)
+        self.pushButton_3 = QtWidgets.QPushButton(self.frame_5)
+        self.pushButton_3.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.pushButton_3.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}")
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.horizontalLayout_4.addWidget(self.pushButton_3)
+        self.savetodefault = QtWidgets.QPushButton(self.frame_5)
+        self.savetodefault.setMaximumSize(QtCore.QSize(80, 16777215))
+        self.savetodefault.setStyleSheet("QPushButton {\n"
+"    color: rgb(0, 0, 0);\n"
+"    border-color: rgb(240, 240, 240);\n"
+"    background-color: rgb(240, 240, 240);\n"
+"\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: rgb(85, 170, 255);\n"
+"}")
+        self.savetodefault.setObjectName("savetodefault")
+        self.horizontalLayout_4.addWidget(self.savetodefault)
         self.frame_6 = QtWidgets.QFrame(self.frame_5)
         self.frame_6.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_6.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -490,6 +518,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addWidget(self.frame_5)
         self.stackedWidget.addWidget(self.setup_page)
         self.graph_page = QtWidgets.QWidget()
+        self.graph_page.setStyleSheet("")
         self.graph_page.setObjectName("graph_page")
         self.verticalLayout_8 = QtWidgets.QVBoxLayout(self.graph_page)
         self.verticalLayout_8.setObjectName("verticalLayout_8")
@@ -562,7 +591,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 217, 125))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -965,7 +994,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(2)
+        self.stackedWidget.setCurrentIndex(0)
         self.configMenuStack.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -1076,7 +1105,9 @@ class Ui_MainWindow(object):
         self.listWidget.setSortingEnabled(__sortingEnabled)
         self.apply_btn.setText(_translate("MainWindow", "Apply"))
         self.import_btn.setText(_translate("MainWindow", "Import CAN"))
-        self.default_btn.setText(_translate("MainWindow", "Log Default"))
+        self.default_btn.setText(_translate("MainWindow", "Import Default"))
+        self.pushButton_3.setText(_translate("MainWindow", "Select Default"))
+        self.savetodefault.setText(_translate("MainWindow", "Save to Default"))
         self.label_24.setText(_translate("MainWindow", "Select COM Port:"))
         self.serial_btn.setText(_translate("MainWindow", "Connect"))
         self.refresh_btn.setText(_translate("MainWindow", "Refresh"))
