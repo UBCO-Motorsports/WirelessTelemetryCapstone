@@ -131,19 +131,19 @@ class GraphManager(QtGui.QWidget):
             # Iterates through each graph/dial and refreshes its data
             for i, row in enumerate(self.graph_array):
                 for graph in row:
-                    if graph.type == 'time_domain':
+                    if graph.type == 'Time Domain':
                         graph.clear()
                         graph.plot(graph.xData, self.serialArrays[i], pen=self.pen, clear=True)
                         # print('cartesian')
                     elif graph.type == 'Speedo Gauge':
-                        if self.speedo.Speed < 150:
+                        if graph.Speed < 150:
                             print('increase')
-                            self.speedo.animate(self.speedo.Speed)
-                            # self.speedo.Speed += 1
+                            graph.animate(graph.Speed)
+                            graph.Speed += 1
                         else:
                             print('set zero')
                             self.speedo.Speed = 0
-                    elif graph.type == 'polar':
+                    elif graph.type == 'Polar Plot':
                         pass
                         # print('polar')
 

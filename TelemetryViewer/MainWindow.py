@@ -190,7 +190,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.selected_channels = data
         print(self.selected_channels)
 
-        Serial.SerialModule().recievedataDict(self.selected_channels)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
+        self.GraphManager.SerialModule.recievedataDict(self.selected_channels)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
         # print(self.datadict["logged"][0])
         # print(self.datadict["logged"][0]["ID"])
 
