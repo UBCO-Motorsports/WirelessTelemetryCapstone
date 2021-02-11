@@ -55,7 +55,7 @@ class splashScreen(QtWidgets.QWidget):
 
     def animate(self,value):
         global newneedle
-        value=self.Speed
+        value=int(self.Speed)
         htmlText= "{Value} kph"
         newHtml=htmlText.replace("{Value}",str(value))
         self.ui.label_3.setText(newHtml)

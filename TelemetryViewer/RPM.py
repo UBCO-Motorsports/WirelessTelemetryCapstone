@@ -111,7 +111,7 @@ class RPMGauge(QtWidgets.QWidget):
     def animate(self,value):
         global RPM
         global newneedle
-        value=RPM
+        value=int(RPM)
         htmlText="{Value}"
         newHtml=htmlText.replace("{Value}",str(value))
         self.ui.RPMtext.setText(newHtml)
