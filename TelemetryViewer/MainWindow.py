@@ -187,7 +187,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # # self.datadict["logged"][0]["buffer"]=["heloo","test"]
         #TODO update selected_channels while keeping buffers coherent
         self.selected_channels.clear()
-        self.selected_channels = data["logged"]
+        self.selected_channels = data
         print(self.selected_channels)
 
         Serial.SerialModule().recievedataDict(self.selected_channels)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
