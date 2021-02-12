@@ -11,14 +11,14 @@ newneedle=0
 
 
 class RPMGauge(QtWidgets.QWidget):
-    def __init__(self, parentWidget):
+    def __init__(self, parentwidget):
         QtWidgets.QWidget.__init__(self)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.animate(0)
 
-        self.type = 'dial'
-        self.parentWidget = parentWidget
+        self.type = 'RPM Gauge'
+        self.parentwidget = parentwidget
 
         self.dial_size = self.ui.frame
 
@@ -31,6 +31,7 @@ class RPMGauge(QtWidgets.QWidget):
     def contextMenuEvent(self, event):
         menu = QMenu(self)
         newAct = menu.addAction("Edit Data")
+        newAct.triggered.connect(lambda: self.parentwidget.configMenuCalled(self))
         quitAct = menu.addAction("Quit")
         action = menu.popup(self.mapToGlobal(event.pos()))
         quitAct.triggered.connect(self.close)

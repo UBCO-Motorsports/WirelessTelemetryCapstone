@@ -333,18 +333,31 @@ class MainWindow(QtWidgets.QMainWindow):
         except:
             pass
 
-        # TODO reset configuration menu to the current plotwidget data\
         self.currentPlotWidget = plotWidget
-        self.currentPlotItem = self.currentPlotWidget.getPlotItem()
-        self.currentPlotItem.getViewBox().setBorder(color=(0,255,0),width=3)
-        self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
-        self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
-        self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
-        if self.ui.checkBox.isChecked():
-            self.ui.checkBox.setChecked(True)
-        else:
-            self.ui.lineEdit_5.setText(str(self.currentPlotWidget.yRange[0]))
-            self.ui.lineEdit_6.setText(str(self.currentPlotWidget.yRange[1]))
+
+        # TODO reset configuration menu to the current plotwidget data\
+        if plotWidget.type == 'Time Domain':
+            self.currentPlotItem = self.currentPlotWidget.getPlotItem()
+            self.currentPlotItem.getViewBox().setBorder(color=(0,255,0),width=3)
+            self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
+            self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
+            self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
+            if self.ui.checkBox.isChecked():
+                self.ui.checkBox.setChecked(True)
+            else:
+                self.ui.lineEdit_5.setText(str(self.currentPlotWidget.yRange[0]))
+                self.ui.lineEdit_6.setText(str(self.currentPlotWidget.yRange[1]))
+            self.ui.configMenuStack.setCurrentWidget(self.ui.timeDomain_page)
+            self.ui.graphtype_comboBox.setCurrentIndex(0)
+        elif plotWidget.type == 'Polar Plot':
+            self.ui.configMenuStack.setCurrentWidget(self.ui.polarPlot_page)
+            self.ui.graphtype_comboBox.setCurrentIndex(1)
+        elif plotWidget.type == 'RPM Gauge':
+            self.ui.configMenuStack.setCurrentWidget(self.ui.rpm_page)
+            self.ui.graphtype_comboBox.setCurrentIndex(2)
+        elif plotWidget.type == 'Speedo Gauge':
+            self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
+            self.ui.graphtype_comboBox.setCurrentIndex(3)
         self.ui.configMenu.show()
 
     def configApply(self):

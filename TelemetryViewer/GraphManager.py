@@ -60,13 +60,13 @@ class GraphManager(QtGui.QWidget):
         # self.graph_layout.addWidget(self.dial, 0, 0)
         # self.dial.dial_size.setGeometry(-10,-10,320,320)
 
-        self.speedo = splashScreen(self)
-        self.speed = 0
-        # self.speedo.raise_()
-        self.graph_layout.removeWidget(self.graph_array[0][1])
-        self.graph_array[0][1].close()
-        self.graph_array[0][1] = self.speedo
-        self.graph_layout.addWidget(self.speedo, 0, 1)
+        # self.speedo = splashScreen(self)
+        # self.speed = 0
+        # # self.speedo.raise_()
+        # self.graph_layout.removeWidget(self.graph_array[0][1])
+        # self.graph_array[0][1].close()
+        # self.graph_array[0][1] = self.speedo
+        # self.graph_layout.addWidget(self.speedo, 0, 1)
         # # self.speedo.frame_size.setGeometry(-10,-10,320,320)
 
     #TODO
@@ -78,13 +78,10 @@ class GraphManager(QtGui.QWidget):
             elif applied_type == 'Polar Plot':
                 new_widget = PlotWdgt(self) #TODO make polarplot widget
                 new_widget.type = 'Polar Plot'
-                pass
             elif applied_type == 'RPM Gauge':
                 new_widget = RPMGauge(self)
-                pass
             elif applied_type == 'Speedo Gauge':
                 new_widget = splashScreen(self)
-                pass
             else:
                 print('widget update failed')
                 pass

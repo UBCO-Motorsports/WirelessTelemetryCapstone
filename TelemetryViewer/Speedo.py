@@ -15,6 +15,7 @@ class splashScreen(QtWidgets.QWidget):
     def __init__(self, parent):
         # QtWidgets.QWidget.__init__(self)
         super(splashScreen, self).__init__(parent)
+        self.parentwidget = parent
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.Speed = 0
@@ -48,6 +49,7 @@ class splashScreen(QtWidgets.QWidget):
     def contextMenuEvent(self, event):
         menu = QMenu(self)
         newAct = menu.addAction("Edit Data")
+        newAct.triggered.connect(lambda: self.parentwidget.configMenuCalled(self))
         quitAct= menu.addAction("Quit")
         action= menu.popup(self.mapToGlobal(event.pos()))
         if action == quitAct:
