@@ -745,6 +745,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_15.addWidget(self.label_20)
         self.spinBox = QtWidgets.QSpinBox(self.frame_28)
         self.spinBox.setStyleSheet("background-color: rgb(255, 255, 255);")
+        self.spinBox.setProperty("value", 3)
         self.spinBox.setObjectName("spinBox")
         self.horizontalLayout_15.addWidget(self.spinBox)
         self.verticalLayout_21.addWidget(self.frame_28)
@@ -1129,7 +1130,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.stackedWidget.setCurrentIndex(0)
-        self.configMenuStack.setCurrentIndex(0)
+        self.configMenuStack.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

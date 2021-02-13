@@ -111,11 +111,18 @@ class GraphManager(QtGui.QWidget):
                                     pen = pg.mkPen(color=(rgba[0],rgba[1],rgba[2]),width=2)
                                 except:
                                     pen = self.pen
-                                graph.plot(graph.xData, self.serialArrays[index], pen=pen) #, clear=True
+                                graph.plot(graph.xData, self.serialArrays[index], pen=pen)
                     elif graph.type == 'Polar Plot':
                         #TODO implement polar updating
-                        pass
-                        # print('polar')
+                        graph.clear()
+                        if graph.yData and graph.xData:
+                            try:
+                                colour = self.parentwidget.selected_channels["logged"][graph.xData[0]]['Color']
+                                rgba = self.parentwidget.getColor(colour)
+                                pen = pg.mkPen(color=(rgba[0],rgba[1],rgba[2]),width=2)
+                            except:
+                                pen = self.pen
+                            graph.plot(self.serialArrays[graph.xData[0]][-graph.samples:], self.serialArrays[graph.yData[0]][-graph.samples:], pen=pen)
                     elif graph.type == 'Speedo Gauge':
                         graph.animate(self.serialArrays[graph.data[0]][-1])
                     elif graph.type == 'RPM Gauge':
@@ -178,9 +185,17 @@ class PolarWidget(PlotWdgt):
     def __init__(self, parentwidget):
         super(PolarWidget, self).__init__(parentwidget)
         self.type = 'Polar Plot'
-
         self.title = 'Polar Plot'
-        self.getPlotItem().setLabel('top', self.title)
+        self.xRange = [-10, 10]
+        self.xAutoRange = False
+        self.yRange = [-10, 10]
+        self.yAutoRange = False
+        self.samples = 3
+
+        self.plot_item.setLabel('top', self.title)
+        self.setXRange(self.xRange[0], self.xRange[1])
+        self.setYRange(self.yRange[0], self.yRange[1])
+
 
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentwidget, parent=None):

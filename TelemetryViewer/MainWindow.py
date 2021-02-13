@@ -162,11 +162,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.ui.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
 
-        # Set y-ranging to true
+        # Time domain y-ranging
         self.ui.checkBox.setChecked(True)
         self.ui.lineEdit_5.setDisabled(True)
         self.ui.lineEdit_6.setDisabled(True)
-        self.ui.checkBox.stateChanged.connect(self.yAutorangeEnable)
+        self.ui.checkBox.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox, self.ui.lineEdit_5, self.ui.lineEdit_6))
+
+        # Polar plot ranging
+        self.ui.checkBox_2.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_2, self.ui.lineEdit_10, self.ui.lineEdit_11))
+        self.ui.checkBox_3.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_3, self.ui.lineEdit_12, self.ui.lineEdit_13))
 
     def initCommandPage(self):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
@@ -178,13 +182,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.commandbox.returnPressed.connect(lambda: self.sendcommandfromBox())
         self.ui.listWidget_2.clicked.connect(lambda: self.sendcommandfromList())
 
-    def yAutorangeEnable(self):
-        if self.ui.checkBox.isChecked():
-            self.ui.lineEdit_5.setDisabled(True)
-            self.ui.lineEdit_6.setDisabled(True)
+    def autorangeEnable(self, checkBox, lineEdit, lineEdit2):
+        if checkBox.isChecked():
+            lineEdit.setDisabled(True)
+            lineEdit2.setDisabled(True)
         else:
-            self.ui.lineEdit_5.setDisabled(False)
-            self.ui.lineEdit_6.setDisabled(False)
+            lineEdit.setDisabled(False)
+            lineEdit2.setDisabled(False)
 
     def connectdefaulttolist(self):
         # Checks if table is empty
@@ -371,18 +375,27 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.graphtype_comboBox.setCurrentIndex(0)
 
         elif plotWidget.type == 'Polar Plot':
+            self.currentPlotItem = self.currentPlotWidget.getPlotItem()
+            self.currentPlotItem.getViewBox().setBorder(color=(0, 255, 0), width=3)
             self.ui.configMenuStack.setCurrentWidget(self.ui.polarPlot_page)
             self.ui.graphtype_comboBox.setCurrentIndex(1)
+
         elif plotWidget.type == 'RPM Gauge':
             self.ui.configMenuStack.setCurrentWidget(self.ui.rpm_page)
             self.ui.graphtype_comboBox.setCurrentIndex(2)
+
         elif plotWidget.type == 'Speedo Gauge':
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
             self.ui.graphtype_comboBox.setCurrentIndex(3)
+
         self.ui.configMenu.show()
 
     def configApply(self):
         self.currentPlotWidget = self.GraphManager.updateWidget(self.currentPlotWidget, self.ui.graphtype_comboBox.currentText())
+        try:
+            self.currentPlotWidget.getPlotItem().getViewBox().setBorder(color=(0,255,0),width=3)
+        except:
+            pass
 
         # Autorange functionality
         if self.currentPlotWidget.type == 'Time Domain':
@@ -432,9 +445,67 @@ class MainWindow(QtWidgets.QMainWindow):
             except:
                 self.currentPlotItem.setLabel('bottom', text='X-Axis')
                 self.currentPlotWidget.xLabel = 'X-Axis'
+
         elif self.currentPlotWidget.type == 'Polar Plot':
             #TODO add polar config apply
-            pass
+            self.currentPlotWidget.xData.clear()
+            self.currentPlotWidget.yData.clear()
+            self.currentPlotWidget.xData.append(self.ui.comboBox_3.currentIndex())
+            self.currentPlotWidget.yData.append(self.ui.comboBox_4.currentIndex())
+            self.currentPlotWidget.samples = self.ui.spinBox.value()
+            #TODO ranging
+            # Set x-range
+            if self.ui.checkBox_2.isChecked():
+                self.currentPlotWidget.enableAutoRange(x=self.ui.checkBox_2.isChecked())
+            else:
+                try:
+                    self.currentPlotWidget.enableAutoRange(x=False)
+                    self.currentPlotWidget.xRange = [float(self.ui.lineEdit_10.text()), float(self.ui.lineEdit_11.text())]
+                    self.currentPlotWidget.setXRange(self.currentPlotWidget.xRange[0], self.currentPlotWidget.xRange[1])
+                except:
+                    self.ui.lineEdit_10.setDisabled(True)
+                    self.ui.lineEdit_11.setDisabled(True)
+                    self.ui.lineEdit_10.clear()
+                    self.ui.lineEdit_11.clear()
+                    self.currentPlotWidget.enableAutoRange(x=True)
+                    self.ui.checkBox_2.setChecked(True)
+
+            # Set y-range
+            if self.ui.checkBox_3.isChecked():
+                self.currentPlotWidget.enableAutoRange(y=self.ui.checkBox_3.isChecked())
+            else:
+                try:
+                    self.currentPlotWidget.enableAutoRange(y=False)
+                    self.currentPlotWidget.yRange = [float(self.ui.lineEdit_12.text()), float(self.ui.lineEdit_13.text())]
+                    self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1])
+                except:
+                    self.ui.lineEdit_12.setDisabled(True)
+                    self.ui.lineEdit_13.setDisabled(True)
+                    self.ui.lineEdit_12.clear()
+                    self.ui.lineEdit_13.clear()
+                    self.currentPlotWidget.enableAutoRange(x=True)
+                    self.ui.checkBox_3.setChecked(True)
+
+            self.currentPlotItem = self.currentPlotWidget.getPlotItem()
+            try:
+                self.currentPlotItem.setLabel('top', text=self.ui.lineEdit_7.text())
+                self.currentPlotWidget.title = self.ui.lineEdit_7.text()
+            except:
+                self.currentPlotItem.setLabel('top', text='Polar Plot')
+                self.currentPlotWidget.title = 'Polar Plot'
+            try:
+                self.currentPlotItem.setLabel('left', text=self.ui.lineEdit_8.text())
+                self.currentPlotWidget.yLabel = self.ui.lineEdit_8.text()
+            except:
+                self.currentPlotItem.setLabel('left', text='Y-Axis')
+                self.currentPlotWidget.yLabel = 'Y-Axis'
+            try:
+                self.currentPlotItem.setLabel('bottom', text=self.ui.lineEdit_9.text())
+                self.currentPlotWidget.xLabel = self.ui.lineEdit_9.text()
+            except:
+                self.currentPlotItem.setLabel('bottom', text='X-Axis')
+                self.currentPlotWidget.xLabel = 'X-Axis'
+
         elif self.currentPlotWidget.type == 'Speedo Gauge':
             self.currentPlotWidget.data.clear()
             self.currentPlotWidget.data.append(self.ui.comboBox_5.currentIndex())
