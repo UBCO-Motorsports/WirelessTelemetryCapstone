@@ -363,7 +363,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def configApply(self):
         self.currentPlotWidget = self.GraphManager.updateWidget(self.currentPlotWidget, self.ui.graphtype_comboBox.currentText())
 
-
         # Autorange functionality
         if self.currentPlotWidget.type == 'Time Domain':
             if self.ui.checkBox.isChecked():

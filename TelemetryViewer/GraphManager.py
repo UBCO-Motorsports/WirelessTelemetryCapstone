@@ -41,13 +41,7 @@ class GraphManager(QtGui.QWidget):
                 current_graph.showGrid(x=True, y=True)
 
                 current_graph.xData = self.x
-                current_graph.yData = self.SerialModule.array1
-
-                plotItem = current_graph.getPlotItem()
-                plotItem.setLabels(top=self.graph_array[i][j].title, bottom=current_graph.xLabel)
-                # plotItem.setLabel('top', text=self.graph_array[i][j].title)
-                # plotItem.setLabel('bottom', text=self.graph_array[i][j].xLabel)
-                plotItem.setLabel('left', text=self.graph_array[i][j].yLabel)
+                # current_graph.yData = self.SerialModule.array1
 
         # self.graph_array[0][0].xData.append(self.x)
         # self.graph_array[0][0].yData.append(self.SerialModule.array1)
@@ -75,9 +69,9 @@ class GraphManager(QtGui.QWidget):
             position = self.findWidgetPosition(current_widget)
             if applied_type == 'Time Domain':
                 new_widget = PlotWdgt(self)
+                new_widget.xData = self.x
             elif applied_type == 'Polar Plot':
-                new_widget = PlotWdgt(self) #TODO make polarplot widget
-                new_widget.type = 'Polar Plot'
+                new_widget = PolarWidget(self)
             elif applied_type == 'RPM Gauge':
                 new_widget = RPMGauge(self)
             elif applied_type == 'Speedo Gauge':
@@ -122,8 +116,6 @@ class GraphManager(QtGui.QWidget):
 
             # Gets a sample of the latest arrays
             self.serialArrays = self.SerialModule.getData()
-            dialtest = self.serialArrays[2]
-            self.speedo.Speed = dialtest[-1]
 
             # Iterates through each graph/dial and refreshes its data
             for i, row in enumerate(self.graph_array):
@@ -139,7 +131,7 @@ class GraphManager(QtGui.QWidget):
                             graph.Speed += 1
                         else:
                             print('set zero')
-                            self.speedo.Speed = 0
+                            graph.speed = 0
                     elif graph.type == 'Polar Plot':
                         pass
                         # print('polar')
@@ -176,6 +168,7 @@ class PlotWdgt(pg.PlotWidget):
         self.parentwidget = parentwidget
         self.plot_item = self.getPlotItem()
         self.plot_item.getAxis('top').setStyle(showValues=False)
+        self.plot_item.showGrid(x=True, y=True)
         self.setBackground('w')
 
         self.legend = self.plot_item.addLegend()
@@ -188,11 +181,20 @@ class PlotWdgt(pg.PlotWidget):
         self.title = 'X vs. Y'
         self.yRange = [0, 1]
         self.autoRange = True
-        #TODO store the current axis labels, legend, and datasets to populate config menu
+
+        self.plot_item.setLabels(top=self.title, bottom=self.xLabel, left=self.yLabel)
 
     def configMenuCalled(self):
         # Calls parent widget to open edit menu
         self.parentwidget.configMenuCalled(self)
+
+class PolarWidget(PlotWdgt):
+    def __init__(self, parentwidget):
+        super(PolarWidget, self).__init__(parentwidget)
+        self.type = 'Polar Plot'
+
+        self.title = 'Polar Plot'
+        self.getPlotItem().setLabel('top', self.title)
 
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentwidget, parent=None):
