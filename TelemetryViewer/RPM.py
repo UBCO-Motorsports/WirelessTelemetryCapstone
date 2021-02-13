@@ -74,23 +74,23 @@ class RPMGauge(QtWidgets.QWidget):
         self.ui.frame_3.setStyleSheet(bcircle)
         self.ui.frame_4.setGeometry(QtCore.QRect(0, 0, length,length))
 
-        self.ui.Needle.setGeometry(0, length/5, length,length)
+        self.ui.Needle.setGeometry(0, 0, length,length)
         needle=QtGui.QPixmap("QT Images/needle3.png")
         needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
         newneedle=needle
 
         tach = QtGui.QPixmap("QT Images/Tachlinesr.png")
-        tach = tach.scaled(length+30, length+30, Qt.KeepAspectRatio,Qt.FastTransformation)
-        self.ui.label.setGeometry(-15,-15,length+30,length+30)
+        tach = tach.scaled(length*1.2, length*1.2, Qt.KeepAspectRatio,Qt.FastTransformation)
+        self.ui.label.setGeometry(-length*0.1,-length*0.1,length*1.2,length*1.2)
         self.ui.label.setPixmap(tach)
 
 
         numbers = QtGui.QPixmap("QT Images/RPM numbers resize.png")
-        numbers = numbers.scaled(length+20, length+20, Qt.KeepAspectRatio,Qt.FastTransformation)
-        self.ui.label_2.setGeometry(-10, -45, length+30, length+30)
+        numbers = numbers.scaled(length*1.1, length*1.1, Qt.KeepAspectRatio,Qt.FastTransformation)
+        self.ui.label_2.setGeometry(-length*0.05, -length*0.15, length*1.1, length*1.1)
         self.ui.label_2.setPixmap(numbers)
 
-        self.ui.RPMtext.setGeometry(0, length/5,length,length)
+        self.ui.RPMtext.setGeometry(0, length/2.5,length,length)
         self.ui.RPMtext.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.RPMtext.setFont(QtGui.QFont('Bahnschrift SemiCondensed',length/15))
 

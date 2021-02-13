@@ -87,7 +87,7 @@ class splashScreen(QtWidgets.QWidget):
         else:
             length=height
         self.ui.frame.setGeometry(QtCore.QRect(0, 0, length, length))
-        self.ui.frame_2.setGeometry(QtCore.QRect(5, 5, length - 10, length - 10))
+        self.ui.frame_2.setGeometry(QtCore.QRect(0, 0, length, length))
         self.ui.frame_3.setGeometry(QtCore.QRect(0,0,length,length))
         bcircle= """QFrame{
                         border-radius: {Value};
@@ -118,7 +118,7 @@ class splashScreen(QtWidgets.QWidget):
         self.ui.label_4.setGeometry(0, 5, length, length)
         self.ui.label_4.setPixmap(pointer)
 
-        self.ui.label_3.setGeometry(0,length/5,length,length)
+        self.ui.label_3.setGeometry(0,length/3.25,length,length)
         self.ui.label_3.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.label_3.setFont(QtGui.QFont('Bahnschrift SemiCondensed',length/15))
 
