@@ -13,7 +13,7 @@ from FileBrowser import Open
 from FileSaver import Save
 from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
-from threading import *
+# from threading import *
 import Serial
 # Canfilename=""
 
@@ -26,6 +26,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.defaultFile = 'CANBUS/CANBUS2.json'
         self.Canfilename = 'CANBUS/CANBUS2.json'
         self.selected_channels = []
+        self.configData = []
 
         # Serial not initially connected at start up
         self.serialConnected = False
@@ -116,16 +117,21 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.serial_btn.clicked.connect(self.connectSerial)  # Connect functions to serial button
         self.ui.refresh_btn.clicked.connect(self.comPortComboBox.populateCOMSelect)  # Populate COM port menu when clicked
         self.ui.import_btn.clicked.connect(self.canJson)
-        self.ui.import_btn.setShortcut('i')
-        self.ui.default_btn.clicked.connect(self.defaultJson)
-        self.ui.default_btn.setShortcut('d')
         self.ui.tableWidget.cellClicked.connect(self.tabletolist)
         self.ui.listWidget.itemClicked.connect(self.listremove)
-        self.ui.apply_btn.clicked.connect(self.applytoConfig)
-        self.ui.apply_btn.setShortcut('Shift+Return')
+
         self.ui.apply_btn.setEnabled(True)
         self.ui.savetodefault.clicked.connect(self.savetodefaultlist)
         self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
+
+        # Button shortcuts
+        self.ui.import_btn.setShortcut('i')
+        self.ui.default_btn.clicked.connect(self.defaultJson)
+        self.ui.default_btn.setShortcut('d')
+        self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
+        self.ui.pushButton_3.setShortcut('Shift+d')
+        self.ui.apply_btn.clicked.connect(self.applytoConfig)
+        self.ui.apply_btn.setShortcut('Shift+a')
 
     def initGraphPage(self):
         # Initializing GraphManager onto graph page
@@ -181,6 +187,10 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.lineEdit_6.setDisabled(False)
 
     def connectdefaulttolist(self):
+        # Checks if table is empty
+        if self.ui.tableWidget.item(0, 1) is None:
+            self.defaultJson()
+
         with open('defaultitems.json', 'r+') as json_1:
             data = json.load(json_1)
             json_1.close()
@@ -191,12 +201,18 @@ class MainWindow(QtWidgets.QMainWindow):
         for i in range(len(data["logged"])):
             self.ui.listWidget.addItem(data["logged"][i]["Name"])
             item = self.ui.listWidget.item(i)
-            color = data["logged"][i]['Color']
-            color = re.sub(r'[()]', '', color)  # Gets rid of brackets from color value
-            colorRGB = [int(c) for c in color.split(',')]  # Orders the RGBA values obtained from JSON
+            colorRGB = self.getColor(data["logged"][i]['Color'])
+            # color = data["logged"][i]['Color']
+            # color = re.sub(r'[()]', '', color)  # Gets rid of brackets from color value
+            # colorRGB = [int(c) for c in color.split(',')]  # Orders the RGBA values obtained from JSON
             iconPixmap = QPixmap(32, 32)
             iconPixmap.fill(QColor.fromRgb(colorRGB[0],colorRGB[1],colorRGB[2]))
             item.setIcon(QIcon(iconPixmap))
+
+    def getColor(self, rgba):
+        colorRGBA = re.sub(r'[()]', '', rgba)
+        colorRGB = [int(c) for c in colorRGBA.split(',')]
+        return colorRGB
 
     def savetodefaultlist(self):
         with open('itemslogged.json', 'r+') as json_1:
@@ -205,7 +221,6 @@ class MainWindow(QtWidgets.QMainWindow):
         with open('defaultitems.json', 'w+') as json_2:
             json.dump(data, json_2, indent=4)
             json_2.close()
-
 
     def applytoConfig(self):
         with open('itemslogged.json', 'r+') as json_file:
@@ -230,7 +245,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         for i in reversed(range(self.data_layout.count())):
             self.data_layout.itemAt(i).widget().setParent(None)
-        self.radiodict={}
+        self.configData.clear()
         self.messagebuffer.clear()
         for i in range(len(data["logged"])):
             name = data["logged"][i]['Name']
@@ -242,15 +257,13 @@ class MainWindow(QtWidgets.QMainWindow):
             offset = data["logged"][i]['Offset']
             color = data["logged"][i]['Color']
 
-            # Constructs the check box items in the config menu
-            self.radiodict[i]=QCheckBox(name)
+            # Constructs the check box items in the config menu and sets the colored icon
+            self.configData.append(QCheckBox(name))
             configPixmap = QPixmap(32, 32)
-            color = re.sub(r'[()]', '', color) # Gets rid of brackets from color value
-            colorRGB = [int(c) for c in color.split(',')] # Orders the RGBA values obtained from JSON
-            # Construct and set icon for each checkbox
+            colorRGB = self.getColor(color)
             configPixmap.fill(QColor.fromRgb(colorRGB[0], colorRGB[1], colorRGB[2]))
-            self.radiodict[i].setIcon(QIcon(configPixmap))
-            self.radiodict[i].setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
+            self.configData[i].setIcon(QIcon(configPixmap))
+            self.configData[i].setSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
 
             self.ui.comboBox_3.addItem(name)
             self.ui.comboBox_4.addItem(name)
@@ -273,10 +286,12 @@ class MainWindow(QtWidgets.QMainWindow):
             self.messagebuffer.append("f"+str(i+length).zfill(2) + " 0000 00 16\r")
 
         # Add checkboxes to config menu scroll area
-        for i in self.radiodict.items():
-            self.data_layout.addWidget(i[1])
+        for i in self.configData:
+            self.data_layout.addWidget(i)
         self.scrollWidget.setLayout(self.data_layout)
 
+        self.ui.apply_btn.setDisabled(True)
+        self.ui.apply_btn.setText('Sending...')
         self.sendThread.start()
 
     def sendMessages(self):
@@ -339,16 +354,22 @@ class MainWindow(QtWidgets.QMainWindow):
         if plotWidget.type == 'Time Domain':
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()
             self.currentPlotItem.getViewBox().setBorder(color=(0,255,0),width=3)
-            self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
-            self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
-            self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
+            for checkbox in self.configData:
+                checkbox.setChecked(False)
+            for i in self.currentPlotWidget.yData:
+                self.configData[i].setChecked(True)
             if self.ui.checkBox.isChecked():
                 self.ui.checkBox.setChecked(True)
             else:
                 self.ui.lineEdit_5.setText(str(self.currentPlotWidget.yRange[0]))
                 self.ui.lineEdit_6.setText(str(self.currentPlotWidget.yRange[1]))
+            self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
+            self.ui.lineEdit_3.setText(self.currentPlotWidget.yLabel)
+            self.ui.lineEdit_4.setText(self.currentPlotWidget.xLabel)
+
             self.ui.configMenuStack.setCurrentWidget(self.ui.timeDomain_page)
             self.ui.graphtype_comboBox.setCurrentIndex(0)
+
         elif plotWidget.type == 'Polar Plot':
             self.ui.configMenuStack.setCurrentWidget(self.ui.polarPlot_page)
             self.ui.graphtype_comboBox.setCurrentIndex(1)
@@ -385,6 +406,12 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.currentPlotWidget.enableAutoRange(x=True,y=False)
                     self.ui.checkBox.setChecked(True)
 
+            # Checks current data types to graph
+            self.currentPlotWidget.yData.clear()
+            for i, data_type in enumerate(self.configData):
+                if data_type.isChecked():
+                    self.currentPlotWidget.yData.append(i)
+
             # Set axes labels and title
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()
             try:
@@ -405,6 +432,15 @@ class MainWindow(QtWidgets.QMainWindow):
             except:
                 self.currentPlotItem.setLabel('bottom', text='X-Axis')
                 self.currentPlotWidget.xLabel = 'X-Axis'
+        elif self.currentPlotWidget.type == 'Polar Plot':
+            #TODO add polar config apply
+            pass
+        elif self.currentPlotWidget.type == 'Speedo Gauge':
+            self.currentPlotWidget.data.clear()
+            self.currentPlotWidget.data.append(self.ui.comboBox_5.currentIndex())
+        elif self.currentPlotWidget.type == 'RPM Gauge':
+            #TODO add RPM gauge config apply
+            pass
 
     def defaultJson(self):
         while (self.ui.tableWidget.rowCount() > 0):
@@ -567,6 +603,8 @@ class SendThread(QtCore.QThread):
                 self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
             self.msleep(250)
             print(messages)
+        self.MainWindow.ui.apply_btn.setDisabled(False)
+        self.MainWindow.ui.apply_btn.setText('Apply')
 
         # print('_________RUN: ' + str(self.times_run))
         # for i in range(3):

@@ -23,11 +23,8 @@ class splashScreen(QtWidgets.QWidget):
 
         self.frame_size = self.ui.frame
 
-        # self.timer = QtCore.QTimer()
-        # self.timer.timeout.connect(self.accellerate)
-        # self.timer.start(15)
-
         self.type = 'Speedo Gauge'
+        self.data = []
 
         self.show()
 
@@ -57,7 +54,8 @@ class splashScreen(QtWidgets.QWidget):
 
     def animate(self,value):
         global newneedle
-        value=int(self.Speed)
+        value=int(value)
+        self.Speed=value
         htmlText= "{Value} kph"
         newHtml=htmlText.replace("{Value}",str(value))
         self.ui.label_3.setText(newHtml)

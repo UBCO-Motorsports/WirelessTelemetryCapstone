@@ -41,27 +41,7 @@ class GraphManager(QtGui.QWidget):
                 current_graph.showGrid(x=True, y=True)
 
                 current_graph.xData = self.x
-                # current_graph.yData = self.SerialModule.array1
-
-        # self.graph_array[0][0].xData.append(self.x)
-        # self.graph_array[0][0].yData.append(self.SerialModule.array1)
-        #
-        # self.dial = RPMGauge()
-        # self.graph_array[0][0].hide()
-        # self.graph_layout.removeWidget (self.graph_array[0][0])
-        # self.graph_array[0][0].close()
-        # self.graph_array[0][0] = self.dial
-        # self.graph_layout.addWidget(self.dial, 0, 0)
-        # self.dial.dial_size.setGeometry(-10,-10,320,320)
-
-        # self.speedo = splashScreen(self)
-        # self.speed = 0
-        # # self.speedo.raise_()
-        # self.graph_layout.removeWidget(self.graph_array[0][1])
-        # self.graph_array[0][1].close()
-        # self.graph_array[0][1] = self.speedo
-        # self.graph_layout.addWidget(self.speedo, 0, 1)
-        # # self.speedo.frame_size.setGeometry(-10,-10,320,320)
+                # current_graph.yData.append(j)
 
     #TODO
     def updateWidget(self, current_widget, applied_type):
@@ -105,36 +85,42 @@ class GraphManager(QtGui.QWidget):
         # Update test data
         del self.x[0]  # Remove the first x element.
         self.x.append(self.x[-1] + 1)  # Add a new value 1 higher than the last.
-        del self.y[0]
-        self.y.append(self.y[-1] + 1)
-        del self.z[0]
-        self.z.append(self.z[-1] - 1)
+        # del self.y[0]
+        # self.y.append(self.y[-1] + 1)
+        # del self.z[0]
+        # self.z.append(self.z[-1] - 1)
 
         # Read latest data if serial is connected
         if self.parentwidget.serialConnected:
-            self.SerialModule.readSerial()
 
             # Gets a sample of the latest arrays
+            self.SerialModule.readSerial()
             self.serialArrays = self.SerialModule.getData()
 
             # Iterates through each graph/dial and refreshes its data
             for i, row in enumerate(self.graph_array):
                 for graph in row:
+                    # Checks widget type and updates it accordingly
                     if graph.type == 'Time Domain':
                         graph.clear()
-                        graph.plot(graph.xData, self.serialArrays[i], pen=self.pen, clear=True)
-                        # print('cartesian')
-                    elif graph.type == 'Speedo Gauge':
-                        if graph.Speed < 150:
-                            print('increase')
-                            graph.animate(graph.Speed)
-                            graph.Speed += 1
-                        else:
-                            print('set zero')
-                            graph.speed = 0
+                        if graph.yData:
+                            for index in graph.yData:
+                                try:
+                                    colour = self.parentwidget.selected_channels["logged"][index]['Color']
+                                    rgba = self.parentwidget.getColor(colour)
+                                    pen = pg.mkPen(color=(rgba[0],rgba[1],rgba[2]),width=2)
+                                except:
+                                    pen = self.pen
+                                graph.plot(graph.xData, self.serialArrays[index], pen=pen) #, clear=True
                     elif graph.type == 'Polar Plot':
+                        #TODO implement polar updating
                         pass
                         # print('polar')
+                    elif graph.type == 'Speedo Gauge':
+                        graph.animate(self.serialArrays[graph.data[0]][-1])
+                    elif graph.type == 'RPM Gauge':
+                        #TODO implement RPM gauge updates
+                        pass
 
     def showGraphs(self, num_shown):
         if num_shown == '12':
