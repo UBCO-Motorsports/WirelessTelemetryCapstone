@@ -11,6 +11,7 @@ from random import randint
 import numpy as np
 from Loader import SplashScreen
 from GraphManager import GraphManager
+import datetime
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -60,6 +61,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.y = [randint(0,100) for _ in range(200)]  # 100 data points
         self.z = [randint(0, 100) for _ in range(200)]  # 100 data points
         self.sin = []
+        self.time = list(range(200))
         for i in range(200):
             self.sin.append(np.sin(self.x[i]) + 50)
 
@@ -182,7 +184,9 @@ class MainWindow(QtWidgets.QMainWindow):
     def update_plot_data(self):
         self.x = self.x[1:]  # Remove the first y element.
         self.x.append(self.x[-1] + 1)  # Add a new value 1 higher than the last.
-
+        self.time = self.time[1:]
+        timer1=datetime.datetime.now()
+        self.time.append(timer1.strftime("M:%M S:%S Ms:%f"))
         self.y = self.y[1:]  # Remove the first
         self.y.append( randint(0,100))  # Add a new random value.
         # self.z = self.z[1:]  # Remove the first
