@@ -17,17 +17,15 @@ class Save(QWidget):
     def initUI(self):
         self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        self.saveFileDialog()
+        #self.saveFileDialog()
 
-        self.show()
+        #self.show()
 
     def saveFileDialog(self):
         options = QFileDialog.Options()
         options |= QFileDialog.DontUseNativeDialog
-        fileName, _ = QFileDialog.getSaveFileName(self, "Ogopogo Telemetry", "",
-                                                  "All Files (*);;Text Files (*.txt)", options=options)
-        if fileName:
-            print(fileName)
+        fileName, _ = QFileDialog.getSaveFileName(self, "Ogopogo Telemetry", "","Json Files Files (*.json)", options=options)
+        return str(fileName)
 
 
 if __name__ == '__main__':

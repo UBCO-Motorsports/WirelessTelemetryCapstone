@@ -144,8 +144,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # Graph page functions
         self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
         # TODO 'Log Default' functionality
-        self.ui.importlayout_btn.clicked.connect(Open)  # TODO
-        self.ui.savelayout_btn.clicked.connect(Save)  # TODO
+        self.ui.importlayout_btn.clicked.connect(self.importlayout)  # TODO
+        self.ui.savelayout_btn.clicked.connect(self.savelayout)  # TODO
         self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
         self.ui.hideConfig_btn.setShortcut('h')
         self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None))  # Clears border from currently selected plot
@@ -171,6 +171,37 @@ class MainWindow(QtWidgets.QMainWindow):
         # Polar plot ranging
         self.ui.checkBox_2.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_2, self.ui.lineEdit_10, self.ui.lineEdit_11))
         self.ui.checkBox_3.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_3, self.ui.lineEdit_12, self.ui.lineEdit_13))
+
+    def importlayout(self):
+        filelookup = Open()
+        file = filelookup.openFileNameDialog()
+        layoutfile = file
+        if layoutfile != "":
+            with open(layoutfile, 'r+') as json_1:
+                data = json.load(json_1)
+                json_1.close()
+        print(data)
+    def savelayout(self):
+        savedict={"layout":[{"Graph":0,
+                             "Type":"Timedomain",
+                             "Datasets":[0,1,2],
+                             "Colors":["#000000","#050505","#1F1F1F"],
+                             "Samples":1000,
+                             "Yrange":"auto",
+                             "Ymin":0,
+                             "Ymax":0,
+                             "Title":"X vs. Y",
+                             "Ytitle":"Y",
+                             "Xtitle":"X"
+                             }],
+                  "Graphnum":1}
+        filelookup = Save()
+        file = filelookup.saveFileDialog()
+        layoutfile = file
+        if layoutfile != "":
+            with open(layoutfile, 'w+') as json_1:
+                json.dump(savedict, json_1, indent=4)
+                json_1.close()
 
     def initCommandPage(self):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))

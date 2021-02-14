@@ -1,0 +1,38 @@
+{
+    "layout": [
+        {
+            "Graph": 0,
+            "Type": "Timedomain",
+            "Datasets": [
+                0,
+                1,
+                2
+            ],
+            "Colors": [
+                [
+                    0,
+                    0,
+                    0
+                ],
+                [
+                    5,
+                    5,
+                    5
+                ],
+                [
+                    100,
+                    100,
+                    100
+                ]
+            ],
+            "Samples": 1000,
+            "Yrange": "auto",
+            "Ymin": 0,
+            "Ymax": 0,
+            "Title": "X vs. Y",
+            "Ytitle": "Y",
+            "Xtitle": "X"
+        }
+    ],
+    "Graphnum": 1
+}
