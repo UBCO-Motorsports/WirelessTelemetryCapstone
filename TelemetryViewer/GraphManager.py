@@ -1,11 +1,9 @@
 import pyqtgraph as pg
-import numpy as np
+from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
 from RPM import RPMGauge
 from Speedo import splashScreen
-
-from PyQt5.QtWidgets import QSplitter
 from Serial import SerialModule     #dont comment or delete > needed for Serial communication
 
 
@@ -26,7 +24,8 @@ class GraphManager(QtGui.QWidget):
         self.pen = pg.mkPen(color=(self.r,self.g,self.b),width=2)
 
         # Generate test data
-        self.x = [i for i in range(200)]
+        # self.x = [datetime.now().timestamp() for i in range(200)]
+        self.x = []
         self.y = [i for i in range(200)]
         self.z = [-i for i in range(200)]
 
@@ -83,8 +82,10 @@ class GraphManager(QtGui.QWidget):
         # Graph -> Update Graph, Dial -> Update Dial, Polar -> Update Polar
 
         # Update test data
-        del self.x[0]  # Remove the first x element.
-        self.x.append(self.x[-1] + 1)  # Add a new value 1 higher than the last.
+        if len(self.x) >= 200: #TODO set buffer size
+            del self.x[0]  # Remove the first x element.
+        now = datetime.now()
+        self.x.append(now.timestamp())  # Add a new value 1 higher than the last.
         # del self.y[0]
         # self.y.append(self.y[-1] + 1)
         # del self.z[0]
@@ -111,7 +112,10 @@ class GraphManager(QtGui.QWidget):
                                     pen = pg.mkPen(color=(rgba[0],rgba[1],rgba[2]),width=2)
                                 except:
                                     pen = self.pen
-                                graph.plot(graph.xData, self.serialArrays[index], pen=pen)
+                                # Match length of x and y arrays
+                                ydata_len = len(self.serialArrays[index])
+                                xdata_slice = len(graph.xData) - ydata_len
+                                graph.plot(graph.xData[xdata_slice::], self.serialArrays[index], pen=pen)
                     elif graph.type == 'Polar Plot':
                         #TODO implement polar updating
                         graph.clear()
@@ -155,8 +159,12 @@ class GraphManager(QtGui.QWidget):
             self.graph_array[1][0].hide()
 
 class PlotWdgt(pg.PlotWidget):
-    def __init__(self, parentwidget, parent=None):
-        super(PlotWdgt, self).__init__(parent, viewBox=CustomViewBox(self))
+    def __init__(self, parentwidget, parent=None, enabletime=True):
+        if enabletime is True:
+            timeaxisitem = {'bottom': TimeAxisItem('bottom')}
+        else:
+            timeaxisitem = None
+        super(PlotWdgt, self).__init__(parent, axisItems=timeaxisitem, viewBox=CustomViewBox(self))
         self.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored, QtWidgets.QSizePolicy.Ignored))
         self.parentwidget = parentwidget
         self.plot_item = self.getPlotItem()
@@ -176,6 +184,7 @@ class PlotWdgt(pg.PlotWidget):
         self.autoRange = True
 
         self.plot_item.setLabels(top=self.title, bottom=self.xLabel, left=self.yLabel)
+        self.plot_item.getAxis('top').enableAutoSIPrefix(False)
 
     def configMenuCalled(self):
         # Calls parent widget to open edit menu
@@ -183,7 +192,7 @@ class PlotWdgt(pg.PlotWidget):
 
 class PolarWidget(PlotWdgt):
     def __init__(self, parentwidget):
-        super(PolarWidget, self).__init__(parentwidget)
+        super(PolarWidget, self).__init__(parentwidget, enabletime=False)
         self.type = 'Polar Plot'
         self.title = 'Polar Plot'
         self.xRange = [-10, 10]
@@ -196,6 +205,13 @@ class PolarWidget(PlotWdgt):
         self.setXRange(self.xRange[0], self.xRange[1])
         self.setYRange(self.yRange[0], self.yRange[1])
 
+class TimeAxisItem(pg.AxisItem):
+    def __init__(self, placement):
+        super(TimeAxisItem, self).__init__(placement)
+        self.enableAutoSIPrefix(False)
+
+    def tickStrings(self, values, scale, spacing):
+        return [str(datetime.utcfromtimestamp(value).strftime('%H:%M:%S')) for value in values]
 
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentwidget, parent=None):

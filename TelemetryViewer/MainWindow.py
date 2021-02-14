@@ -514,7 +514,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.lineEdit_13.setDisabled(True)
                     self.ui.lineEdit_12.clear()
                     self.ui.lineEdit_13.clear()
-                    self.currentPlotWidget.enableAutoRange(x=True)
+                    self.currentPlotWidget.enableAutoRange(y=True)
                     self.ui.checkBox_3.setChecked(True)
 
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()

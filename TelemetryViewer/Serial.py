@@ -30,7 +30,8 @@ class SerialModule():
 
         self.arrays = []
         for x in range(16):
-            self.arrays.append([0 for _ in range(200)])
+            # self.arrays.append([0 for _ in range(200)])
+            self.arrays.append([])
 
         # self.arrays = [self.array1, self.array2, self.array3, self.array4, self.array5, self.array6, self.array7, self.array8, self.array9, self.array10, self.array11, self.array12, self.array13, self.array14, self.array15, self.array16] ###
         # self.datadictionary = {}
@@ -105,7 +106,8 @@ class SerialModule():
         # self.array16 = self.array16[1:]
 
         for i, array in enumerate(self.arrays):
-            del array[0]
+            if len(array) >= 200: #TODO set buffer size
+                del array[0]
             try:
                 array.append(float(dataapp[i])*float(dataDict['logged'][i]['Scale'])+float(dataDict['logged'][i]['Offset']))
             except:
