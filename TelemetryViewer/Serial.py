@@ -6,8 +6,6 @@ dataDict = 0
 
 # TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
 # TODO    Royden's TIVA board. Jan 20
-# TODO 4. Scaling Function - to expand or shrink data points
-# TODO More to the END, Use Threading for updating graphs, checking serial ports, etc. Or Multiprocessing
 
 class SerialModule():
     def __init__(self):

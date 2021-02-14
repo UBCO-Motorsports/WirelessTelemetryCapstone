@@ -441,7 +441,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.lineEdit_6.setDisabled(False)
                     self.currentPlotWidget.enableAutoRange(x=True, y=False)
                     self.currentPlotWidget.yRange = [float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_6.text())]
-                    self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1]) #TODO [lowerbound, upperbound] or [0,upperbound]
+                    self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1])
                 except:
                     self.ui.lineEdit_5.setDisabled(True)
                     self.ui.lineEdit_6.setDisabled(True)
@@ -484,7 +484,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotWidget.xData.append(self.ui.comboBox_3.currentIndex())
             self.currentPlotWidget.yData.append(self.ui.comboBox_4.currentIndex())
             self.currentPlotWidget.samples = self.ui.spinBox.value()
-            #TODO ranging
             # Set x-range
             if self.ui.checkBox_2.isChecked():
                 self.currentPlotWidget.enableAutoRange(x=self.ui.checkBox_2.isChecked())
@@ -702,7 +701,7 @@ class SendThread(QtCore.QThread):
         # print('_________RUN: ' + str(self.times_run))
         for messages in self.MainWindow.messagebuffer:
             if self.MainWindow.serialConnected:
-                self.GraphManager.SerialModule.sendCommand(messages)#TODO REenable this for serial testing
+                self.GraphManager.SerialModule.sendCommand(messages)
             self.msleep(250)
             print(messages)
         self.MainWindow.ui.apply_btn.setDisabled(False)

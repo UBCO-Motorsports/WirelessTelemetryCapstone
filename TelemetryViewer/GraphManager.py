@@ -77,10 +77,6 @@ class GraphManager(QtGui.QWidget):
         self.parentwidget.configMenuCalled(plotWidget)
 
     def update(self):
-        #TODO
-        # Call update for element in graph_array, if graph_array[i][j] == [polar]: update_polar()
-        # Graph -> Update Graph, Dial -> Update Dial, Polar -> Update Polar
-
         # Update test data
         if len(self.x) >= 200: #TODO set buffer size
             del self.x[0]  # Remove the first x element.
@@ -117,7 +113,6 @@ class GraphManager(QtGui.QWidget):
                                 xdata_slice = len(graph.xData) - ydata_len
                                 graph.plot(graph.xData[xdata_slice::], self.serialArrays[index], pen=pen)
                     elif graph.type == 'Polar Plot':
-                        #TODO implement polar updating
                         graph.clear()
                         if graph.yData and graph.xData:
                             try:
