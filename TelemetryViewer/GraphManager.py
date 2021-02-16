@@ -85,6 +85,7 @@ class GraphManager(QtGui.QWidget):
         if len(self.x) >= 200: #TODO set buffer size
             del self.x[0]  # Remove the first x element.
         now = datetime.now()
+        print(now.timestamp())
         self.x.append(now.timestamp())  # Add a new value 1 higher than the last.
         # del self.y[0]
         # self.y.append(self.y[-1] + 1)
@@ -211,7 +212,7 @@ class TimeAxisItem(pg.AxisItem):
         self.enableAutoSIPrefix(False)
 
     def tickStrings(self, values, scale, spacing):
-        return [str(datetime.utcfromtimestamp(value).strftime('%H:%M:%S')) for value in values]
+        return [str(datetime.fromtimestamp(value).strftime('%H:%M:%S')) for value in values]
 
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentwidget, parent=None):
