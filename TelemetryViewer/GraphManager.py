@@ -53,6 +53,8 @@ class GraphManager(QtGui.QWidget):
                 new_widget = PolarWidget(self)
             elif applied_type == 'RPM Gauge':
                 new_widget = RPMGauge(self)
+                new_widget.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
+                new_widget.highlighted = True
             elif applied_type == 'Speedo Gauge':
                 new_widget = splashScreen(self)
                 new_widget.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
@@ -128,6 +130,7 @@ class GraphManager(QtGui.QWidget):
                         graph.animate(self.serialArrays[graph.data[0]][-1])
                     elif graph.type == 'RPM Gauge':
                         #TODO implement RPM gauge updates
+                        graph.animate(self.serialArrays[graph.data[0]][-1])
                         pass
 
     def showGraphs(self, num_shown):

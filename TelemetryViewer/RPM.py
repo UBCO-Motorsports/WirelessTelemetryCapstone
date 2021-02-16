@@ -13,18 +13,16 @@ newneedle=0
 class RPMGauge(QtWidgets.QWidget):
     def __init__(self, parentwidget):
         QtWidgets.QWidget.__init__(self)
+        self.parentwidget = parentwidget
         self.ui = Ui_Form()
         self.ui.setupUi(self)
         self.animate(0)
-
-        self.type = 'RPM Gauge'
-        self.parentwidget = parentwidget
+        self.highlighted = False
 
         self.dial_size = self.ui.frame
 
-        # self.timer = QtCore.QTimer()
-        # self.timer.timeout.connect(self.accellerate)
-        # self.timer.start(15)
+        self.type = 'RPM Gauge'
+        self.data = []
 
         # self.show()
 
@@ -99,6 +97,10 @@ class RPMGauge(QtWidgets.QWidget):
         self.ui.label_3.setGeometry(0, 5, length, length)
         self.ui.label_3.setPixmap(pointer)
         self.ui.RPMtext.setAlignment(QtCore.Qt.AlignCenter)
+
+        if self.highlighted:
+            self.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
+
         self.ui.frame_4.raise_()
         self.ui.frame_3.raise_()
         self.ui.frame_2.raise_()
@@ -112,9 +114,10 @@ class RPMGauge(QtWidgets.QWidget):
     def animate(self,value):
         global RPM
         global newneedle
-        value=int(RPM)
+        # value=int(RPM)
+        RPM = value
         htmlText="{Value}"
-        newHtml=htmlText.replace("{Value}",str(value))
+        newHtml=htmlText.replace("{Value}",str(int(value)))
         self.ui.RPMtext.setText(newHtml)
 
         t = QtGui.QTransform()

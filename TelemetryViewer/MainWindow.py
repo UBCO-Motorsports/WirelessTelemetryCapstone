@@ -419,6 +419,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         elif plotWidget.type == 'RPM Gauge':
             self.ui.configMenuStack.setCurrentWidget(self.ui.rpm_page)
+            self.currentPlotWidget.highlighted = True
+            self.currentPlotWidget.ui.frame_3.setStyleSheet('border-radius: 150px;' 'border: 3px solid #00ff00;')
             self.ui.graphtype_comboBox.setCurrentIndex(2)
 
         elif plotWidget.type == 'Speedo Gauge':
@@ -553,6 +555,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotWidget.data.append(self.ui.comboBox_5.currentIndex())
         elif self.currentPlotWidget.type == 'RPM Gauge':
             #TODO add RPM gauge config apply
+            self.currentPlotWidget.data.clear()
+            self.currentPlotWidget.data.append(self.ui.comboBox.currentIndex())
             pass
 
     def defaultJson(self):
