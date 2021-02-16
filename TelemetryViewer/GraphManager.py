@@ -55,6 +55,8 @@ class GraphManager(QtGui.QWidget):
                 new_widget = RPMGauge(self)
             elif applied_type == 'Speedo Gauge':
                 new_widget = splashScreen(self)
+                new_widget.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
+                new_widget.highlighted = True
             else:
                 print('widget update failed')
                 pass

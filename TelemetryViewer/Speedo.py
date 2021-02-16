@@ -20,6 +20,7 @@ class splashScreen(QtWidgets.QWidget):
         self.ui.setupUi(self)
         self.Speed = 0
         self.animate(0)
+        self.highlighted = False
 
         self.frame_size = self.ui.frame
 
@@ -126,6 +127,9 @@ class splashScreen(QtWidgets.QWidget):
         needle= QtGui.QPixmap("QT Images/needle3.png")
         needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
         newneedle=needle
+
+        if self.highlighted:
+            self.ui.frame_3.setStyleSheet('border-radius: 150px;' 'border: 3px solid #00ff00;')
 
         self.ui.frame_2.raise_()
         self.ui.frame_3.raise_()

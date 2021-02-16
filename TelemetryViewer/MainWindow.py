@@ -382,7 +382,13 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None)
         except:
             pass
+        try:
+            self.currentPlotWidget.ui.frame_3.setStyleSheet('background-color: rgb(216, 216, 216);')
+            self.currentPlotWidget.highlighted = False
+        except:
+            pass
 
+        # Sets the passed in widget to be the currently selected widget
         self.currentPlotWidget = plotWidget
 
         # TODO reset configuration menu to the current plotwidget data\
@@ -417,6 +423,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         elif plotWidget.type == 'Speedo Gauge':
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
+            self.currentPlotWidget.highlighted = True
+            self.currentPlotWidget.ui.frame_3.setStyleSheet('border-radius: 150px;' 'border: 3px solid #00ff00;')
             self.ui.graphtype_comboBox.setCurrentIndex(3)
 
         self.ui.configMenu.show()
@@ -425,6 +433,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.currentPlotWidget = self.GraphManager.updateWidget(self.currentPlotWidget, self.ui.graphtype_comboBox.currentText())
         try:
             self.currentPlotWidget.getPlotItem().getViewBox().setBorder(color=(0,255,0),width=3)
+        except:
+            pass
+        try:
+            self.currentPlotWidget.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
         except:
             pass
 
