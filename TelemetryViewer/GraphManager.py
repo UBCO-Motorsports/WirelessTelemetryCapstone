@@ -85,7 +85,6 @@ class GraphManager(QtGui.QWidget):
         if len(self.x) >= 200: #TODO set buffer size
             del self.x[0]  # Remove the first x element.
         now = datetime.now()
-        print(now.timestamp())
         self.x.append(now.timestamp())  # Add a new value 1 higher than the last.
         # del self.y[0]
         # self.y.append(self.y[-1] + 1)

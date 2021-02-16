@@ -146,13 +146,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # TODO 'Log Default' functionality
         self.ui.importlayout_btn.clicked.connect(self.importlayout)  # TODO
         self.ui.savelayout_btn.clicked.connect(self.savelayout)  # TODO
-        self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
-        self.ui.hideConfig_btn.setShortcut('h')
-        self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None))  # Clears border from currently selected plot
-        self.ui.configMenu.hide()  # Initially hide configuration menu
+
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))  # Change number of graphs shown when combobox value changed
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 1)  # Initialize number of shown graphs to maximum
-        self.ui.applyconfig_btn.clicked.connect(self.configApply)
+
 
     def initConfigMenu(self):
         # Initialize scroll widget for available data channels
@@ -171,6 +168,16 @@ class MainWindow(QtWidgets.QMainWindow):
         # Polar plot ranging
         self.ui.checkBox_2.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_2, self.ui.lineEdit_10, self.ui.lineEdit_11))
         self.ui.checkBox_3.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_3, self.ui.lineEdit_12, self.ui.lineEdit_13))
+
+        # Hide button
+        # self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
+        self.ui.hideConfig_btn.setShortcut('h')
+        self.ui.hideConfig_btn.clicked.connect(self.configHide)
+
+        self.ui.configMenu.hide()  # Initially hide configuration menu
+
+        # Apply button
+        self.ui.applyconfig_btn.clicked.connect(self.configApply)
 
     def importlayout(self):
         filelookup = Open()
@@ -430,6 +437,22 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.graphtype_comboBox.setCurrentIndex(3)
 
         self.ui.configMenu.show()
+
+    def configHide(self):
+        self.ui.configMenu.hide()
+        if self.currentPlotWidget.type == 'Time Domain' or self.currentPlotWidget.type == 'Polar Plot':
+            self.currentPlotWidget.getPlotItem().getViewBox().setBorder(None)
+        elif self.currentPlotWidget.type == 'RPM Gauge' or self.currentPlotWidget.type == 'Speedo Gauge':
+            self.currentPlotWidget.ui.frame_3.setStyleSheet('background-color: rgb(216, 216, 216);')
+            self.currentPlotWidget.highlighted = False
+        else:
+            pass
+
+
+        # self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(
+        #     None))  # Clears border from currently selected plot
+        # self.ui.hideConfig_btn.clicked.connect(
+        #     lambda: self.currentPlotWidget.ui.frame_3.setStyleSheet('background-color: rgb(216, 216, 216);'))
 
     def configApply(self):
         self.currentPlotWidget = self.GraphManager.updateWidget(self.currentPlotWidget, self.ui.graphtype_comboBox.currentText())
