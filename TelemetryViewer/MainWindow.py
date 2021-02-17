@@ -59,7 +59,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Timer for testing graphing -> calls update function
         self.timer = QtCore.QTimer()
-        self.timer.setInterval(100)
+        # DO NOT CHANGE! WORKS SOMEHOW
+        self.timer.setInterval(75)
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
 
@@ -334,13 +335,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.ui.apply_btn.setDisabled(True)
         self.ui.apply_btn.setText('Sending...')
-        self.sendThread.start()
+        self.sendMessages()
+        self.ui.apply_btn.setDisabled(False)
+        self.ui.apply_btn.setText('Apply')
+        #self.sendThread.start()
 
     def sendMessages(self):
+        #self.GraphManager.SerialModule.sendCommand("r\r")
         for messages in self.messagebuffer:
-            if self.serialConnected:
+            if self.GraphManager.SerialModule.serialConnected:
                 self.GraphManager.SerialModule.sendCommand(messages)
-            time.sleep(0.25)
+                time.sleep(0.3)
             print(messages)
 
     def sendcommandfromList(self):
@@ -739,7 +744,8 @@ class SendThread(QtCore.QThread):
         self.times_run+=1
         # print('_________RUN: ' + str(self.times_run))
         for messages in self.MainWindow.messagebuffer:
-            if self.MainWindow.serialConnected:
+            if self.GraphManager.SerialModule.serialConnected:
+                print("Sending message")
                 self.GraphManager.SerialModule.sendCommand(messages)
             self.msleep(250)
             print(messages)

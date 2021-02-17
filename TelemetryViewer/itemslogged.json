@@ -31,26 +31,6 @@
             "Color": "(28, 101, 197, 255)"
         },
         {
-            "Name": "Lateral G",
-            "ID": "0x36B",
-            "Units": "m/s^2",
-            "Scale": 0.1,
-            "Position": 48,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(78, 114, 151, 255)"
-        },
-        {
-            "Name": "Longitudinal G",
-            "ID": "0x36E",
-            "Units": "m/s^2",
-            "Scale": 0.1,
-            "Position": 48,
-            "Size": 16,
-            "Offset": 0,
-            "Color": "(231, 28, 248, 255)"
-        },
-        {
             "Name": "Vehicle Speed",
             "ID": "0x370",
             "Units": "km/h",
