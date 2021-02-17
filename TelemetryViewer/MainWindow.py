@@ -266,6 +266,7 @@ class MainWindow(QtWidgets.QMainWindow):
             json_2.close()
 
     def applytoConfig(self):
+
         with open('itemslogged.json', 'r+') as json_file:
             data = json.load(json_file)
             json_file.close()
@@ -338,6 +339,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.sendMessages()
         self.ui.apply_btn.setDisabled(False)
         self.ui.apply_btn.setText('Apply')
+
+        self.GraphManager.SerialModule.ResetMethod = self.applytoConfig
         #self.sendThread.start()
 
     def sendMessages(self):

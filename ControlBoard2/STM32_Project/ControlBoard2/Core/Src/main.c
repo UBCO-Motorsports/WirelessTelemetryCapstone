@@ -393,6 +393,9 @@ int main(void)
 	HAL_UART_Receive_IT(&huart2, uart_rec_buff, 1);
 
 
+	uint8_t uart_tx_buff[1] = {36};
+	HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, 1);
+
 
 
   /* USER CODE END 2 */

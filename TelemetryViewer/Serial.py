@@ -11,13 +11,14 @@ class SerialModule():
     def __init__(self):
         global dataDict
         self.serialConnected = False
+        self.reset = False
         self.arrays = []
+        self.ResetMethod = 0
+
         dataDict = {'logged':[]}
         for x in range(16):
             # self.arrays.append([0 for _ in range(200)])
             self.arrays.append([])
-
-
 
 
     def tryConnectSerial(self, portName):
@@ -61,7 +62,14 @@ class SerialModule():
                 dataa = dataa.decode('cp1252')
             except:
                 dataa = "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0"
+
             dataa = dataa.rstrip()  # gets rid of \n from energia generated code
+            if "$" in dataa:
+                print("Found reset message")
+                if (len(dataDict['logged']) > 0):
+                    reset = True
+                    self.ResetMethod()
+                dataa.replace("$", "")
             dataapp = dataa.split(",")
         else:
             dataapp = []
