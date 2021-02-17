@@ -13,7 +13,6 @@ class GraphManager(QtGui.QWidget):
         super(GraphManager, self).__init__(parentwidget)
         self.parentwidget = parentwidget
         self.SerialModule = SerialModule()
-        # self.SerialModule.connectSerial()
 
         self.graph_layout = QtGui.QGridLayout()
         self.setLayout(self.graph_layout)
@@ -23,11 +22,8 @@ class GraphManager(QtGui.QWidget):
         self.b = 0
         self.pen = pg.mkPen(color=(self.r,self.g,self.b),width=2)
 
-        # Generate test data
-        # self.x = [datetime.now().timestamp() for i in range(200)]
+        # Generate time array
         self.x = []
-        self.y = [i for i in range(200)]
-        self.z = [-i for i in range(200)]
 
         # Generates array of graphs and puts them in a layout
         # [Row][Column] to align with QGridLayout
@@ -40,9 +36,7 @@ class GraphManager(QtGui.QWidget):
                 current_graph.showGrid(x=True, y=True)
 
                 current_graph.xData = self.x
-                # current_graph.yData.append(j)
 
-    #TODO
     def updateWidget(self, current_widget, applied_type):
         if current_widget.type != applied_type:
             position = self.findWidgetPosition(current_widget)
@@ -81,15 +75,11 @@ class GraphManager(QtGui.QWidget):
         self.parentwidget.configMenuCalled(plotWidget)
 
     def update(self):
-        # Update test data
+        # Update time data
         if len(self.x) >= 200: #TODO set buffer size
             del self.x[0]  # Remove the first x element.
         now = datetime.now()
-        self.x.append(now.timestamp())  # Add a new value 1 higher than the last.
-        # del self.y[0]
-        # self.y.append(self.y[-1] + 1)
-        # del self.z[0]
-        # self.z.append(self.z[-1] - 1)
+        self.x.append(now.timestamp())
 
         # Read latest data if serial is connected
         if self.parentwidget.serialConnected:
@@ -129,7 +119,6 @@ class GraphManager(QtGui.QWidget):
                     elif graph.type == 'Speedo Gauge':
                         graph.animate(self.serialArrays[graph.yData[0]][-1])
                     elif graph.type == 'RPM Gauge':
-                        #TODO implement RPM gauge updates
                         graph.animate(self.serialArrays[graph.yData[0]][-1])
                         pass
 

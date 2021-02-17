@@ -48,12 +48,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialize Command Page
         self.initCommandPage()
 
-        self.ui.graph_page.applyConfigSC = QShortcut(QKeySequence('a'), self)
-        self.ui.graph_page.applyConfigSC.activated.connect(self.configApply)
-
-        self.ui.setup_page.applySetup = QShortcut(QKeySequence('Ctrl+Return'), self)
-        self.ui.setup_page.applySetup.activated.connect(self.applytoConfig)
-
         self.sendThread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
         # self.sendThread.start()
 
