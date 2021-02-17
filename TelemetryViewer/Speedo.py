@@ -25,7 +25,7 @@ class splashScreen(QtWidgets.QWidget):
         self.frame_size = self.ui.frame
 
         self.type = 'Speedo Gauge'
-        self.data = []
+        self.yData = []
 
         self.show()
 

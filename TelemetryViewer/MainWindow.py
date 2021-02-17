@@ -203,12 +203,43 @@ class MainWindow(QtWidgets.QMainWindow):
                              "Xtitle":"X"
                              }],
                   "Graphnum":1}
-        filelookup = Save()
-        file = filelookup.saveFileDialog()
-        layoutfile = file
+
+        graph_layout_dict = {'layout': []}
+
+        for row in self.GraphManager.graph_array:
+            row_layout = []
+            for graph in row:
+                graph_dict = {}
+                graph_dict['type'] = graph.type
+                graph_dict['datasets'] = graph.yData
+                if graph.type == 'Time Domain':
+                    graph_dict['title'] = graph.title
+                    graph_dict['xLabel'] = graph.xLabel
+                    graph_dict['yLabel'] = graph.yLabel
+                    graph_dict['yRange'] = graph.yRange
+                    graph_dict['autoRange'] = graph.autoRange
+                elif graph.type == 'Polar Plot':
+                    graph_dict['title'] = graph.title
+                    graph_dict['xLabel'] = graph.xLabel
+                    graph_dict['yLabel'] = graph.yLabel
+                    graph_dict['yRange'] = graph.yRange
+                    graph_dict['yAutoRange'] = graph.yAutoRange
+                    graph_dict['xRange'] = graph.xRange
+                    graph_dict['xAutoRange'] = graph.xAutoRange
+                    graph_dict['samples'] = graph.samples
+
+                row_layout.append(graph_dict)
+            graph_layout_dict['layout'].append(row_layout)
+
+        print(graph_layout_dict)
+
+        # filelookup = Save()
+        # file = filelookup.saveFileDialog()
+        # layoutfile = file
+        layoutfile = 'graphlayout.json'
         if layoutfile != "":
             with open(layoutfile, 'w+') as json_1:
-                json.dump(savedict, json_1, indent=4)
+                json.dump(graph_layout_dict, json_1, indent=4)
                 json_1.close()
 
     def initCommandPage(self):
@@ -582,12 +613,12 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.currentPlotWidget.xLabel = 'X-Axis'
 
         elif self.currentPlotWidget.type == 'Speedo Gauge':
-            self.currentPlotWidget.data.clear()
-            self.currentPlotWidget.data.append(self.ui.comboBox_5.currentIndex())
+            self.currentPlotWidget.yData.clear()
+            self.currentPlotWidget.yData.append(self.ui.comboBox_5.currentIndex())
         elif self.currentPlotWidget.type == 'RPM Gauge':
             #TODO add RPM gauge config apply
-            self.currentPlotWidget.data.clear()
-            self.currentPlotWidget.data.append(self.ui.comboBox.currentIndex())
+            self.currentPlotWidget.yData.clear()
+            self.currentPlotWidget.yData.append(self.ui.comboBox.currentIndex())
             pass
 
     def defaultJson(self):

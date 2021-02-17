@@ -22,7 +22,7 @@ class RPMGauge(QtWidgets.QWidget):
         self.dial_size = self.ui.frame
 
         self.type = 'RPM Gauge'
-        self.data = []
+        self.yData = []
 
         # self.show()
 

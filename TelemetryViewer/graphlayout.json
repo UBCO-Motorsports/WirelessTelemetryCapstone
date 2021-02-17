@@ -1,0 +1,154 @@
+{
+    "layout": [
+        [
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            }
+        ],
+        [
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            }
+        ],
+        [
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            }
+        ]
+    ]
+}
