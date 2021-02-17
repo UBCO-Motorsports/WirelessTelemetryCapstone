@@ -4,7 +4,19 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    300.0,
+                    600.0
+                ],
+                "autoRange": false
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -16,7 +28,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -28,7 +40,21 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    500.0,
+                    3000.0
+                ],
+                "autoRange": true
+            }
+        ],
+        [
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -40,7 +66,31 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "TESTTESTTEST",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -54,7 +104,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -66,7 +116,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -78,7 +128,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -90,57 +140,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "X vs. Y",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            }
-        ],
-        [
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "X vs. Y",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "X vs. Y",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "X vs. Y",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "X vs. Y",
+                "title": "TESTTESTTEST",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [

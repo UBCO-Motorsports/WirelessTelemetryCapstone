@@ -180,24 +180,13 @@ class MainWindow(QtWidgets.QMainWindow):
         layoutfile = file
         if layoutfile != "":
             with open(layoutfile, 'r+') as json_1:
-                data = json.load(json_1)
+                layout = json.load(json_1)
                 json_1.close()
-        print(data)
-    def savelayout(self):
-        savedict={"layout":[{"Graph":0,
-                             "Type":"Timedomain",
-                             "Datasets":[0,1,2],
-                             "Colors":["#000000","#050505","#1F1F1F"],
-                             "Samples":1000,
-                             "Yrange":"auto",
-                             "Ymin":0,
-                             "Ymax":0,
-                             "Title":"X vs. Y",
-                             "Ytitle":"Y",
-                             "Xtitle":"X"
-                             }],
-                  "Graphnum":1}
+        print(layout)
+        self.GraphManager.importLayout(layout['layout'])
 
+
+    def savelayout(self):
         graph_layout_dict = {'layout': []}
 
         for row in self.GraphManager.graph_array:
@@ -439,7 +428,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 checkbox.setChecked(False)
             for i in self.currentPlotWidget.yData:
                 self.configData[i].setChecked(True)
-            if self.ui.checkBox.isChecked():
+
+            if self.currentPlotWidget.autoRange:
                 self.ui.checkBox.setChecked(True)
             else:
                 self.ui.lineEdit_5.setText(str(self.currentPlotWidget.yRange[0]))
@@ -504,6 +494,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.lineEdit_5.setDisabled(True)
                 self.ui.lineEdit_6.setDisabled(True)
                 self.currentPlotWidget.enableAutoRange(x=True,y=True)
+                self.currentPlotWidget.autoRange = True
             else:
                 # Sets y-bounds if a valid value is entered
                 try:
@@ -512,6 +503,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.currentPlotWidget.enableAutoRange(x=True, y=False)
                     self.currentPlotWidget.yRange = [float(self.ui.lineEdit_5.text()), float(self.ui.lineEdit_6.text())]
                     self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1])
+                    self.currentPlotWidget.autoRange = False
                 except:
                     self.ui.lineEdit_5.setDisabled(True)
                     self.ui.lineEdit_6.setDisabled(True)
@@ -519,6 +511,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.lineEdit_6.clear()
                     self.currentPlotWidget.enableAutoRange(x=True,y=False)
                     self.ui.checkBox.setChecked(True)
+                    self.currentPlotWidget.autoRange = False
 
             # Checks current data types to graph
             self.currentPlotWidget.yData.clear()

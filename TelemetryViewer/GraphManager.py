@@ -37,6 +37,31 @@ class GraphManager(QtGui.QWidget):
 
                 current_graph.xData = self.x
 
+    def importLayout(self, layout):
+        for i, row in enumerate(layout):
+            for j, graph in enumerate(row):
+                current_widget = self.graph_array[i][j]
+                if graph['type'] == 'Time Domain':
+                    new_widget = PlotWdgt(self)
+                    new_widget.type = graph['type']
+                    new_widget.xData = self.x
+                    new_widget.yData = graph['datasets']
+                    new_widget.title = graph['title']
+                    new_widget.xLabel = graph['xLabel']
+                    new_widget.yLabel = graph['yLabel']
+                    new_widget.setLabels(top=new_widget.title, bottom=new_widget.xLabel, left=new_widget.yLabel)
+
+                    new_widget.yRange = graph['yRange']
+                    new_widget.autoRange = graph['autoRange']
+                    if not new_widget.autoRange:
+                        print('autoranging')
+                        new_widget.setYRange(new_widget.yRange[0], new_widget.yRange[1])
+                else:
+                    print(graph['type'])
+                self.graph_array[i][j] = new_widget
+                self.graph_layout.replaceWidget(current_widget, self.graph_array[i][j])
+                current_widget.close()
+
     def updateWidget(self, current_widget, applied_type):
         if current_widget.type != applied_type:
             position = self.findWidgetPosition(current_widget)
