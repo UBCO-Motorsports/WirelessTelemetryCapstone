@@ -1390,13 +1390,6 @@ QPushButton:hover {
                          </widget>
                         </item>
                         <item>
-                         <widget class="QRadioButton" name="radioButton_3">
-                          <property name="text">
-                           <string>Legend</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
                          <widget class="QFrame" name="frame_19">
                           <property name="minimumSize">
                            <size>
