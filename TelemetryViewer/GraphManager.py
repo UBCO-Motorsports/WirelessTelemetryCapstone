@@ -174,10 +174,15 @@ class GraphManager(QtGui.QWidget):
                                 pen = self.pen
                             graph.plot(self.serialArrays[graph.xData[0]][-graph.samples:], self.serialArrays[graph.yData[0]][-graph.samples:], pen=pen)
                     elif graph.type == 'Speedo Gauge':
-                        graph.animate(self.serialArrays[graph.yData[0]][-1])
+                        if self.serialArrays[graph.yData[0]][-1]:
+                            graph.animate(self.serialArrays[graph.yData[0]][-1])
+                        else:
+                            graph.animate(0)
                     elif graph.type == 'RPM Gauge':
-                        graph.animate(self.serialArrays[graph.yData[0]][-1])
-                        pass
+                        if self.serialArrays[graph.yData[0]][-1]:
+                             graph.animate(self.serialArrays[graph.yData[0]][-1])
+                        else:
+                            graph.animate(0)
 
     def showGraphs(self, num_shown):
         if num_shown == '12':
