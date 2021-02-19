@@ -10,11 +10,11 @@ from Speedoroot import Ui_Form
 newneedle=0
 
 
-class splashScreen(QtWidgets.QWidget):
+class SpeedoGauge(QtWidgets.QWidget):
     raisesignal = QtCore.pyqtSignal()
     def __init__(self, parent):
         # QtWidgets.QWidget.__init__(self)
-        super(splashScreen, self).__init__(parent)
+        super(SpeedoGauge, self).__init__(parent)
         self.parentwidget = parent
         self.ui = Ui_Form()
         self.ui.setupUi(self)

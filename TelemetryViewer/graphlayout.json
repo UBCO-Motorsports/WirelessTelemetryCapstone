@@ -3,20 +3,50 @@
         [
             {
                 "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
+                "datasets": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "title": "TEST",
+                "xLabel": "TEST",
+                "yLabel": "TEST",
                 "yRange": [
-                    300.0,
-                    600.0
+                    69.0,
+                    420.0
                 ],
                 "autoRange": false
             },
             {
+                "type": "Polar Plot",
+                "datasets": [
+                    4
+                ],
+                "title": "TITLE",
+                "xData": [
+                    2
+                ],
+                "xLabel": "TITLE",
+                "yLabel": "TITLE",
+                "yRange": [
+                    -420.0,
+                    420.0
+                ],
+                "yAutoRange": false,
+                "xRange": [
+                    -69.0,
+                    69.0
+                ],
+                "xAutoRange": false,
+                "samples": 3
+            },
+            {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "TESTTESTTEST",
+                "title": "X vs. Y",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -28,69 +58,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    500.0,
-                    3000.0
-                ],
-                "autoRange": true
-            }
-        ],
-        [
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
-            },
-            {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
+                "title": "X vs. Y",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -104,7 +72,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "TESTTESTTEST",
+                "title": "X vs. Y",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -116,7 +84,45 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "TESTTESTTEST",
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "RPM Gauge",
+                "datasets": [
+                    0
+                ]
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            }
+        ],
+        [
+            {
+                "type": "Speedo Gauge",
+                "datasets": [
+                    5
+                ]
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -128,7 +134,7 @@
             {
                 "type": "Time Domain",
                 "datasets": [],
-                "title": "TESTTESTTEST",
+                "title": "X vs. Y",
                 "xLabel": "X-Axis",
                 "yLabel": "Y-Axis",
                 "yRange": [
@@ -138,16 +144,10 @@
                 "autoRange": true
             },
             {
-                "type": "Time Domain",
-                "datasets": [],
-                "title": "TESTTESTTEST",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
+                "type": "Speedo Gauge",
+                "datasets": [
+                    3
+                ]
             }
         ]
     ]

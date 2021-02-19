@@ -48,7 +48,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialize Command Page
         self.initCommandPage()
 
-        self.sendThread = SendThread(GraphManager=self.GraphManager, MainWindow=self)
+        self.sendThread = SendThread(self.sendMessages)
         # self.sendThread.start()
 
         # Timer for testing graphing -> calls update function
@@ -145,7 +145,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))  # Change number of graphs shown when combobox value changed
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 1)  # Initialize number of shown graphs to maximum
 
-
     def initConfigMenu(self):
         # Initialize scroll widget for available data channels
         self.data_layout = QVBoxLayout()
@@ -193,8 +192,12 @@ class MainWindow(QtWidgets.QMainWindow):
             row_layout = []
             for graph in row:
                 graph_dict = {}
+
+                # Saves basic widget data
                 graph_dict['type'] = graph.type
                 graph_dict['datasets'] = graph.yData
+
+                # Saves widget specific data
                 if graph.type == 'Time Domain':
                     graph_dict['title'] = graph.title
                     graph_dict['xLabel'] = graph.xLabel
@@ -203,6 +206,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     graph_dict['autoRange'] = graph.autoRange
                 elif graph.type == 'Polar Plot':
                     graph_dict['title'] = graph.title
+                    graph_dict['xData'] = graph.xData
                     graph_dict['xLabel'] = graph.xLabel
                     graph_dict['yLabel'] = graph.yLabel
                     graph_dict['yRange'] = graph.yRange
@@ -216,10 +220,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
         print(graph_layout_dict)
 
-        # filelookup = Save()
-        # file = filelookup.saveFileDialog()
-        # layoutfile = file
-        layoutfile = 'graphlayout.json'
+        filelookup = Save()
+        file = filelookup.saveFileDialog()
+        layoutfile = file
+        # layoutfile = 'graphlayout.json'
         if layoutfile != "":
             with open(layoutfile, 'w+') as json_1:
                 json.dump(graph_layout_dict, json_1, indent=4)
@@ -348,22 +352,27 @@ class MainWindow(QtWidgets.QMainWindow):
             self.data_layout.addWidget(i)
         self.scrollWidget.setLayout(self.data_layout)
 
-        self.ui.apply_btn.setDisabled(True)
-        self.ui.apply_btn.setText('Sending...')
-        self.sendMessages()
-        self.ui.apply_btn.setDisabled(False)
-        self.ui.apply_btn.setText('Apply')
+        # self.ui.apply_btn.setDisabled(True)
+        # self.ui.apply_btn.setText('Sending...')
+        # self.sendMessages()
+        # self.ui.apply_btn.setDisabled(False)
+        # self.ui.apply_btn.setText('Apply')
+
+        self.sendThread.start()
 
         self.GraphManager.SerialModule.ResetMethod = self.applytoConfig
-        #self.sendThread.start()
 
     def sendMessages(self):
         #self.GraphManager.SerialModule.sendCommand("r\r")
+        self.ui.apply_btn.setText('Sending...')
+        self.ui.apply_btn.setDisabled(True)
         for messages in self.messagebuffer:
             if self.GraphManager.SerialModule.serialConnected:
                 self.GraphManager.SerialModule.sendCommand(messages)
                 time.sleep(0.3)
             print(messages)
+        self.ui.apply_btn.setText('Apply')
+        self.ui.apply_btn.setDisabled(False)
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
@@ -431,7 +440,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
             if self.currentPlotWidget.autoRange:
                 self.ui.checkBox.setChecked(True)
+                self.ui.lineEdit_5.setDisabled(True)
+                self.ui.lineEdit_6.setDisabled(True)
             else:
+                self.ui.checkBox.setChecked(False)
+                self.ui.lineEdit_5.setDisabled(False)
+                self.ui.lineEdit_6.setDisabled(False)
                 self.ui.lineEdit_5.setText(str(self.currentPlotWidget.yRange[0]))
                 self.ui.lineEdit_6.setText(str(self.currentPlotWidget.yRange[1]))
             self.ui.lineEdit_2.setText(self.currentPlotWidget.title)
@@ -444,6 +458,36 @@ class MainWindow(QtWidgets.QMainWindow):
         elif plotWidget.type == 'Polar Plot':
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()
             self.currentPlotItem.getViewBox().setBorder(color=(0, 255, 0), width=3)
+            for checkbox in self.configData:
+                checkbox.setChecked(False)
+            self.ui.comboBox_3.setCurrentIndex(self.currentPlotWidget.yData[0])
+            self.ui.comboBox_4.setCurrentIndex(self.currentPlotWidget.xData[0])
+            self.ui.spinBox.setValue(self.currentPlotWidget.samples)
+
+            if self.currentPlotWidget.yRange:
+                self.ui.checkBox_3.setChecked(True)
+                self.ui.lineEdit_12.setDisabled(True)
+                self.ui.lineEdit_13.setDisabled(True)
+            else:
+                self.ui.checkBox_3.setChecked(False)
+                self.ui.lineEdit_12.setDisabled(False)
+                self.ui.lineEdit_13.setDisabled(False)
+                self.ui.lineEdit_12.setText(str(self.currentPlotWidget.yRange[0]))
+                self.ui.lineEdit_13.setText(str(self.currentPlotWidget.yRange[1]))
+
+            if self.currentPlotWidget.xRange:
+                self.ui.checkBox_2.setChecked(True)
+                self.ui.lineEdit_10.setDisabled(True)
+                self.ui.lineEdit_11.setDisabled(True)
+            else:
+                self.ui.checkBox_2.setChecked(False)
+                self.ui.lineEdit_10.setDisabled(False)
+                self.ui.lineEdit_11.setDisabled(False)
+                self.ui.lineEdit_10.setText(str(self.currentPlotWidget.yRange[0]))
+                self.ui.lineEdit_11.setText(str(self.currentPlotWidget.yRange[1]))
+
+
+
             self.ui.configMenuStack.setCurrentWidget(self.ui.polarPlot_page)
             self.ui.graphtype_comboBox.setCurrentIndex(1)
 
@@ -452,12 +496,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotWidget.highlighted = True
             self.currentPlotWidget.ui.frame_3.setStyleSheet('border-radius: 150px;' 'border: 3px solid #00ff00;')
             self.ui.graphtype_comboBox.setCurrentIndex(2)
+            self.ui.comboBox.setCurrentIndex(self.currentPlotWidget.yData[0])
 
         elif plotWidget.type == 'Speedo Gauge':
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
             self.currentPlotWidget.highlighted = True
             self.currentPlotWidget.ui.frame_3.setStyleSheet('border-radius: 150px;' 'border: 3px solid #00ff00;')
             self.ui.graphtype_comboBox.setCurrentIndex(3)
+            self.ui.comboBox_5.setCurrentIndex(self.currentPlotWidget.yData[0])
 
         self.ui.configMenu.show()
 
@@ -541,7 +587,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.currentPlotWidget.xLabel = 'X-Axis'
 
         elif self.currentPlotWidget.type == 'Polar Plot':
-            #TODO add polar config apply
             self.currentPlotWidget.xData.clear()
             self.currentPlotWidget.yData.clear()
             self.currentPlotWidget.xData.append(self.ui.comboBox_3.currentIndex())
@@ -603,7 +648,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotWidget.yData.clear()
             self.currentPlotWidget.yData.append(self.ui.comboBox_5.currentIndex())
         elif self.currentPlotWidget.type == 'RPM Gauge':
-            #TODO add RPM gauge config apply
             self.currentPlotWidget.yData.clear()
             self.currentPlotWidget.yData.append(self.ui.comboBox.currentIndex())
             pass
@@ -755,28 +799,23 @@ class comPortComboBox(QtWidgets.QComboBox):
 
 class SendThread(QtCore.QThread):
 
-    def __init__(self,GraphManager,MainWindow):
+    def __init__(self, sendmethod):
         QtCore.QThread.__init__(self)
-        self.MainWindow = MainWindow
-        self.GraphManager=GraphManager
-        self.times_run = 0
+        # self.MainWindow = MainWindow
+        # self.GraphManager=GraphManager
+        self.sendmethod = sendmethod
 
     def run(self):
-        self.times_run+=1
-        # print('_________RUN: ' + str(self.times_run))
-        for messages in self.MainWindow.messagebuffer:
-            if self.GraphManager.SerialModule.serialConnected:
-                print("Sending message")
-                self.GraphManager.SerialModule.sendCommand(messages)
-            self.msleep(250)
-            print(messages)
-        self.MainWindow.ui.apply_btn.setDisabled(False)
-        self.MainWindow.ui.apply_btn.setText('Apply')
+        self.sendmethod()
+        # for message in messages:
+        #     if self.GraphManager.SerialModule.serialConnected:
+        #         print("Sending message")
+        #         self.GraphManager.SerialModule.sendCommand(message)
+        #         self.msleep(300)
+        #         print(message)
+        # self.MainWindow.ui.apply_btn.setDisabled(False)
+        # self.MainWindow.ui.apply_btn.setText('Apply')
 
-        # print('_________RUN: ' + str(self.times_run))
-        # for i in range(3):
-        #     time.sleep(10)
-        #     print(str((i+1)*10) + 'sec sleep')
 
 class Worker(QRunnable):
     def __init__(self, fn, MainWindow, GraphManager):

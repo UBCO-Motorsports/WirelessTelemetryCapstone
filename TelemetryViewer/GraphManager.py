@@ -3,7 +3,7 @@ from datetime import datetime
 from PyQt5 import QtWidgets, QtCore, QtGui
 import sys
 from RPM import RPMGauge
-from Speedo import splashScreen
+from Speedo import SpeedoGauge
 from Serial import SerialModule     #dont comment or delete > needed for Serial communication
 
 
@@ -56,8 +56,40 @@ class GraphManager(QtGui.QWidget):
                     if not new_widget.autoRange:
                         print('autoranging')
                         new_widget.setYRange(new_widget.yRange[0], new_widget.yRange[1])
+                elif graph['type'] == 'Polar Plot':
+                    new_widget = PolarWidget(self)
+                    new_widget.type = graph['type']
+                    new_widget.xData = graph['xData']
+                    new_widget.yData = graph['datasets']
+                    new_widget.title = graph['title']
+                    new_widget.xLabel = graph['xLabel']
+                    new_widget.yLabel = graph['yLabel']
+                    new_widget.setLabels(top=new_widget.title, bottom=new_widget.xLabel, left=new_widget.yLabel)
+
+                    new_widget.yRange = graph['yRange']
+                    new_widget.yAutoRange = graph['yAutoRange']
+                    if not new_widget.yAutoRange:
+                        new_widget.setYRange(new_widget.yRange[0], new_widget.yRange[1])
+                    else:
+                        new_widget.enableAutoRange(y=True)
+
+                    new_widget.xDataRange = graph['xRange']
+                    new_widget.xAutoRange = graph['xAutoRange']
+                    if not new_widget.xAutoRange:
+                        new_widget.setXRange(new_widget.xRange[0], new_widget.xRange[1])
+                    else:
+                        new_widget.enableAutoRange(x=True)
+                elif graph['type'] == 'Speedo Gauge':
+                    new_widget = SpeedoGauge(self)
+                    new_widget.yData = graph['datasets']
+                    print('speedo with ', graph['datasets'])
+                elif graph['type'] == 'RPM Gauge':
+                    new_widget = RPMGauge(self)
+                    new_widget.yData = graph['datasets']
+                    print('RPM with ', graph['datasets'])
                 else:
                     print(graph['type'])
+
                 self.graph_array[i][j] = new_widget
                 self.graph_layout.replaceWidget(current_widget, self.graph_array[i][j])
                 current_widget.close()
@@ -75,7 +107,7 @@ class GraphManager(QtGui.QWidget):
                 new_widget.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
                 new_widget.highlighted = True
             elif applied_type == 'Speedo Gauge':
-                new_widget = splashScreen(self)
+                new_widget = SpeedoGauge(self)
                 new_widget.ui.frame_3.setStyleSheet('border: 3px solid #00ff00;')
                 new_widget.highlighted = True
             else:
