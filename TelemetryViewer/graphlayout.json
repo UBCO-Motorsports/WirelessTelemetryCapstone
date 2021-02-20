@@ -65,11 +65,11 @@
                 ],
                 "yAutoRange": false,
                 "xRange": [
-                    0.5,
-                    1.8
+                    -10,
+                    10
                 ],
                 "xAutoRange": false,
-                "samples": 10
+                "samples": 3
             }
         ],
         [
@@ -90,11 +90,11 @@
                 ],
                 "yAutoRange": false,
                 "xRange": [
-                    0.0,
-                    16000.0
+                    -10,
+                    10
                 ],
                 "xAutoRange": false,
-                "samples": 10
+                "samples": 3
             },
             {
                 "type": "Polar Plot",
@@ -113,11 +113,11 @@
                 ],
                 "yAutoRange": false,
                 "xRange": [
-                    0.0,
-                    16000.0
+                    -10,
+                    10
                 ],
                 "xAutoRange": false,
-                "samples": 10
+                "samples": 3
             },
             {
                 "type": "RPM Gauge",

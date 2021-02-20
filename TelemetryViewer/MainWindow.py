@@ -433,10 +433,11 @@ class MainWindow(QtWidgets.QMainWindow):
         if plotWidget.type == 'Time Domain':
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()
             self.currentPlotItem.getViewBox().setBorder(color=(0,255,0),width=3)
-            for checkbox in self.configData:
-                checkbox.setChecked(False)
-            for i in self.currentPlotWidget.yData:
-                self.configData[i].setChecked(True)
+            if self.configData:
+                for checkbox in self.configData:
+                    checkbox.setChecked(False)
+                for i in self.currentPlotWidget.yData:
+                    self.configData[i].setChecked(True)
 
             if self.currentPlotWidget.autoRange:
                 self.ui.checkBox.setChecked(True)
@@ -464,7 +465,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.comboBox_4.setCurrentIndex(self.currentPlotWidget.xData[0])
             self.ui.spinBox.setValue(self.currentPlotWidget.samples)
 
-            if self.currentPlotWidget.yRange:
+            if self.currentPlotWidget.yAutoRange:
                 self.ui.checkBox_3.setChecked(True)
                 self.ui.lineEdit_12.setDisabled(True)
                 self.ui.lineEdit_13.setDisabled(True)
@@ -475,7 +476,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.lineEdit_12.setText(str(self.currentPlotWidget.yRange[0]))
                 self.ui.lineEdit_13.setText(str(self.currentPlotWidget.yRange[1]))
 
-            if self.currentPlotWidget.xRange:
+            if self.currentPlotWidget.xAutoRange:
                 self.ui.checkBox_2.setChecked(True)
                 self.ui.lineEdit_10.setDisabled(True)
                 self.ui.lineEdit_11.setDisabled(True)
@@ -483,10 +484,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.ui.checkBox_2.setChecked(False)
                 self.ui.lineEdit_10.setDisabled(False)
                 self.ui.lineEdit_11.setDisabled(False)
-                self.ui.lineEdit_10.setText(str(self.currentPlotWidget.yRange[0]))
-                self.ui.lineEdit_11.setText(str(self.currentPlotWidget.yRange[1]))
-
-
+                self.ui.lineEdit_10.setText(str(self.currentPlotWidget.xRange[0]))
+                self.ui.lineEdit_11.setText(str(self.currentPlotWidget.xRange[1]))
 
             self.ui.configMenuStack.setCurrentWidget(self.ui.polarPlot_page)
             self.ui.graphtype_comboBox.setCurrentIndex(1)
@@ -595,11 +594,14 @@ class MainWindow(QtWidgets.QMainWindow):
             # Set x-range
             if self.ui.checkBox_2.isChecked():
                 self.currentPlotWidget.enableAutoRange(x=self.ui.checkBox_2.isChecked())
+                self.currentPlotWidget.xAutoRange = True
             else:
                 try:
                     self.currentPlotWidget.enableAutoRange(x=False)
                     self.currentPlotWidget.xRange = [float(self.ui.lineEdit_10.text()), float(self.ui.lineEdit_11.text())]
                     self.currentPlotWidget.setXRange(self.currentPlotWidget.xRange[0], self.currentPlotWidget.xRange[1])
+                    self.currentPlotWidget.xAutoRange = False
+
                 except:
                     self.ui.lineEdit_10.setDisabled(True)
                     self.ui.lineEdit_11.setDisabled(True)
@@ -607,15 +609,18 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.lineEdit_11.clear()
                     self.currentPlotWidget.enableAutoRange(x=True)
                     self.ui.checkBox_2.setChecked(True)
+                    self.currentPlotWidget.xAutoRange = True
 
             # Set y-range
             if self.ui.checkBox_3.isChecked():
                 self.currentPlotWidget.enableAutoRange(y=self.ui.checkBox_3.isChecked())
+                self.currentPlotWidget.yAutoRange = True
             else:
                 try:
                     self.currentPlotWidget.enableAutoRange(y=False)
                     self.currentPlotWidget.yRange = [float(self.ui.lineEdit_12.text()), float(self.ui.lineEdit_13.text())]
                     self.currentPlotWidget.setYRange(self.currentPlotWidget.yRange[0], self.currentPlotWidget.yRange[1])
+                    self.currentPlotWidget.yAutoRange = False
                 except:
                     self.ui.lineEdit_12.setDisabled(True)
                     self.ui.lineEdit_13.setDisabled(True)
@@ -623,6 +628,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.lineEdit_13.clear()
                     self.currentPlotWidget.enableAutoRange(y=True)
                     self.ui.checkBox_3.setChecked(True)
+                    self.currentPlotWidget.yAutoRange = True
 
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()
             try:
