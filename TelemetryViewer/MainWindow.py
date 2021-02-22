@@ -28,10 +28,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.selected_channels = []
         self.configData = []
 
-        # Serial not initially connected at start up
-        self.serialConnected = False
-        self.messagebuffer = []
-
         # Better sizing for page selection menu
         self.ui.frame_left_menu.setMinimumWidth(100)
         # self.ui.frame_pages.setStyleSheet('background-color: rgb(85,85,85);')
@@ -48,8 +44,12 @@ class MainWindow(QtWidgets.QMainWindow):
         # Initialize Command Page
         self.initCommandPage()
 
+        # Serial not initially connected at start up
+        self.serialConnected = False
+        self.messagebuffer = []
+        self.GraphManager.SerialModule.ResetMethod = self.applytoConfig
+
         self.sendThread = SendThread(self.sendMessages)
-        # self.sendThread.start()
 
         # Timer for testing graphing -> calls update function
         self.timer = QtCore.QTimer()
@@ -269,6 +269,9 @@ class MainWindow(QtWidgets.QMainWindow):
             iconPixmap = QPixmap(32, 32)
             iconPixmap.fill(QColor.fromRgb(colorRGB[0],colorRGB[1],colorRGB[2]))
             item.setIcon(QIcon(iconPixmap))
+        self.ui.label_36.setText(str(self.ui.listWidget.count()) + '/16 Channels Selected')
+        self.ui.label_37.setText('Not Applied')
+        self.ui.label_37.setStyleSheet('color: rgb(255, 0, 0);')
 
     def getColor(self, rgba):
         colorRGBA = re.sub(r'[()]', '', rgba)
@@ -360,8 +363,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.sendThread.start()
 
-        self.GraphManager.SerialModule.ResetMethod = self.applytoConfig
-
     def sendMessages(self):
         #self.GraphManager.SerialModule.sendCommand("r\r")
         self.ui.apply_btn.setText('Sending...')
@@ -373,6 +374,8 @@ class MainWindow(QtWidgets.QMainWindow):
             print(messages)
         self.ui.apply_btn.setText('Apply')
         self.ui.apply_btn.setDisabled(False)
+        self.ui.label_37.setText('Applied')
+        self.ui.label_37.setStyleSheet('color: rgb(0, 255, 0);')
 
     def sendcommandfromList(self):
         self.GraphManager.SerialModule.sendCommand(self.ui.listWidget_2.currentItem().text()+"\r")
@@ -743,6 +746,9 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.ui.tableWidget.item(row, j).setBackground(QColor.fromRgb(150, 150, 150))
                 if self.ui.listWidget.item(0).text() == "None Selected":
                     self.ui.listWidget.takeItem(0)
+            self.ui.label_36.setText(str(self.ui.listWidget.count()) + '/16 Channels Selected')
+            self.ui.label_37.setText('Not Applied')
+            self.ui.label_37.setStyleSheet('color: rgb(255, 0, 0);')
 
     def jsonlogged(self, datafromcan, color, i):
         with open('itemslogged.json', 'r+') as json_file:
@@ -774,6 +780,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         if self.ui.listWidget.count() == 0:
             self.ui.listWidget.addItem("None Selected")
+            num_of_channels = '0'
+        else:
+            num_of_channels = str(self.ui.listWidget.count())
+        self.ui.label_36.setText(num_of_channels + '/16 Channels Selected')
+        self.ui.label_37.setText('Not Applied')
+        self.ui.label_37.setStyleSheet('color: rgb(255, 0, 0);')
 
 class comPortComboBox(QtWidgets.QComboBox):
     populateCOMSelect = QtCore.pyqtSignal()

@@ -25,6 +25,7 @@ class SerialModule():
         if portName == 'Disconnect':
             self.serialChannel.close()
             print('COM disconnected')
+            self.serialConnected = False
         else:
             try:
                 # global serialChannel

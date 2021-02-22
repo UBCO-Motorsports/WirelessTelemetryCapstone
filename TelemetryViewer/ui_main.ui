@@ -230,7 +230,7 @@ QPushButton:hover {
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>1</number>
             </property>
             <widget class="QWidget" name="home_page">
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -620,11 +620,11 @@ QHeaderView::section:vertical
                       <property name="columnCount">
                        <number>4</number>
                       </property>
-                      <attribute name="horizontalHeaderDefaultSectionSize">
-                       <number>150</number>
-                      </attribute>
                       <attribute name="horizontalHeaderMinimumSectionSize">
                        <number>40</number>
+                      </attribute>
+                      <attribute name="horizontalHeaderDefaultSectionSize">
+                       <number>150</number>
                       </attribute>
                       <attribute name="horizontalHeaderStretchLastSection">
                        <bool>true</bool>
@@ -936,24 +936,59 @@ background-color: rgb(60, 60, 60);</string>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QPushButton" name="apply_btn">
-                      <property name="enabled">
-                       <bool>true</bool>
-                      </property>
+                     <widget class="QLabel" name="label_36">
                       <property name="minimumSize">
                        <size>
                         <width>0</width>
-                        <height>0</height>
+                        <height>20</height>
                        </size>
                       </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>16777215</width>
-                        <height>16777215</height>
-                       </size>
+                      <property name="font">
+                       <font>
+                        <pointsize>12</pointsize>
+                        <weight>50</weight>
+                        <bold>false</bold>
+                       </font>
                       </property>
                       <property name="styleSheet">
-                       <string notr="true">QPushButton {
+                       <string notr="true">color: rgb(255, 255, 255);</string>
+                      </property>
+                      <property name="text">
+                       <string>0/16 Channels Selected</string>
+                      </property>
+                      <property name="alignment">
+                       <set>Qt::AlignCenter</set>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QFrame" name="frame_32">
+                      <property name="frameShape">
+                       <enum>QFrame::StyledPanel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Raised</enum>
+                      </property>
+                      <layout class="QHBoxLayout" name="horizontalLayout_22">
+                       <item>
+                        <widget class="QPushButton" name="apply_btn">
+                         <property name="enabled">
+                          <bool>true</bool>
+                         </property>
+                         <property name="minimumSize">
+                          <size>
+                           <width>0</width>
+                           <height>0</height>
+                          </size>
+                         </property>
+                         <property name="maximumSize">
+                          <size>
+                           <width>16777215</width>
+                           <height>16777215</height>
+                          </size>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">QPushButton {
 	color: rgb(0, 0, 0);
 	border-color: rgb(240, 240, 240);
 	background-color: rgb(240, 240, 240);
@@ -966,13 +1001,34 @@ QPushButton:!enabled {
 	
 	background-color: rgb(125, 125, 125);
 }</string>
-                      </property>
-                      <property name="text">
-                       <string>Apply</string>
-                      </property>
-                      <property name="checkable">
-                       <bool>false</bool>
-                      </property>
+                         </property>
+                         <property name="text">
+                          <string>Apply</string>
+                         </property>
+                         <property name="checkable">
+                          <bool>false</bool>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QLabel" name="label_37">
+                         <property name="font">
+                          <font>
+                           <pointsize>11</pointsize>
+                          </font>
+                         </property>
+                         <property name="styleSheet">
+                          <string notr="true">color: rgb(255, 0, 0);</string>
+                         </property>
+                         <property name="text">
+                          <string>Not Applied</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
                      </widget>
                     </item>
                    </layout>
@@ -1378,8 +1434,8 @@ QPushButton:hover {
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>217</width>
-                                <height>198</height>
+                                <width>18</width>
+                                <height>18</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="verticalLayout_15"/>
