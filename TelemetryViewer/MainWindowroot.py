@@ -437,6 +437,11 @@ class Ui_MainWindow(object):
         self.apply_btn.setEnabled(True)
         self.apply_btn.setMinimumSize(QtCore.QSize(0, 0))
         self.apply_btn.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.apply_btn.setFont(font)
         self.apply_btn.setStyleSheet("QPushButton {\n"
 "    color: rgb(0, 0, 0);\n"
 "    border-color: rgb(240, 240, 240);\n"
@@ -455,7 +460,9 @@ class Ui_MainWindow(object):
         self.horizontalLayout_22.addWidget(self.apply_btn)
         self.label_37 = QtWidgets.QLabel(self.frame_32)
         font = QtGui.QFont()
-        font.setPointSize(11)
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
         self.label_37.setFont(font)
         self.label_37.setStyleSheet("color: rgb(255, 0, 0);")
         self.label_37.setAlignment(QtCore.Qt.AlignCenter)
@@ -646,7 +653,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 18, 18))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 28))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
