@@ -411,7 +411,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 for checkbox in self.configData:
                     checkbox.setChecked(False)
                 for i in self.currentPlotWidget.yData:
-                    self.configData[i].setChecked(True)
+                    try:
+                        self.configData[i].setChecked(True)
+                    except:
+                        pass
 
             if self.currentPlotWidget.autoRange:
                 self.ui.checkBox.setChecked(True)
