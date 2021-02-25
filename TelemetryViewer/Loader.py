@@ -29,6 +29,7 @@ class SplashScreen(QMainWindow):
         self.shadow.setYOffset(0)
         self.shadow.setColor(QColor(0,0,0,100))
         self.ui.Circularvaluebg.setGraphicsEffect(self.shadow)
+        self.ui.Circularvaluebg.setStyleSheet('background-color: rgb(85, 85, 85); border-radius: 150px;')
 
         self.show()
         self.counter = 0

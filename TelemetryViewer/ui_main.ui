@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1256</width>
-    <height>896</height>
+    <width>1260</width>
+    <height>905</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -242,7 +242,7 @@ QPushButton:hover {
              <string notr="true"/>
             </property>
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="home_page">
              <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -425,6 +425,12 @@ border-radius: 125px;
                  </item>
                  <item>
                   <widget class="QFrame" name="frame_8">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>130</height>
+                    </size>
+                   </property>
                    <property name="maximumSize">
                     <size>
                      <width>16777215</width>
@@ -437,7 +443,7 @@ border-radius: 125px;
                    <property name="frameShadow">
                     <enum>QFrame::Raised</enum>
                    </property>
-                   <layout class="QHBoxLayout" name="horizontalLayout_21">
+                   <layout class="QVBoxLayout" name="verticalLayout_20">
                     <item>
                      <widget class="QLabel" name="label_34">
                       <property name="maximumSize">
@@ -449,6 +455,7 @@ border-radius: 125px;
                       <property name="font">
                        <font>
                         <pointsize>13</pointsize>
+                        <underline>true</underline>
                        </font>
                       </property>
                       <property name="styleSheet">
@@ -456,7 +463,7 @@ border-radius: 125px;
 border: 0px solid;</string>
                       </property>
                       <property name="text">
-                       <string>Shortcuts:</string>
+                       <string>Shortcuts</string>
                       </property>
                      </widget>
                     </item>
@@ -480,6 +487,9 @@ d:		import default can
 shift+d:		import and select default can items
 shift+a:		apply config
 h:		hide graph config menu</string>
+                      </property>
+                      <property name="textFormat">
+                       <enum>Qt::AutoText</enum>
                       </property>
                      </widget>
                     </item>
@@ -1482,8 +1492,8 @@ QPushButton:hover {
                                <rect>
                                 <x>0</x>
                                 <y>0</y>
-                                <width>98</width>
-                                <height>28</height>
+                                <width>18</width>
+                                <height>18</height>
                                </rect>
                               </property>
                               <layout class="QVBoxLayout" name="verticalLayout_15"/>

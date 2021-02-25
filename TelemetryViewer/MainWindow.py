@@ -3,19 +3,14 @@ import random
 import time
 import serial.tools.list_ports
 from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import QColorDialog
 from PyQt5.Qt import *
 import json
-from PyQt5.QtCore import QObject,QThread,pyqtSignal
 import re # Useful for stripping characters from strings
 from MainWindowroot import Ui_MainWindow
 from FileBrowser import Open
 from FileSaver import Save
 from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
-# from threading import *
-import Serial
-# Canfilename=""
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -30,7 +25,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Better sizing for page selection menu
         self.ui.frame_left_menu.setMinimumWidth(100)
-        # self.ui.frame_pages.setStyleSheet('background-color: rgb(85,85,85);')
 
         # Initialize page selection buttons
         self.initPageButtons()
@@ -57,11 +51,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.timer.setInterval(75)
         self.timer.timeout.connect(self.GraphManager.update)
         self.timer.start()
-
-        # self.threadpool = QThreadPool()
-        # print('Multithreading with max of %d threads' % self.threadpool.maxThreadCount())
-        # self.sendWorker = Worker(self.sendMessages, MainWindow=self, GraphManager=self.GraphManager)
-        # self.timer.timeout.connect(lambda: print(f'Current threads: {self.threadpool.activeThreadCount()}\n'))
 
     def initPageButtons(self):
         # Add page selection buttons to a group for better control
@@ -99,8 +88,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Set icons for each page button
         self.ui.btn_home.setIcon(QIcon('icons/home.png'))
-        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))  # /wrench /script-attribute-s
-        self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png'))  #  /system-monitor /application-wave
+        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))
+        self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png'))
         self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
 
     def initSetupPage(self):
@@ -124,7 +113,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.default_btn.clicked.connect(self.defaultJson)
         self.ui.default_btn.setShortcut('d')
         self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
-        self.ui.pushButton_3.clicked.connect(lambda: print(self.size()))
         self.ui.pushButton_3.setShortcut('Shift+d')
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
         self.ui.apply_btn.setShortcut('Shift+a')
@@ -139,12 +127,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Graph page functions
         self.ui.graphtype_comboBox.currentIndexChanged.connect(self.menuchange)
-        # TODO 'Log Default' functionality
-        self.ui.importlayout_btn.clicked.connect(self.importlayout)  # TODO
-        self.ui.savelayout_btn.clicked.connect(self.savelayout)  # TODO
+        self.ui.importlayout_btn.clicked.connect(self.importlayout)
+        self.ui.savelayout_btn.clicked.connect(self.savelayout)
 
         self.ui.graphnum_comboBox.currentIndexChanged.connect(lambda: self.GraphManager.showGraphs(self.ui.graphnum_comboBox.currentText()))  # Change number of graphs shown when combobox value changed
-        self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 1)  # Initialize number of shown graphs to maximum
+        self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 2)  # Initialize number of shown graphs
+        self.GraphManager.showGraphs('8')
 
     def initConfigMenu(self):
         # Initialize scroll widget for available data channels
@@ -165,7 +153,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.checkBox_3.stateChanged.connect(lambda: self.autorangeEnable(self.ui.checkBox_3, self.ui.lineEdit_12, self.ui.lineEdit_13))
 
         # Hide button
-        # self.ui.hideConfig_btn.clicked.connect(self.ui.configMenu.hide)  # Hides configuration menu when clicked
         self.ui.hideConfig_btn.setShortcut('h')
         self.ui.hideConfig_btn.clicked.connect(self.configHide)
 
@@ -182,9 +169,8 @@ class MainWindow(QtWidgets.QMainWindow):
             with open(layoutfile, 'r+') as json_1:
                 layout = json.load(json_1)
                 json_1.close()
-        print(layout)
         self.GraphManager.importLayout(layout['layout'])
-
+        self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 1)
 
     def savelayout(self):
         graph_layout_dict = {'layout': []}
@@ -219,12 +205,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 row_layout.append(graph_dict)
             graph_layout_dict['layout'].append(row_layout)
 
-        print(graph_layout_dict)
-
         filelookup = Save()
         file = filelookup.saveFileDialog()
         layoutfile = file
-        # layoutfile = 'graphlayout.json'
         if layoutfile != "":
             with open(layoutfile, 'w+') as json_1:
                 json.dump(graph_layout_dict, json_1, indent=4)
@@ -294,16 +277,10 @@ class MainWindow(QtWidgets.QMainWindow):
             data = json.load(json_file)
             json_file.close()
 
-        # self.datadict = data
-        # # self.datadict["logged"][0]["buffer"]=["heloo","test"]
-        #TODO update selected_channels while keeping buffers coherent
         self.selected_channels.clear()
         self.selected_channels = data
-        print(self.selected_channels)
 
         self.GraphManager.SerialModule.recievedataDict(self.selected_channels)  # Sending dataDict (list of data types being recieved) to Serial to scale -Roy
-        # print(self.datadict["logged"][0])
-        # print(self.datadict["logged"][0]["ID"])
 
         self.ui.comboBox_5.clear()
         self.ui.comboBox.clear()
@@ -338,8 +315,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.ui.comboBox.addItem(name)
 
             # List of channels to send to controller
-            # f0 0864 00 16
-            #f0 000 00 00
             message = "f" + str(i).zfill(2) + " " + str(int(id,16)).zfill(4) + " " + str(position).zfill(2) + " " + str(size).zfill(2) + "\r"
             self.messagebuffer.append(message)
 
@@ -357,16 +332,9 @@ class MainWindow(QtWidgets.QMainWindow):
             self.data_layout.addWidget(i)
         self.scrollWidget.setLayout(self.data_layout)
 
-        # self.ui.apply_btn.setDisabled(True)
-        # self.ui.apply_btn.setText('Sending...')
-        # self.sendMessages()
-        # self.ui.apply_btn.setDisabled(False)
-        # self.ui.apply_btn.setText('Apply')
-
         self.sendThread.start()
 
     def sendMessages(self):
-        #self.GraphManager.SerialModule.sendCommand("r\r")
         self.ui.apply_btn.setText('Sending...')
         self.ui.apply_btn.setDisabled(True)
         for messages in self.messagebuffer:
@@ -398,13 +366,12 @@ class MainWindow(QtWidgets.QMainWindow):
         elif configtext == "Speedo Gauge":
             self.ui.configMenuStack.setCurrentWidget(self.ui.speedo_page)
 
-    # This code allows us to see available COM ports and return using the portlist array.
-    def availableCOMPorts(self):  # Generates a list of available COM ports testing
+    def availableCOMPorts(self):
         portlist = serial.tools.list_ports.comports(include_links=False)
         portlistarray = []
         for port in portlist:
             portlistarray.append(port.device)
-        return portlistarray  # Should return a list of strings if possible -> ['COM1', 'COM4']
+        return portlistarray
 
     def connectSerial(self):
         if self.ui.serial_btn.text() == 'Connect':
@@ -437,7 +404,6 @@ class MainWindow(QtWidgets.QMainWindow):
         # Sets the passed in widget to be the currently selected widget
         self.currentPlotWidget = plotWidget
 
-        # TODO reset configuration menu to the current plotwidget data\
         if plotWidget.type == 'Time Domain':
             self.currentPlotItem = self.currentPlotWidget.getPlotItem()
             self.currentPlotItem.getViewBox().setBorder(color=(0,255,0),width=3)
@@ -523,12 +489,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.currentPlotWidget.highlighted = False
         else:
             pass
-
-
-        # self.ui.hideConfig_btn.clicked.connect(lambda: self.currentPlotWidget.getPlotItem().getViewBox().setBorder(
-        #     None))  # Clears border from currently selected plot
-        # self.ui.hideConfig_btn.clicked.connect(
-        #     lambda: self.currentPlotWidget.ui.frame_3.setStyleSheet('background-color: rgb(216, 216, 216);'))
 
     def configApply(self):
         self.currentPlotWidget = self.GraphManager.updateWidget(self.currentPlotWidget, self.ui.graphtype_comboBox.currentText())
@@ -740,7 +700,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.jsonlogged(datafromcan, str(color2), count)
 
                 self.ui.listWidget.addItem(self.ui.tableWidget.item(row, 1).text())
-                # print(self.ui.tableWidget.item(row, 1).text())
 
                 item = self.ui.listWidget.item(self.ui.listWidget.count()-1)
                 iconPixmap = QPixmap(32, 32)
@@ -824,33 +783,10 @@ class SendThread(QtCore.QThread):
 
     def __init__(self, sendmethod):
         QtCore.QThread.__init__(self)
-        # self.MainWindow = MainWindow
-        # self.GraphManager=GraphManager
         self.sendmethod = sendmethod
 
     def run(self):
         self.sendmethod()
-        # for message in messages:
-        #     if self.GraphManager.SerialModule.serialConnected:
-        #         print("Sending message")
-        #         self.GraphManager.SerialModule.sendCommand(message)
-        #         self.msleep(300)
-        #         print(message)
-        # self.MainWindow.ui.apply_btn.setDisabled(False)
-        # self.MainWindow.ui.apply_btn.setText('Apply')
-
-
-class Worker(QRunnable):
-    def __init__(self, fn, MainWindow, GraphManager):
-        super(Worker, self).__init__()
-        self.fn = fn
-        self.MainWindow = MainWindow
-        self.GraphManager = GraphManager
-
-    @pyqtSlot()
-    def run(self):
-        # self.GraphManager.update()
-        self.fn()
 
 
 if __name__ == "__main__":
@@ -861,9 +797,6 @@ if __name__ == "__main__":
     loader.show()
 
     def loaderProgress():
-        # TODO Turn loader back on
-        loader.counter = 100
-
         if loader.counter == 100:
             timer.stop()
             window.show()

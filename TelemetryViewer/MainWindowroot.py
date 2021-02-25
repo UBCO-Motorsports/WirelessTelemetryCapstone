@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1256, 896)
+        MainWindow.resize(1260, 905)
         MainWindow.setMinimumSize(QtCore.QSize(1111, 0))
         MainWindow.setStyleSheet("background-color: rgb(45, 45, 45);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
@@ -185,21 +185,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.frame_3)
         self.verticalLayout_11.addWidget(self.frame_2)
         self.frame_8 = QtWidgets.QFrame(self.frame)
+        self.frame_8.setMinimumSize(QtCore.QSize(0, 130))
         self.frame_8.setMaximumSize(QtCore.QSize(16777215, 100))
         self.frame_8.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.frame_8.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_8.setObjectName("frame_8")
-        self.horizontalLayout_21 = QtWidgets.QHBoxLayout(self.frame_8)
-        self.horizontalLayout_21.setObjectName("horizontalLayout_21")
+        self.verticalLayout_20 = QtWidgets.QVBoxLayout(self.frame_8)
+        self.verticalLayout_20.setObjectName("verticalLayout_20")
         self.label_34 = QtWidgets.QLabel(self.frame_8)
         self.label_34.setMaximumSize(QtCore.QSize(100, 16777215))
         font = QtGui.QFont()
         font.setPointSize(13)
+        font.setUnderline(True)
         self.label_34.setFont(font)
         self.label_34.setStyleSheet("color: rgb(255, 255, 255);\n"
 "border: 0px solid;")
         self.label_34.setObjectName("label_34")
-        self.horizontalLayout_21.addWidget(self.label_34)
+        self.verticalLayout_20.addWidget(self.label_34)
         self.label_35 = QtWidgets.QLabel(self.frame_8)
         font = QtGui.QFont()
         font.setPointSize(10)
@@ -207,8 +209,9 @@ class Ui_MainWindow(object):
         self.label_35.setStyleSheet("color: rgb(255, 255, 255);\n"
 "border: 0px solid;")
         self.label_35.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label_35.setTextFormat(QtCore.Qt.AutoText)
         self.label_35.setObjectName("label_35")
-        self.horizontalLayout_21.addWidget(self.label_35)
+        self.verticalLayout_20.addWidget(self.label_35)
         self.verticalLayout_11.addWidget(self.frame_8)
         self.verticalLayout_7.addWidget(self.frame)
         self.stackedWidget.addWidget(self.home_page)
@@ -665,7 +668,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 98, 28))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 18, 18))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -1193,7 +1196,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
-        self.stackedWidget.setCurrentIndex(1)
+        self.stackedWidget.setCurrentIndex(0)
         self.configMenuStack.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -1207,7 +1210,7 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "UBCO Motorsports Wireless Telemetry"))
         self.label_7.setText(_translate("MainWindow", "\"It just works\" Edition"))
         self.Text.setText(_translate("MainWindow", "Ogopogo Telemetry"))
-        self.label_34.setText(_translate("MainWindow", "Shortcuts:"))
+        self.label_34.setText(_translate("MainWindow", "Shortcuts"))
         self.label_35.setText(_translate("MainWindow", "i:        import can\n"
 "d:        import default can\n"
 "shift+d:        import and select default can items\n"

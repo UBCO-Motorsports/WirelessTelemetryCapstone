@@ -4,9 +4,6 @@ from serial import SerialException
 
 dataDict = 0
 
-# TODO 2. Need SEND capability and make sure it works. > can test by making a quick code to make an led blink on
-# TODO    Royden's TIVA board. Jan 20
-
 class SerialModule():
     def __init__(self):
         global dataDict
@@ -24,27 +21,19 @@ class SerialModule():
     def tryConnectSerial(self, portName):
         if portName == 'Disconnect':
             self.serialChannel.close()
-            print('COM disconnected')
             self.serialConnected = False
         else:
             try:
-                # global serialChannel
-                # self.serialChannel = serialChannel
-                print('try serial')
                 self.serialChannel = SerialClass(port=portName, baudrate=9600, bytesize=8, parity='N', stopbits=1,
                                                  timeout=0.2, xonxoff=False)  # TODO Change  timeout to 15 seconds...
-                print('COM connected')
                 self.serialConnected = True
                 return True
             except SerialException:
-                # del self
-                print("COM failed -> closed")
                 self.serialConnected = False
-                # self.close() # close instance if failed
                 return False
 
     def getData(self):
-        return self.arrays ##############
+        return self.arrays
 
     def sendCommand(self, command):
         self.serialChannel.write(str(command).encode())  # should work for sending strings
@@ -66,7 +55,6 @@ class SerialModule():
 
             dataa = dataa.rstrip()  # gets rid of \n from energia generated code
             if "$" in dataa:
-                print("Found reset message")
                 if (len(dataDict['logged']) > 0):
                     reset = True
                     self.ResetMethod()
@@ -82,9 +70,6 @@ class SerialModule():
             if len(array) >= 200: #TODO set buffer size
                 del array[0]
             try:
-                if float(dataapp[i]) > 20000:
-                    print("Massive raw at index " + str(i))
-
                 value = float(dataapp[i])*float(dataDict['logged'][i]['Scale'])+float(dataDict['logged'][i]['Offset'])
                 array.append(value)
             except:
@@ -96,18 +81,11 @@ class SerialModule():
 
 
 class SerialClass(serial.Serial):
-    # def __init__(self,port): # , baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10, xonxoff=False
-    #     print('init')
-    #     super(SerialTest, self).__init__(port=port, baudrate=9600, bytesize=8, parity='N', stopbits=1, timeout=10,
-    #                                            xonxoff=False)
     def __del__(self):
-        print('testing')
         super(SerialClass, self).__del__()
 
     def close(self):
-        print('closing serial')
         super(SerialClass, self).close()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        print('time out ')
         super(SerialClass, self).__exit__(self, exc_type, exc_val, exc_tb)
