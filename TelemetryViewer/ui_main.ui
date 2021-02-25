@@ -12,7 +12,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>500</width>
+    <width>1111</width>
     <height>0</height>
    </size>
   </property>
@@ -23,6 +23,12 @@
    <string notr="true">background-color: rgb(45, 45, 45);</string>
   </property>
   <widget class="QWidget" name="centralwidget">
+   <property name="minimumSize">
+    <size>
+     <width>692</width>
+     <height>692</height>
+    </size>
+   </property>
    <layout class="QVBoxLayout" name="verticalLayout">
     <property name="spacing">
      <number>0</number>
@@ -41,6 +47,12 @@
     </property>
     <item>
      <widget class="QFrame" name="Content">
+      <property name="minimumSize">
+       <size>
+        <width>692</width>
+        <height>692</height>
+       </size>
+      </property>
       <property name="styleSheet">
        <string notr="true"/>
       </property>
@@ -1191,7 +1203,8 @@ QPushButton:hover {
                     <enum>Qt::LeftToRight</enum>
                    </property>
                    <property name="styleSheet">
-                    <string notr="true">color: rgb(255, 255, 255)
+                    <string notr="true">color: rgb(255, 255, 255);
+border-radius: 10px;
 </string>
                    </property>
                    <property name="text">
@@ -1215,6 +1228,32 @@ QPushButton:hover {
                    </property>
                    <property name="styleSheet">
                     <string notr="true">background-color: rgb(255, 255, 255);</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QFrame" name="frame_34">
+                   <property name="minimumSize">
+                    <size>
+                     <width>20</width>
+                     <height>0</height>
+                    </size>
+                   </property>
+                   <property name="maximumSize">
+                    <size>
+                     <width>20</width>
+                     <height>16777215</height>
+                    </size>
+                   </property>
+                   <property name="styleSheet">
+                    <string notr="true">background-color: rgb(255, 0, 0);
+border-radius: 10px;</string>
+                   </property>
+                   <property name="frameShape">
+                    <enum>QFrame::StyledPanel</enum>
+                   </property>
+                   <property name="frameShadow">
+                    <enum>QFrame::Raised</enum>
                    </property>
                   </widget>
                  </item>

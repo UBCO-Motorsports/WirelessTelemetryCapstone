@@ -88,7 +88,6 @@ class SerialModule():
                 value = float(dataapp[i])*float(dataDict['logged'][i]['Scale'])+float(dataDict['logged'][i]['Offset'])
                 array.append(value)
             except:
-                print("Parse error")
                 if (len(array) > 2):
                     array.append(array[len(array)-2])
                 else:

@@ -20,7 +20,7 @@ import Serial
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
-        QtWidgets.QWidget.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         self.defaultFile = 'CANBUS/CANBUS2.json'
@@ -124,6 +124,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.default_btn.clicked.connect(self.defaultJson)
         self.ui.default_btn.setShortcut('d')
         self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
+        self.ui.pushButton_3.clicked.connect(lambda: print(self.size()))
         self.ui.pushButton_3.setShortcut('Shift+d')
         self.ui.apply_btn.clicked.connect(self.applytoConfig)
         self.ui.apply_btn.setShortcut('Shift+a')
@@ -260,15 +261,16 @@ class MainWindow(QtWidgets.QMainWindow):
             json_2.close()
         self.ui.listWidget.clear()
         for i in range(len(data["logged"])):
-            self.ui.listWidget.addItem(data["logged"][i]["Name"])
-            item = self.ui.listWidget.item(i)
-            colorRGB = self.getColor(data["logged"][i]['Color'])
-            # color = data["logged"][i]['Color']
-            # color = re.sub(r'[()]', '', color)  # Gets rid of brackets from color value
-            # colorRGB = [int(c) for c in color.split(',')]  # Orders the RGBA values obtained from JSON
-            iconPixmap = QPixmap(32, 32)
-            iconPixmap.fill(QColor.fromRgb(colorRGB[0],colorRGB[1],colorRGB[2]))
-            item.setIcon(QIcon(iconPixmap))
+            for row in range(self.ui.tableWidget.rowCount()):
+                if self.ui.tableWidget.item(row, 1).text() == data['logged'][i]['Name']:
+                    for j in range(self.ui.tableWidget.columnCount()):
+                        self.ui.tableWidget.item(row, j).setBackground(QColor.fromRgb(150, 150, 150))
+                    self.ui.listWidget.addItem(data["logged"][i]["Name"])
+                    item = self.ui.listWidget.item(i)
+                    colorRGB = self.getColor(data["logged"][i]['Color'])
+                    iconPixmap = QPixmap(32, 32)
+                    iconPixmap.fill(QColor.fromRgb(colorRGB[0],colorRGB[1],colorRGB[2]))
+                    item.setIcon(QIcon(iconPixmap))
         self.ui.label_36.setText(str(self.ui.listWidget.count()) + '/16 Channels Selected')
         self.ui.label_37.setText('Not Applied')
         self.ui.label_37.setStyleSheet('color: rgb(255, 0, 0);')
@@ -409,13 +411,16 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.GraphManager.SerialModule.tryConnectSerial(self.comPortComboBox.currentText()):
                 self.ui.serial_btn.setText("Disconnect")
                 self.serialConnected = True
+                self.ui.frame_34.setStyleSheet('background-color: rgb(0, 255, 0); border-radius: 10px;')
             else:
                 self.ui.serial_btn.setText("Connect")
                 self.serialConnected = False
+                self.ui.frame_34.setStyleSheet('background-color: rgb(255, 0, 0); border-radius: 10px;')
         else:
             self.GraphManager.SerialModule.tryConnectSerial(self.ui.serial_btn.text())
             self.ui.serial_btn.setText('Connect')
             self.serialConnected = False
+            self.ui.frame_34.setStyleSheet('background-color: rgb(255, 0, 0); border-radius: 10px;')
 
     def configMenuCalled(self, plotWidget):
         # Clears selection border on previous graph

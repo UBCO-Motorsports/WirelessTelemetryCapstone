@@ -15,15 +15,17 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(1256, 896)
-        MainWindow.setMinimumSize(QtCore.QSize(500, 0))
+        MainWindow.setMinimumSize(QtCore.QSize(1111, 0))
         MainWindow.setStyleSheet("background-color: rgb(45, 45, 45);")
         self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget.setMinimumSize(QtCore.QSize(692, 692))
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.Content = QtWidgets.QFrame(self.centralwidget)
+        self.Content.setMinimumSize(QtCore.QSize(692, 692))
         self.Content.setStyleSheet("")
         self.Content.setObjectName("Content")
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout(self.Content)
@@ -540,7 +542,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_4.addWidget(self.frame_6)
         self.label_24 = QtWidgets.QLabel(self.frame_5)
         self.label_24.setLayoutDirection(QtCore.Qt.LeftToRight)
-        self.label_24.setStyleSheet("color: rgb(255, 255, 255)\n"
+        self.label_24.setStyleSheet("color: rgb(255, 255, 255);\n"
+"border-radius: 10px;\n"
 "")
         self.label_24.setScaledContents(False)
         self.label_24.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
@@ -551,6 +554,15 @@ class Ui_MainWindow(object):
         self.port_combobox.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.port_combobox.setObjectName("port_combobox")
         self.horizontalLayout_4.addWidget(self.port_combobox)
+        self.frame_34 = QtWidgets.QFrame(self.frame_5)
+        self.frame_34.setMinimumSize(QtCore.QSize(20, 0))
+        self.frame_34.setMaximumSize(QtCore.QSize(20, 16777215))
+        self.frame_34.setStyleSheet("background-color: rgb(255, 0, 0);\n"
+"border-radius: 10px;")
+        self.frame_34.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.frame_34.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_34.setObjectName("frame_34")
+        self.horizontalLayout_4.addWidget(self.frame_34)
         self.serial_btn = QtWidgets.QPushButton(self.frame_5)
         self.serial_btn.setMaximumSize(QtCore.QSize(80, 16777215))
         self.serial_btn.setStyleSheet("QPushButton {\n"

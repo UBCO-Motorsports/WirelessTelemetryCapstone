@@ -11,6 +11,16 @@
             "Color": "(134, 154, 63, 255)"
         },
         {
+            "Name": "Throttle Position",
+            "ID": "0x360",
+            "Units": "%",
+            "Scale": 0.1,
+            "Position": 32,
+            "Size": 16,
+            "Offset": 0,
+            "Color": "(109, 84, 190, 255)"
+        },
+        {
             "Name": "Oil Pressure",
             "ID": "0x361",
             "Units": "kPa",
@@ -39,6 +49,16 @@
             "Size": 16,
             "Offset": -273.15,
             "Color": "(170, 0, 0, 255)"
+        },
+        {
+            "Name": "Oil Temperature",
+            "ID": "0x3E0",
+            "Units": "K",
+            "Scale": 0.1,
+            "Position": 48,
+            "Size": 16,
+            "Offset": -273.15,
+            "Color": "(0, 0, 0, 255)"
         }
     ]
 }
