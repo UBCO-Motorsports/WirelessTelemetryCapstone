@@ -11,6 +11,7 @@ from FileBrowser import Open
 from FileSaver import Save
 from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
+import ctypes # Needed to set taskbar icon
 
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -18,6 +19,8 @@ class MainWindow(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.setWindowIcon(QtGui.QIcon('QT Images/TelemetryLogo.png'))
+        self.setWindowTitle('Ogopogo Telemetry')
         self.defaultFile = 'CANBUS/CANBUS2.json'
         self.Canfilename = 'CANBUS/CANBUS2.json'
         self.selected_channels = []
@@ -795,6 +798,13 @@ class SendThread(QtCore.QThread):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
+    app_icon = QtGui.QIcon()
+    app_icon.addFile('QT Images/TelemetryLogo.png')
+    app.setWindowIcon(app_icon)
+
+    myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+
     window = MainWindow()
     loader = Loader()
     loader.show()
