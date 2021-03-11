@@ -148,7 +148,8 @@ const osSemaphoreAttr_t ProcessCommandSem_attributes = {
 };
 /* USER CODE BEGIN PV */
 
-struct message {
+struct message
+{
 	uint32_t id;
 	uint8_t  bit;
 	uint8_t length;
@@ -157,9 +158,12 @@ struct message {
 };
 
 
+//Create array of message structs to hold our filter information
 struct message messageArray[16];
 
-const struct message defaultMessageArray[16] = {
+//Define starting filter array used on startup
+const struct message defaultMessageArray[16] =
+{
 		//{ 0x370,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
 		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
 		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
@@ -194,7 +198,6 @@ CAN_RxHeaderTypeDef can_rx_header;
 
 uint8_t can_tx_data[8] = {0, 0, 0, 0, 0, 0, 0, 0};
 CAN_TxHeaderTypeDef can_tx_header = {0x200, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
-
 
 uint8_t uart_rec_buff[24];
 char uart_tx_buff[128];
@@ -236,15 +239,16 @@ void ClearCANBuffers(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
-//Prints message to UART1 for debugging
-void DebugPrint(char *msg) {
+//Prints a message to UART1 for debugging
+void DebugPrint(char *msg)
+{
 	HAL_UART_Transmit(&huart1, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 }
 
 
 //Initializes SBC
-void Init_SBC(void) {
-	HAL_StatusTypeDef result;
+void Init_SBC(void)
+{
 	uint8_t txdata[2];
 	uint8_t rxdata[2];
 
@@ -259,33 +263,39 @@ void Init_SBC(void) {
 	txdata[0] = WD_SETUP;
 	txdata[1] = 0;
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
-	result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+	HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
 
 	//Set normal mode and enable CAN voltage
 	txdata[0] = (UJA_REG_MODECONTROL << 5) | (UJA_RO_RW << 4) | (UJA_MC_V2ON << 2);
 	txdata[1] = 0;
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
-	result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+	HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
 	HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
-
 }
 
 
 
 //Procedurally generates and sets CAN Filter configurations from the message[] struct array config
-void ConfigureCANFilters(struct message * messageArray, uint8_t size) {
+void ConfigureCANFilters(struct message * messageArray, uint8_t size)
+{
 	uint32_t configuredIDs[size];
 	int uniques = 0;
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < size; i++)
+	{
 		struct message thismessage = messageArray[i];
+
+		//Check if this ID already configured
 		int create = 1;
-		for (int j = 0; j < size; j++) {
-			if (configuredIDs[j] == thismessage.id) {
+		for (int j = 0; j < size; j++)
+		{
+			if (configuredIDs[j] == thismessage.id)
+			{
 				create = 0;
 			}
 		}
-		if (create == 1 && thismessage.enabled) {
+		if (create == 1 && thismessage.enabled)
+		{
 			//Add this ID to the list of already configured ID's to skip duplicates
 			configuredIDs[uniques] = thismessage.id;
 			DebugPrint("Creating new filter\r\n");
@@ -315,21 +325,22 @@ void ConfigureCANFilters(struct message * messageArray, uint8_t size) {
 	}
 }
 
-
-void ClearCANBuffers(void) {
+void ClearCANBuffers(void)
+{
 	for (int i = 0; i < 16; i++) {
 		messageArray[i].value = -1;
 	}
 }
 
-void Init_CAN(void) {
+void Init_CAN(void)
+{
 	//Configure all receive filters from the config array
 	ConfigureCANFilters(messageArray, sizeof(messageArray) / sizeof(struct message));
 
 	//Start CAN operation
 	HAL_CAN_Start(&hcan);
 
-	//Enable IRQ's
+	//Enable Message Pending IRQ
 	HAL_CAN_ActivateNotification(&hcan, CAN_IT_RX_FIFO0_MSG_PENDING);
 
 	//Start receiving - don't think we need this here
@@ -689,48 +700,40 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 }
 
 /* USER CODE BEGIN 4 */
 
 //IRQ's
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+	//Check if enter or cmdbuff reaches its limit (prevents overflow)
+	if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdcharbuffindex > 23)
+	{
+		//Make sure theres more than just \r sent.
+		if (cmdcharbuffindex != 0)
+		{
+			//Increase command buffer index
+			cmdbuffindex++;
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	//Check if delete received from debug uart and only delete if theres entered characters
-	if (uart_rec_buff[0] == (uint8_t)127 && huart == &huart1) {
-		if (cmdcharbuffindex > 0) {
-			//DebugPrint((char *)uart_rec_buff);
-			cmdcharbuffindex--;
-		}
-	} else {
-		//Send char to debug console
-		//DebugPrint((char *)uart_rec_buff);
-
-		//Check if enter or cmdbuff reaches its limit (prevents overflow)
-		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdcharbuffindex > 23) {
-			if (cmdcharbuffindex == 0) {
-				cmdcharbuffindex = 0;
-			}
-			else
+			//Limit number of commands to 16.
+			if (cmdbuffindex > 16)
 			{
-				//DebugPrint("\n>");
-				//memcpy(&cmdbuff[cmdbuffindex], &cmdcharbuff, 24);
-				cmdbuffindex++;
-				if (cmdbuffindex > 16) {
-					cmdbuffindex = 16;
-				}
-
-				//Pass command onto task
-				osSemaphoreRelease(ProcessCommandSemHandle);
-
-				//Resets cmdbuff index
-				cmdcharbuffindex = 0;
+				cmdbuffindex = 16;
 			}
-		} else {
-			cmdbuff[cmdbuffindex][cmdcharbuffindex] = uart_rec_buff[0];
-			cmdcharbuffindex++;
+			//Pass command onto task
+			osSemaphoreRelease(ProcessCommandSemHandle);
+
+			//Reset char index
+			cmdcharbuffindex = 0;
 		}
+	}
+	else
+	{
+		//Put received char into buffer
+		cmdbuff[cmdbuffindex][cmdcharbuffindex] = uart_rec_buff[0];
+		//Increase char index
+		cmdcharbuffindex++;
 	}
 
 	//Start receiving again
@@ -739,13 +742,17 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 
 
-
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
+	//Get the received message.
 	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
+
 	//Parse received bytes using message array
-	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++){
-		if(messageArray[i].id == can_rx_header.StdId){
+	for(int i=0; i < sizeof(messageArray) / sizeof(struct message); i++)
+	{
+		if(messageArray[i].id == can_rx_header.StdId)
+		{
+
 			//Calculate which byte position to start at
 			int bytepos = messageArray[i].bit / 8;
 
@@ -754,29 +761,37 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
 			uint32_t finalval = 0;
 			int j = 0;
+
 			//Iterate through all bytes that must be read for this message
-			for (int b = bytepos; b < bytepos + bytes; b++) {
+			for (int b = bytepos; b < bytepos + bytes; b++)
+			{
 				uint8_t tempval;
 				//If on last byte we may need to truncate unneeded parts dependent on length of data
-				if (b == bytepos + bytes - 1) {
+				if (b == bytepos + bytes - 1)
+				{
 					//We need a left shift and a right shift to extract the bits we want
 					uint8_t byteoffset = (messageArray[i].length - ((bytes-1) * 8));
 					uint8_t leftshift = 8 - (messageArray[i].bit - (bytepos * 8)) - byteoffset;
 					uint8_t rightshift = 8 - byteoffset;
 					tempval = (can_rx_data[b] << leftshift) >>  rightshift;
-				} else {
+				}
+				else
+				{
 					//Use the whole byte
 					tempval = can_rx_data[b];
 				}
 				//Calculate the size of the next data section to find the required shift
 				int nextsize = messageArray[i].length - ((j+1) * 8);
+
 				//Limit it to 0
-				if (nextsize < 0) {
+				if (nextsize < 0)
+				{
 					nextsize = 0;
 				}
 				finalval += tempval << nextsize;
 				j++;
 			}
+
 			//Finally set final value into message array struct
 			messageArray[i].value = finalval;
 		}
@@ -816,7 +831,7 @@ void StartProcessCommand(void *argument)
 {
   /* USER CODE BEGIN StartProcessCommand */
 
-	//Send reset command back to computer
+	//Send reset character "$" to notify telemetry software a reboot has occured and we need a new copy of filter configuration
 	uint8_t uart_tx_buff[1] = {36};
 	HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, 1);
 
@@ -827,40 +842,41 @@ void StartProcessCommand(void *argument)
     osSemaphoreAcquire(ProcessCommandSemHandle, osWaitForever);
 
     HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+
 		//Evaluate first char of the command buffer to determine command
-		if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"r") {
-			//Restart command
-			DebugPrint("Rebooting...\r\n\r\n");
+		if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"r") //Restart
+		{
+			//Force a system reset
 			NVIC_SystemReset();
-
-		} else if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"d") {
-			//Retreives the last value in message buffer for corrosponding ID
-			int filter = atoi((char *)&cmdbuff[cmdbuffindex-1][1]);
-			char msg[32] = "";
-			//sprintf(msg, "%x: %l\r\n>", messageArray[filter].id, messageArray[filter].value);
-			//DebugPrint(msg);
-
-		} else if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"f") {
-
-			//Command f can set a CAN filter and
+		}
+		else if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"f") //Set filter
+		{
+			//Series of atoi to split up command string
 			int filter = atoi((char *)&cmdbuff[cmdbuffindex-1][1]);
 			uint16_t id = atoi((char *)&cmdbuff[cmdbuffindex-1][3]);
 			uint8_t bit = atoi((char *)&cmdbuff[cmdbuffindex-1][8]);
 			uint8_t size = atoi((char *)&cmdbuff[cmdbuffindex-1][11]);
+
+			//Put received data into array
 			messageArray[filter].id = id;
 			messageArray[filter].bit = bit;
 			messageArray[filter].value = -1;
 			messageArray[filter].length = size;
 			messageArray[filter].enabled = (id != 0)? MSG_ENABLED : MSG_DISABLED;
 
-		} else if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"s") {
-			//Shutdown
-			//Set can_tx frame shutdown bit to 1
+		}
+		else if (cmdbuff[cmdbuffindex-1][0] == *(uint8_t *)"s") //Shutdown
+		{
+			//Sets can_tx frame shutdown bit to 1
 			can_tx_data[0] |= CAN_TXFRAME0_SHUTDOWN;
 		}
 
+		//Finally decrement command buffer index as we have processed this command.
     cmdbuffindex--;
-    if (cmdbuffindex == 0) {
+
+    //If we reach the last command in buffer, re-configure all CAN filters with new data.
+    if (cmdbuffindex == 0)
+    {
     	ConfigureCANFilters(messageArray, 16);
     }
   }
@@ -880,12 +896,9 @@ void StartSendTelemetry(void *argument)
   /* Infinite loop */
   for(;;)
   {
-  	//Transmit at 10hz
     osDelay(100);
 
-
-    //HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
-  	//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+    //This seems jank but works fine
     sprintf(&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
         		messageArray[0].value,
     				messageArray[1].value,
@@ -903,7 +916,11 @@ void StartSendTelemetry(void *argument)
     				messageArray[13].value,
     				messageArray[14].value,
     				messageArray[15].value);
+
+    //Transmit our message
 		HAL_UART_Transmit_IT(&huart2, (uint8_t *)uart_tx_buff, strlen(uart_tx_buff));
+
+		//Clear all the received values to -1 in order to detect when we aren't receiving updates.
 		ClearCANBuffers();
   }
   /* USER CODE END StartSendTelemetry */
@@ -922,10 +939,8 @@ void StartFeedWDG(void *argument)
   /* Infinite loop */
   for(;;)
   {
+  	//600 milliseconds is in the lower end of the watchdog window as currently configured in the SBC.
   	osDelay(600);
-
-    HAL_StatusTypeDef result;
-
     uint8_t rxdata[2];
     uint8_t txdata[2];
 
@@ -933,12 +948,11 @@ void StartFeedWDG(void *argument)
 		txdata[1] = 0;
 
 		HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 0);
-		result = HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
+		HAL_SPI_TransmitReceive(&hspi1, txdata, rxdata, 2, 100);
 		HAL_GPIO_WritePin(UJA_CS_GPIO_Port, UJA_CS_Pin, 1);
 
+		//Toggle LED
 		HAL_GPIO_TogglePin(LD1_GPIO_Port,LD1_Pin);
-		//HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-
   }
   /* USER CODE END StartFeedWDG */
 }
