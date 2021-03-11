@@ -110,6 +110,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.apply_btn.setEnabled(True)
         self.ui.savetodefault.clicked.connect(self.savetodefaultlist)
         self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
+        self.ui.pushButton_4.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("s\r"))
 
         # Button shortcuts
         self.ui.import_btn.setShortcut('i')
