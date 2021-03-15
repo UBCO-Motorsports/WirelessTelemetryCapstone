@@ -28,12 +28,10 @@ class RPMGauge(QtWidgets.QWidget):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
+        menu.setStyleSheet('QMenu {background-color: rgb(240, 240, 240); color: rgb(0, 0, 0);} QMenu:selected{background-color: rgb(144, 200 , 246)}')
         newAct = menu.addAction("Edit Data")
         newAct.triggered.connect(lambda: self.parentwidget.configMenuCalled(self))
-        quitAct = menu.addAction("Quit")
         action = menu.popup(self.mapToGlobal(event.pos()))
-        quitAct.triggered.connect(self.close)
-
 
     def accellerate (self):
         global RPM
@@ -73,17 +71,17 @@ class RPMGauge(QtWidgets.QWidget):
         self.ui.frame_4.setGeometry(QtCore.QRect(0, 0, length,length))
 
         self.ui.Needle.setGeometry(0, 0, length,length)
-        needle=QtGui.QPixmap("QT Images/needle3.png")
+        needle=QtGui.QPixmap("QTImages/needle3.png")
         needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
         newneedle=needle
 
-        tach = QtGui.QPixmap("QT Images/Tachlinesr.png")
+        tach = QtGui.QPixmap("QTImages/Tachlinesr.png")
         tach = tach.scaled(length*1.2, length*1.2, Qt.KeepAspectRatio,Qt.FastTransformation)
         self.ui.label.setGeometry(-length*0.1,-length*0.1,length*1.2,length*1.2)
         self.ui.label.setPixmap(tach)
 
 
-        numbers = QtGui.QPixmap("QT Images/RPM numbers resize.png")
+        numbers = QtGui.QPixmap("QTImages/RPM numbers resize.png")
         numbers = numbers.scaled(length*1.1, length*1.1, Qt.KeepAspectRatio,Qt.FastTransformation)
         self.ui.label_2.setGeometry(-length*0.05, -length*0.15, length*1.1, length*1.1)
         self.ui.label_2.setPixmap(numbers)
@@ -92,7 +90,7 @@ class RPMGauge(QtWidgets.QWidget):
         self.ui.RPMtext.setAlignment(QtCore.Qt.AlignCenter)
         self.ui.RPMtext.setFont(QtGui.QFont('Bahnschrift SemiCondensed',length/15))
 
-        pointer = QtGui.QPixmap("QT Images/Pointer2.png")
+        pointer = QtGui.QPixmap("QTImages/Pointer2.png")
         pointer = pointer.scaled(length, length, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.ui.label_3.setGeometry(0, 5, length, length)
         self.ui.label_3.setPixmap(pointer)
@@ -132,7 +130,7 @@ class RPMGauge(QtWidgets.QWidget):
             pixmap=newneedle
         else:
             # load your image
-            image = QtGui.QImage("QT Images/needle3.png")
+            image = QtGui.QImage("QTImages/needle3.png")
             pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)

@@ -13,6 +13,11 @@ from GraphManager import GraphManager
 from Loader import SplashScreen as Loader
 import ctypes # Needed to set taskbar icon
 
+"""
+Command for constructing the exe
+    pyinstaller cli.py -w --name OgopogoTelemetry --add-data "QTImages;QTImages" --add-data "InstagramLogor.png;." --add-data "CANBUS;CANBUS" --add-data "defaultitems.json;." --add-data "graphlayout.json;."
+"""
+
 
 class MainWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -90,10 +95,17 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
 
         # Set icons for each page button
-        self.ui.btn_home.setIcon(QIcon('icons/home.png'))
-        self.ui.btn_page_2.setIcon(QIcon('icons/wrench-screwdriver.png'))
-        self.ui.btn_page_3.setIcon(QIcon('icons/system-monitor.png'))
-        self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
+        self.ui.btn_home.setIcon(QIcon('QTImages/home.png'))
+        self.ui.btn_page_2.setIcon(QIcon('QTImages/wrench-screwdriver.png'))
+        self.ui.btn_page_3.setIcon(QIcon('QTImages/system-monitor.png'))
+        self.ui.btn_page_4.setIcon(QIcon('QTImages/terminal.png'))
+
+        # Add logo to top of menu
+        self.logo_label = QLabel()
+        logo_pixmap = QPixmap('InstagramLogor.png')
+        self.logo_label.setPixmap(logo_pixmap.scaled(80, 200, Qt.KeepAspectRatio))
+        self.logo_label.setAlignment(Qt.AlignCenter)
+        self.ui.verticalLayout_4.insertWidget(0, self.logo_label)
 
     def initSetupPage(self):
         # Custom COM port menu (combo box)
@@ -172,7 +184,7 @@ class MainWindow(QtWidgets.QMainWindow):
             with open(layoutfile, 'r+') as json_1:
                 layout = json.load(json_1)
                 json_1.close()
-        self.GraphManager.importLayout(layout['layout'])
+            self.GraphManager.importLayout(layout['layout'])
         self.ui.graphnum_comboBox.setCurrentIndex(self.ui.graphnum_comboBox.count() - 1)
 
     def savelayout(self):
@@ -219,7 +231,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def initCommandPage(self):
         self.ui.btn_page_4.clicked.connect(lambda: self.ui.stackedWidget.setCurrentWidget(self.ui.command_page))
         self.ui.btn_page_4.setCheckable(True)
-        self.ui.btn_page_4.setIcon(QIcon('icons/application-terminal.png'))
         self.ui.EmergencyShutdown_btn.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("s\r"))
         self.ui.pushButton_2.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("r\r"))
         self.ui.pushButton.clicked.connect(lambda: self.sendcommandfromBox())
@@ -794,8 +805,7 @@ class SendThread(QtCore.QThread):
     def run(self):
         self.sendmethod()
 
-
-if __name__ == "__main__":
+def main():
     app = QtWidgets.QApplication(sys.argv)
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
     app_icon = QtGui.QIcon()
@@ -823,3 +833,6 @@ if __name__ == "__main__":
 
     app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()

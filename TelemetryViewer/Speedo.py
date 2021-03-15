@@ -46,12 +46,10 @@ class SpeedoGauge(QtWidgets.QWidget):
 
     def contextMenuEvent(self, event):
         menu = QMenu(self)
+        menu.setStyleSheet('QMenu {background-color: rgb(240, 240, 240); color: rgb(0, 0, 0);} QMenu:selected{background-color: rgb(144, 200 , 246)}')
         newAct = menu.addAction("Edit Data")
         newAct.triggered.connect(lambda: self.parentwidget.configMenuCalled(self))
-        quitAct= menu.addAction("Quit")
         action= menu.popup(self.mapToGlobal(event.pos()))
-        if action == quitAct:
-            self.close()
 
     def animate(self,value):
         global newneedle
@@ -74,7 +72,7 @@ class SpeedoGauge(QtWidgets.QWidget):
         else:
 
             # load your image
-            image=QtGui.QImage("QT Images/needle3.png")
+            image=QtGui.QImage("QTImages/needle3.png")
             pixmap = QtGui.QPixmap.fromImage(image)
         # rotate the pixmap
         rotated_pixmap = pixmap.transformed(t)
@@ -104,17 +102,17 @@ class SpeedoGauge(QtWidgets.QWidget):
         scircle = scircle.replace("{Value}", (str(int(int(length-10) / 2))))
         self.ui.frame_4.setStyleSheet(scircle)
 
-        lines=QtGui.QPixmap("QT Images/speedolines2.png")
+        lines=QtGui.QPixmap("QTImages/speedolines2.png")
         lines=lines.scaled(length+30, length+30, Qt.KeepAspectRatio,Qt.FastTransformation)
         self.ui.label.setGeometry(-15,-15,length+30,length+30)
         self.ui.label.setPixmap(lines)
 
-        numbers = QtGui.QPixmap("QT Images/Speedometer2.png")
+        numbers = QtGui.QPixmap("QTImages/Speedometer2.png")
         numbers = numbers.scaled(length, length, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.ui.label_2.setGeometry(0, -length/10, length, length)
         self.ui.label_2.setPixmap(numbers)
 
-        pointer = QtGui.QPixmap("QT Images/Pointer2.png")
+        pointer = QtGui.QPixmap("QTImages/Pointer2.png")
         pointer = pointer.scaled(length, length, Qt.KeepAspectRatio, Qt.FastTransformation)
         self.ui.label_4.setGeometry(0, 5, length, length)
         self.ui.label_4.setPixmap(pointer)
@@ -124,7 +122,7 @@ class SpeedoGauge(QtWidgets.QWidget):
         self.ui.label_3.setFont(QtGui.QFont('Bahnschrift SemiCondensed',length/15))
 
         self.ui.Needle.setGeometry(0,0,length,length)
-        needle= QtGui.QPixmap("QT Images/needle3.png")
+        needle= QtGui.QPixmap("QTImages/needle3.png")
         needle=needle.scaled(length,length,Qt.KeepAspectRatio, Qt.FastTransformation)
         newneedle=needle
 

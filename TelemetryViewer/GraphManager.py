@@ -170,7 +170,13 @@ class GraphManager(QtGui.QWidget):
                                 pen = pg.mkPen(color=(rgba[0],rgba[1],rgba[2]),width=2)
                             except:
                                 pen = self.pen
-                            graph.plot(self.serialArrays[graph.xData[0]][-graph.samples:], self.serialArrays[graph.yData[0]][-graph.samples:], pen=pen)
+                            x = self.serialArrays[graph.xData[0]][-graph.samples:]
+                            y = self.serialArrays[graph.yData[0]][-graph.samples:]
+                            max_length = max(len(x), len(y))
+                            try:
+                                graph.plot(x[-max_length:], y[-max_length:], pen=pen)
+                            except:
+                                pass
                     elif graph.type == 'Speedo Gauge':
                         if self.serialArrays[graph.yData[0]]:
                             graph.animate(self.serialArrays[graph.yData[0]][-1])

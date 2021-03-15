@@ -1,0 +1,184 @@
+{
+    "layout": [
+        [
+            {
+                "type": "Time Domain",
+                "datasets": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "title": "TEST",
+                "xLabel": "TEST",
+                "yLabel": "TEST",
+                "yRange": [
+                    69.0,
+                    420.0
+                ],
+                "autoRange": false
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [
+                    4
+                ],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [
+                    5
+                ],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Polar Plot",
+                "datasets": [
+                    0
+                ],
+                "title": "",
+                "xData": [
+                    5
+                ],
+                "xLabel": "",
+                "yLabel": "",
+                "yRange": [
+                    0.0,
+                    100.0
+                ],
+                "yAutoRange": false,
+                "xRange": [
+                    -10,
+                    10
+                ],
+                "xAutoRange": false,
+                "samples": 3
+            }
+        ],
+        [
+            {
+                "type": "Polar Plot",
+                "datasets": [
+                    2
+                ],
+                "title": "",
+                "xData": [
+                    6
+                ],
+                "xLabel": "",
+                "yLabel": "",
+                "yRange": [
+                    0.0,
+                    80.0
+                ],
+                "yAutoRange": false,
+                "xRange": [
+                    -10,
+                    10
+                ],
+                "xAutoRange": false,
+                "samples": 3
+            },
+            {
+                "type": "Polar Plot",
+                "datasets": [
+                    1
+                ],
+                "title": "",
+                "xData": [
+                    6
+                ],
+                "xLabel": "",
+                "yLabel": "",
+                "yRange": [
+                    0.0,
+                    500.0
+                ],
+                "yAutoRange": false,
+                "xRange": [
+                    -10,
+                    10
+                ],
+                "xAutoRange": false,
+                "samples": 3
+            },
+            {
+                "type": "RPM Gauge",
+                "datasets": [
+                    6
+                ]
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [
+                    4
+                ],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            }
+        ],
+        [
+            {
+                "type": "Speedo Gauge",
+                "datasets": [
+                    2
+                ]
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [
+                    3
+                ],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Time Domain",
+                "datasets": [],
+                "title": "X vs. Y",
+                "xLabel": "X-Axis",
+                "yLabel": "Y-Axis",
+                "yRange": [
+                    0,
+                    1
+                ],
+                "autoRange": true
+            },
+            {
+                "type": "Speedo Gauge",
+                "datasets": [
+                    3
+                ]
+            }
+        ]
+    ]
+}
