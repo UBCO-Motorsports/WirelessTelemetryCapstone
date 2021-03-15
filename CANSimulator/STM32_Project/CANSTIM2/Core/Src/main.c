@@ -220,8 +220,8 @@ CAN_TxHeaderTypeDef can_tx_header10 = {0x370, 0, CAN_ID_STD, CAN_RTR_DATA, 8};
 uint8_t uart_rec_buff[24];
 char uart_tx_buff[128];
 
-uint8_t cmdbuff[24];
-int8_t cmdbuffind = 0;
+uint8_t cmdcharbuff[24];
+int8_t cmdcharbuffindex = 0;
 
 const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_TO << 3) | (UJA_NWP_1024);
 
@@ -706,23 +706,23 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 
 	//Check if delete received from debug uart and only delete if theres entered characters
 	if (uart_rec_buff[0] == (uint8_t)127 && huart == &huart1) {
-		if (cmdbuffind > 0) {
+		if (cmdcharbuffindex > 0) {
 			DebugPrint((char *)uart_rec_buff);
-			cmdbuffind--;
+			cmdcharbuffindex--;
 		}
 	} else {
 		//Send char to debug console
 		DebugPrint((char *)uart_rec_buff);
 
 		//Check if enter or cmdbuff reaches its limit (prevents overflow)
-		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdbuffind > 23) {
+		if (uart_rec_buff[0] == *(uint8_t *)"\r" || cmdcharbuffindex > 23) {
 			DebugPrint("\n>");
 			//Pass command onto task
 			osSemaphoreRelease(ProcessCommandSemHandle);
 
 		} else {
-			cmdbuff[cmdbuffind] = uart_rec_buff[0];
-			cmdbuffind++;
+			cmdcharbuff[cmdcharbuffindex] = uart_rec_buff[0];
+			cmdcharbuffindex++;
 		}
 	}
 	//Start receiving again

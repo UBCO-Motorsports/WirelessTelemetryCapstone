@@ -99,6 +99,13 @@ class Ui_MainWindow(object):
         self.btn_page_4.setObjectName("btn_page_4")
         self.verticalLayout_4.addWidget(self.btn_page_4)
         self.verticalLayout_3.addWidget(self.frame_top_menus, 0, QtCore.Qt.AlignTop)
+        self.pushButton_4 = QtWidgets.QPushButton(self.frame_left_menu)
+        self.pushButton_4.setMinimumSize(QtCore.QSize(0, 80))
+        self.pushButton_4.setStyleSheet("background-color: rgb(255, 0, 0);\n"
+"border-color: rgb(0, 0, 0);\n"
+"color:rgb(255, 255, 255);")
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.verticalLayout_3.addWidget(self.pushButton_4)
         self.horizontalLayout_2.addWidget(self.frame_left_menu)
         self.widget_pages = QtWidgets.QWidget(self.Content)
         self.widget_pages.setStyleSheet("")
@@ -668,7 +675,7 @@ class Ui_MainWindow(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollArea.setObjectName("scrollArea")
         self.scrollAreaWidgetContents = QtWidgets.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 18, 18))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 217, 198))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
         self.verticalLayout_15 = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_15.setObjectName("verticalLayout_15")
@@ -1207,6 +1214,9 @@ class Ui_MainWindow(object):
         self.btn_page_2.setText(_translate("MainWindow", "Setup"))
         self.btn_page_3.setText(_translate("MainWindow", "Graphs"))
         self.btn_page_4.setText(_translate("MainWindow", "Commands"))
+        self.pushButton_4.setText(_translate("MainWindow", "Push\n"
+"to\n"
+"Shutdown"))
         self.label_6.setText(_translate("MainWindow", "UBCO Motorsports Wireless Telemetry"))
         self.label_7.setText(_translate("MainWindow", "\"It just works\" Edition"))
         self.Text.setText(_translate("MainWindow", "Ogopogo Telemetry"))

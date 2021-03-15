@@ -122,6 +122,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.apply_btn.setEnabled(True)
         self.ui.savetodefault.clicked.connect(self.savetodefaultlist)
         self.ui.pushButton_3.clicked.connect(self.connectdefaulttolist)
+        self.ui.pushButton_4.clicked.connect(lambda: self.GraphManager.SerialModule.sendCommand("s\r"))
 
         # Button shortcuts
         self.ui.import_btn.setShortcut('i')
@@ -351,11 +352,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def sendMessages(self):
         self.ui.apply_btn.setText('Sending...')
         self.ui.apply_btn.setDisabled(True)
-        for messages in self.messagebuffer:
+        for message in self.messagebuffer:
             if self.GraphManager.SerialModule.serialConnected:
-                self.GraphManager.SerialModule.sendCommand(messages)
-                time.sleep(0.3)
-            print(messages)
+                #time.sleep(0.1)
+                self.GraphManager.SerialModule.sendCommand(message)
+            print(message)
         self.ui.apply_btn.setText('Apply')
         self.ui.apply_btn.setDisabled(False)
         self.ui.label_37.setText('Applied')
