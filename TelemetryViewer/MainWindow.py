@@ -15,7 +15,7 @@ import ctypes # Needed to set taskbar icon
 
 """
 Command for constructing the exe
-    pyinstaller cli.py -w --name OgopogoTelemetry --add-data "QTImages;QTImages" --add-data "InstagramLogor.png;." --add-data "CANBUS;CANBUS" --add-data "defaultitems.json;." --add-data "graphlayout.json;."
+pyinstaller cli.py -w --name OgopogoTelemetry --add-data "QTImages;QTImages" --add-data "InstagramLogor.png;." --add-data "CANBUS;CANBUS" --add-data "defaultitems.json;." --add-data "graphlayout.json;."
 """
 
 
