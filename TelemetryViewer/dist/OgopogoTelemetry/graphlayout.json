@@ -21,18 +21,10 @@
                 "autoRange": false
             },
             {
-                "type": "Time Domain",
+                "type": "RPM Gauge",
                 "datasets": [
-                    4
-                ],
-                "title": "X vs. Y",
-                "xLabel": "X-Axis",
-                "yLabel": "Y-Axis",
-                "yRange": [
-                    0,
-                    1
-                ],
-                "autoRange": true
+                    0
+                ]
             },
             {
                 "type": "Time Domain",
