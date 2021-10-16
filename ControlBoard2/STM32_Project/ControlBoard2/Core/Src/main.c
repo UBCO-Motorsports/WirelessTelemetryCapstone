@@ -154,19 +154,16 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
-  //Setup hardware references
+  //Setup controlboard hardware references
   controlboardHandle.CAN_Handle = &hcan;
-
   controlboardHandle.UART_Handle = &huart2;
-
   controlboardHandle.LED1_GPIO_Port = LD1_GPIO_Port;
   controlboardHandle.LED1_GPIO_Pin = LD1_Pin;
-
   controlboardHandle.LED2_GPIO_Port = LD2_GPIO_Port;
 	controlboardHandle.LED2_GPIO_Pin = LD2_Pin;
-
   controlboardHandle.ProcessCommandSemaphore_Handle = &ProcessCommandSemHandle;
 
+  controlboardHandle.SBC_Handle.SPI_Handle = &hspi1;
   controlboardHandle.SBC_Handle.ChipSelect_GPIO_Port = UJA_CS_GPIO_Port;
   controlboardHandle.SBC_Handle.ChipSelect_GPIO_Pin = UJA_CS_Pin;
 
@@ -473,7 +470,7 @@ static void MX_GPIO_Init(void)
 //IRQ's
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if (huart == controlboardHandle.UART_Handle)
+	if (huart->Instance == controlboardHandle.UART_Handle->Instance)
 	{
 		UART_RX_ISR(&controlboardHandle);
 	}
@@ -481,7 +478,10 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
-	CAN_RX_ISR(hcan);
+	if (hcan->Instance == controlboardHandle.CAN_Handle->Instance)
+	{
+		CAN_RX_ISR(&controlboardHandle);
+	}
 }
 
 /* USER CODE END 4 */
