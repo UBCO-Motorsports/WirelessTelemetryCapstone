@@ -81,7 +81,7 @@ void InitControlboard(ControlBoardHardware * handle)
 	HAL_GPIO_WritePin(handle->LED2_GPIO_Port, handle->LED2_GPIO_Pin, 0);
 
 	//Initialize SBC
-	UJA1075A_Init(&handle->SBC_Handle);
+	UJA1075_Init(&handle->SBC_Handle);
 
 	//Load default message configuration
 	memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
@@ -255,7 +255,7 @@ void FeedWatchdogTask(ControlBoardHardware * handle)
 	osDelay(600);
 
 	//Feed watchdog
-	UJA1075A_FeedWD(&handle->SBC_Handle);
+	UJA1075_FeedWD(&handle->SBC_Handle);
 
 	//Toggle LED
 	HAL_GPIO_TogglePin(handle->LED1_GPIO_Port, handle->LED1_GPIO_Pin);

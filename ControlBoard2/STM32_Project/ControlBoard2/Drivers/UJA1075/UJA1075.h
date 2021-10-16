@@ -61,14 +61,14 @@ typedef struct
  *
  * @param handle
  */
-void UJA1075A_Init(UJA1075_Handle * handle);
+void UJA1075_Init(UJA1075_Handle * handle);
 
 /**
  * @brief Feed the UJA's watchdog
  *
  * @param handle
  */
-void UJA1075A_FeedWD(UJA1075_Handle * handle);
+void UJA1075_FeedWD(UJA1075_Handle * handle);
 
 /**
  * @brief Writes the provided txdata to the UJA over SPI
@@ -76,6 +76,6 @@ void UJA1075A_FeedWD(UJA1075_Handle * handle);
  * @param handle
  * @param txdata
  */
-void UJA1075A_Write(UJA1075_Handle * handle, uint8_t * txdata);
+void UJA1075_Write(UJA1075_Handle * handle, uint8_t * txdata);
 
 #endif /* INC_UJA1075_H_ */
