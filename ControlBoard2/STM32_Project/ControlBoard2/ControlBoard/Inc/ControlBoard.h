@@ -20,6 +20,8 @@
 #define CAN_TXFRAME0_SHUTDOWN 1
 #define CAN_TXFRAME0_BIT2 1<<1
 
+#define CAN_TOTAL_FILTERS 16
+
 typedef struct
 {
 	CAN_HandleTypeDef * CAN_Handle;
@@ -60,7 +62,7 @@ void InitControlboard(ControlBoardHardware * handle);
  * @param messageArray
  * @param size
  */
-void ConfigureCANFilters(ControlBoardHardware * handle, CAN_Message_Typedef * messageArray, uint8_t size);
+void ConfigureCANFilters(ControlBoardHardware * handle, CAN_Message_Typedef * messageArray);
 
 /**
  * @brief Clears all values in the CAN message array

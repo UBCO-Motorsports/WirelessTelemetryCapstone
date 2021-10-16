@@ -32,10 +32,10 @@ uint8_t cmdbuff[20][24];
 int8_t cmdbuffindex = 0;
 
 //Create array of message structs to hold our filter information
-CAN_Message_Typedef messageArray[16];
+CAN_Message_Typedef messageArray[CAN_TOTAL_FILTERS];
 
 //Define default filter array used on startup
-const CAN_Message_Typedef defaultMessageArray[16] =
+const CAN_Message_Typedef defaultMessageArray[CAN_TOTAL_FILTERS] =
 {
 		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
 		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
@@ -87,7 +87,7 @@ void InitControlboard(ControlBoardHardware * handle)
 	memcpy(&messageArray, &defaultMessageArray, sizeof(messageArray));
 
 	//Configure all CAN receive filters
-	ConfigureCANFilters(handle, messageArray, sizeof(messageArray) / sizeof(CAN_Message_Typedef));
+	ConfigureCANFilters(handle, messageArray);
 
 	//Initialize CAN and begin receiving
 	Init_CAN(handle);
@@ -100,15 +100,15 @@ void InitControlboard(ControlBoardHardware * handle)
 	HAL_UART_Transmit_IT(handle->UART_Handle, &tx_data, 1);
 }
 
-void ConfigureCANFilters(ControlBoardHardware * handle, CAN_Message_Typedef * messageArray, uint8_t size)
+void ConfigureCANFilters(ControlBoardHardware * handle, CAN_Message_Typedef * messageArray)
 {
-	uint32_t configuredIDs[size];
+	uint32_t configuredIDs[CAN_TOTAL_FILTERS];
 	int uniques = 0;
-	for (int i = 0; i < size; i++)
+	for (int i = 0; i < CAN_TOTAL_FILTERS; i++)
 	{
 		//Check if this ID already configured
 		int create = 1;
-		for (int j = 0; j < size; j++)
+		for (int j = 0; j < CAN_TOTAL_FILTERS; j++)
 		{
 			if (configuredIDs[j] == messageArray[i].id)
 			{
@@ -147,7 +147,7 @@ void ConfigureCANFilters(ControlBoardHardware * handle, CAN_Message_Typedef * me
 
 void ClearCANValues(void)
 {
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < CAN_TOTAL_FILTERS; i++)
 	{
 		messageArray[i].value = -1;
 	}
@@ -187,7 +187,7 @@ void ProcessCommandTask(ControlBoardHardware * handle)
 	}
 	else if (cmdbuff[cmdbuffindex-1][0] == CMD_SET_FILTER) //Set filter
 	{
-		//Series of atoi to split up command string
+		//Series of atoi to split up command string. atoi returns once it hits a space hence the offsets seen below.
 		int filter = atoi((char *)&cmdbuff[cmdbuffindex-1][1]);
 		uint16_t id = atoi((char *)&cmdbuff[cmdbuffindex-1][3]);
 		uint8_t bit = atoi((char *)&cmdbuff[cmdbuffindex-1][8]);
@@ -213,7 +213,7 @@ void ProcessCommandTask(ControlBoardHardware * handle)
 	//If we reach the last command in buffer, re-configure all CAN filters with new data.
 	if (cmdbuffindex == 0)
 	{
-		ConfigureCANFilters(handle, messageArray, 16);
+		ConfigureCANFilters(handle, messageArray);
 	}
 }
 
@@ -222,6 +222,8 @@ void SendTelemetryTask(ControlBoardHardware * handle)
 	osDelay(100);
 
 	//TODO Switch to static allocation and generate procedurally.
+	//Since it is currently not procedural, we must assert if CAN_TOTAL_FILTERS is less than 16 because it's direct indexed below.
+	assert(CAN_TOTAL_FILTERS >= 16);
 	sprintf((char *)&uart_tx_buff, "%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i,%i\r\n",
 					(int)messageArray[0].value,
 					(int)messageArray[1].value,
@@ -299,10 +301,10 @@ void CAN_RX_ISR(ControlBoardHardware * handle)
 	//Get the received message.
 	HAL_CAN_GetRxMessage(handle->CAN_Handle, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
 
-	//WARNING this is a ton of work for an ISR. This work should be moved to a task and only use the ISR for saving the CAN frame to a circular buffer.
+	//WARNING this is a ton of work for an ISR. This should be moved to a task and only use the ISR for saving the CAN frame to a circular buffer.
 
 	//Parse received bytes using message array
-	for(int i=0; i < sizeof(messageArray) / sizeof(CAN_Message_Typedef); i++)
+	for (int i = 0; i < CAN_TOTAL_FILTERS; i++)
 	{
 		if(messageArray[i].id == can_rx_header.StdId)
 		{
