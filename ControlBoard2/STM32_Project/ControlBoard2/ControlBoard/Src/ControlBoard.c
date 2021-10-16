@@ -6,12 +6,14 @@
  */
 
 #include "ControlBoard.h"
+#include <SerialCommands.h>
 #include "cmsis_os.h"
 
 #include "string.h"
 #include "stdio.h"
 #include "stdlib.h"
 #include "math.h"
+#include "assert.h"
 
 //CAN Buffers
 uint8_t can_rx_data[8];
@@ -32,8 +34,48 @@ int8_t cmdbuffindex = 0;
 //Create array of message structs to hold our filter information
 CAN_Message_Typedef messageArray[16];
 
+//Define default filter array used on startup
+const CAN_Message_Typedef defaultMessageArray[16] =
+{
+		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
+		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
+
+		{ 0x361,  16,  16,   -1,  MSG_ENABLED  },  //Oil Pressure
+
+		{ 0x3E0,   0,  16,   -1,  MSG_ENABLED  },  //Coolant Temperature
+
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Pressure
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Bias
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Lat Accel
+		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Long Accel
+
+		{ 0x370,   0,  16,   -1,  MSG_ENABLED  },  //GPS Speed
+
+		{ 0x3E0,   48,  16,   -1,  MSG_ENABLED },  //Oil Temperature
+
+		{ 0x373,   0,  16,   -1,  MSG_ENABLED  },  //EGT 1
+
+		{ 0x368,   0,  16,   -1,  MSG_ENABLED  },  //Wideband
+
+		{ 0x3EB,  32,  16,   -1,  MSG_ENABLED  },  //Ignition Angle
+
+		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
+		{     0,   0,   0,   -1,  MSG_DISABLED }   //Disabled
+};
+
 void InitControlboard(ControlBoardHardware * handle)
 {
+	//Ensure all hardware pointers are set
+	assert(handle != NULL);
+	assert(handle->CAN_Handle != NULL);
+	assert(handle->LED1_GPIO_Port != NULL);
+	assert(handle->LED2_GPIO_Port != NULL);
+	assert(handle->ProcessCommandSemaphore_Handle != NULL);
+	assert(handle->UART_Handle != NULL);
+	assert(handle->SBC_Handle.ChipSelect_GPIO_Port != NULL);
+	assert(handle->SBC_Handle.SPI_Handle != NULL);
+
 	//Turn both LEDS off.
 	HAL_GPIO_WritePin(handle->LED1_GPIO_Port, handle->LED1_GPIO_Pin, 0);
 	HAL_GPIO_WritePin(handle->LED2_GPIO_Port, handle->LED2_GPIO_Pin, 0);
@@ -54,7 +96,7 @@ void InitControlboard(ControlBoardHardware * handle)
 	HAL_UART_Receive_IT(handle->UART_Handle, uart_rec_buff, 1);
 
 	//Send reset character "$" to notify telemetry software a reboot has occurred and we need a new copy of filter configuration
-	uint8_t tx_data = UART_INIT_CHAR;
+	uint8_t tx_data = CMD_INIT_CHAR;
 	HAL_UART_Transmit_IT(handle->UART_Handle, &tx_data, 1);
 }
 
@@ -214,7 +256,7 @@ void FeedWatchdogTask(ControlBoardHardware * handle)
 	UJA1075A_FeedWD(&handle->SBC_Handle);
 
 	//Toggle LED
-	HAL_GPIO_TogglePin(handle->LED1_GPIO_Port,handle->LED1_GPIO_Pin);
+	HAL_GPIO_TogglePin(handle->LED1_GPIO_Port, handle->LED1_GPIO_Pin);
 }
 
 void UART_RX_ISR(ControlBoardHardware * handle)
@@ -252,10 +294,10 @@ void UART_RX_ISR(ControlBoardHardware * handle)
 	HAL_UART_Receive_IT(handle->UART_Handle, uart_rec_buff, 1);
 }
 
-void CAN_RX_ISR(CAN_HandleTypeDef *hcan)
+void CAN_RX_ISR(ControlBoardHardware * handle)
 {
 	//Get the received message.
-	HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
+	HAL_CAN_GetRxMessage(handle->CAN_Handle, CAN_RX_FIFO0, &can_rx_header, can_rx_data);
 
 	//WARNING this is a ton of work for an ISR. This work should be moved to a task and only use the ISR for saving the CAN frame to a circular buffer.
 

@@ -9,8 +9,6 @@
 #define INC_CONTROLBOARD_H_
 
 #include "UJA1075.h"
-#include <SerialCommands.h>
-
 #include "cmsis_os.h"
 
 //Message struct parameter
@@ -21,8 +19,6 @@
 #define CAN_TXFRAME_ID 0x200
 #define CAN_TXFRAME0_SHUTDOWN 1
 #define CAN_TXFRAME0_BIT2 1<<1
-
-#define UART_INIT_CHAR '$'
 
 typedef struct
 {
@@ -48,36 +44,6 @@ typedef struct
 	int32_t value;
 	uint8_t enabled;
 } CAN_Message_Typedef;
-
-//Define default filter array used on startup
-const CAN_Message_Typedef defaultMessageArray[16] =
-{
-		{ 0x360,   0,  16,   -1,  MSG_ENABLED  },  //Engine RPM
-		{ 0x360,  32,  16,   -1,  MSG_ENABLED  },  //Throttle Position
-
-		{ 0x361,  16,  16,   -1,  MSG_ENABLED  },  //Oil Pressure
-
-		{ 0x3E0,   0,  16,   -1,  MSG_ENABLED  },  //Coolant Temperature
-
-		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Pressure
-		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Brake Bias
-		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Lat Accel
-		{ 0x390,   0,  16,   -1,  MSG_ENABLED  },  //Long Accel
-
-		{ 0x370,   0,  16,   -1,  MSG_ENABLED  },  //GPS Speed
-
-		{ 0x3E0,   48,  16,   -1,  MSG_ENABLED },  //Oil Temperature
-
-		{ 0x373,   0,  16,   -1,  MSG_ENABLED  },  //EGT 1
-
-		{ 0x368,   0,  16,   -1,  MSG_ENABLED  },  //Wideband
-
-		{ 0x3EB,  32,  16,   -1,  MSG_ENABLED  },  //Ignition Angle
-
-		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   -1,  MSG_DISABLED },  //Disabled
-		{     0,   0,   0,   -1,  MSG_DISABLED }   //Disabled
-};
 
 /**
  * @brief Initializes control board state and hardware
@@ -147,8 +113,8 @@ void UART_RX_ISR(ControlBoardHardware * handle);
 /**
  * @brief CAN RX ISR handler
  *
- * @param hcan
+ * @param handle
  */
-void CAN_RX_ISR(CAN_HandleTypeDef *hcan);
+void CAN_RX_ISR(ControlBoardHardware * handle);
 
 #endif /* INC_CONTROLBOARD_H_ */

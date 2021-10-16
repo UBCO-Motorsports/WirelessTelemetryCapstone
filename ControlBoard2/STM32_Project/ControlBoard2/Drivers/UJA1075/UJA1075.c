@@ -7,6 +7,9 @@
 
 #include "UJA1075.h"
 
+//This defines the WD configuration set on both startup and when feeding watchdog
+const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_1024);
+
 void UJA1075A_Init(UJA1075_Handle * handle)
 {
 	uint8_t txdata[2];

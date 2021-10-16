@@ -56,9 +56,6 @@ typedef struct
 #define UJA_V2UIE_OFF 0
 #define UJA_V2UIE_ON 1
 
-//This defines the WD configuration set on both startup and when feeding watchdog
-const uint8_t WD_SETUP = (UJA_REG_WDGANDSTATUS << 5) | (UJA_RO_RW << 4) | (UJA_WMC_WND << 3) | (UJA_NWP_1024);
-
 /**
  * @brief Initializes UJA
  *
