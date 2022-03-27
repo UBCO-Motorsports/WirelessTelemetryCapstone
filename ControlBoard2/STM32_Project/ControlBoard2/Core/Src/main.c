@@ -154,22 +154,6 @@ int main(void)
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
 
-  //Setup controlboard hardware references
-  controlboardHandle.CAN_Handle = &hcan;
-  controlboardHandle.UART_Handle = &huart2;
-  controlboardHandle.LED1_GPIO_Port = LD1_GPIO_Port;
-  controlboardHandle.LED1_GPIO_Pin = LD1_Pin;
-  controlboardHandle.LED2_GPIO_Port = LD2_GPIO_Port;
-	controlboardHandle.LED2_GPIO_Pin = LD2_Pin;
-  controlboardHandle.ProcessCommandSemaphore_Handle = &ProcessCommandSemHandle;
-
-  controlboardHandle.SBC_Handle.SPI_Handle = &hspi1;
-  controlboardHandle.SBC_Handle.ChipSelect_GPIO_Port = UJA_CS_GPIO_Port;
-  controlboardHandle.SBC_Handle.ChipSelect_GPIO_Pin = UJA_CS_Pin;
-
-  //Init control board
-  InitControlboard(&controlboardHandle);
-
   /* USER CODE END 2 */
 
   /* Init scheduler */
@@ -213,7 +197,23 @@ int main(void)
   /* USER CODE END RTOS_THREADS */
 
   /* USER CODE BEGIN RTOS_EVENTS */
-  /* add events, ... */
+
+  //Setup ControlBoard hardware references
+  controlboardHandle.CAN_Handle = &hcan;
+  controlboardHandle.UART_Handle = &huart2;
+  controlboardHandle.LED1_GPIO_Port = LD1_GPIO_Port;
+  controlboardHandle.LED1_GPIO_Pin = LD1_Pin;
+  controlboardHandle.LED2_GPIO_Port = LD2_GPIO_Port;
+  controlboardHandle.LED2_GPIO_Pin = LD2_Pin;
+  controlboardHandle.ProcessCommandSemaphore_Handle = ProcessCommandSemHandle;
+
+  controlboardHandle.SBC_Handle.SPI_Handle = &hspi1;
+  controlboardHandle.SBC_Handle.ChipSelect_GPIO_Port = UJA_CS_GPIO_Port;
+  controlboardHandle.SBC_Handle.ChipSelect_GPIO_Pin = UJA_CS_Pin;
+
+  //Init control board
+  InitControlboard(&controlboardHandle);
+
   /* USER CODE END RTOS_EVENTS */
 
   /* Start scheduler */

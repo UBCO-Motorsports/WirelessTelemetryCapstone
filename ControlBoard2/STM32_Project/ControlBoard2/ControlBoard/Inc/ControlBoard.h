@@ -33,7 +33,7 @@ typedef struct
 	GPIO_TypeDef * LED2_GPIO_Port;
 	uint32_t LED2_GPIO_Pin;
 
-	osSemaphoreId_t * ProcessCommandSemaphore_Handle;
+	osSemaphoreId_t ProcessCommandSemaphore_Handle;
 
 	UJA1075_Handle SBC_Handle;
 } ControlBoardHardware;
