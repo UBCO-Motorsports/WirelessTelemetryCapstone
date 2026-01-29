@@ -1,7 +1,7 @@
-import Loader
+from MainWindow import main
 
 
 if __name__ == "__main__":
-    app = Loader.QApplication(Loader.sys.argv)
-    window = Loader.SplashScreen()
-    Loader.sys.exit(app.exec_())
+    # Delegate to the main application entrypoint in MainWindow.py
+    # This will show the splash screen and then the main UI.
+    main()

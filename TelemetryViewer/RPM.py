@@ -1,8 +1,8 @@
 
 import sys
-from PyQt5 import QtWidgets, QtCore,QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMenu
+from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMenu
 
 from RPMroot import Ui_Form
 
@@ -126,7 +126,7 @@ class RPMGauge(QtWidgets.QWidget):
             value=0
         value=reMap(RPM,16000,0,253,-15)
         t.rotate(value)
-        if newneedle is not 0:
+        if newneedle != 0:
             pixmap=newneedle
         else:
             # load your image
@@ -152,4 +152,4 @@ def reMap(value, maxInput, minInput, maxOutput, minOutput):
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     window = RPMGauge()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

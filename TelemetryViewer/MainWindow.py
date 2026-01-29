@@ -2,8 +2,10 @@ import sys
 import random
 import time
 import serial.tools.list_ports
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.Qt import *
+from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 import json
 import re # Useful for stripping characters from strings
 from MainWindowroot import Ui_MainWindow
@@ -770,7 +772,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.ui.label_37.setStyleSheet('color: rgb(255, 0, 0);')
 
 class comPortComboBox(QtWidgets.QComboBox):
-    populateCOMSelect = QtCore.pyqtSignal()
+    populateCOMSelect = QtCore.Signal()
 
     def __init__(self, parentWidget):
         super(comPortComboBox, self).__init__()
@@ -808,32 +810,37 @@ class SendThread(QtCore.QThread):
 
 def main():
     app = QtWidgets.QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
+    # AA_Use96Dpi removed in Qt6 - high DPI scaling is automatic
     app_icon = QtGui.QIcon()
     app_icon.addFile('QT Images/TelemetryLogo.png')
     app.setWindowIcon(app_icon)
 
-    myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
-    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    # Windows-only: set explicit AppUserModelID for proper taskbar icon grouping.
+    # Guarded so it doesn't blow up on macOS/Linux where ctypes.windll doesn't exist.
+    if sys.platform.startswith("win") and hasattr(ctypes, "windll"):
+        myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
     window = MainWindow()
     loader = Loader()
     loader.show()
 
     def loaderProgress():
-        if loader.counter == 100:
+        # When the loader is done, stop updating and show the main window
+        if loader.counter >= 100:
             timer.stop()
             window.show()
             loader.close()
-        loader.progress()
+        else:
+            loader.progress()
 
     # Sets a timer to check loading progress
     timer = QtCore.QTimer()
     timer.timeout.connect(loaderProgress)
     timer.start(5)
 
-    app.setAttribute(QtCore.Qt.AA_Use96Dpi)  # Helps with window alignments
-    sys.exit(app.exec_())
+    # AA_Use96Dpi removed in Qt6 - high DPI scaling is automatic
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
     main()

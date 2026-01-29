@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets, QtCore
+from PySide6 import QtWidgets, QtCore
 from pyqtgraph import PlotWidget, plot
 import pyqtgraph as pg
 import sys  # We need sys so that we can pass argv to QApplication
@@ -43,4 +43,4 @@ class MainWindow(QtWidgets.QMainWindow):
 app = QtWidgets.QApplication(sys.argv)
 w = MainWindow()
 w.show()
-sys.exit(app.exec_())
+sys.exit(app.exec())

@@ -1,11 +1,11 @@
 import sys
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog
-from PyQt5.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog
+from PySide6.QtGui import QIcon
 
 class Open(QWidget):
     def __init__(self):
         super().__init__()
-        self.title = 'PyQt5 file dialogs'
+        self.title = 'PySide6 file dialogs'
         self.left = 10
         self.top = 10
         self.width = 640
@@ -30,4 +30,4 @@ class Open(QWidget):
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Open()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

@@ -1,11 +1,11 @@
 import sys
 import platform
-from PySide2 import QtCore, QtGui, QtWidgets
-from PySide2.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect,
+from PySide6 import QtCore, QtGui, QtWidgets
+from PySide6.QtCore import (QCoreApplication, QPropertyAnimation, QDate, QDateTime, QMetaObject, QObject, QPoint, QRect,
                             QSize, QTime, QUrl, Qt, QEvent)
-from PySide2.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence,
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor, QFont, QFontDatabase, QIcon, QKeySequence,
                            QLinearGradient, QPalette, QPainter, QPixmap, QRadialGradient)
-from PySide2.QtWidgets import *
+from PySide6.QtWidgets import *
 
 # GUI File
 
@@ -63,6 +63,6 @@ class SplashScreen(QMainWindow):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_Use96Dpi)
+    # AA_Use96Dpi removed in Qt6 - high DPI scaling is automatic
     window = SplashScreen()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

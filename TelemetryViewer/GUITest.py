@@ -1,8 +1,8 @@
-from PyQt5 import QtWidgets, QtCore, QtGui
-from PyQt5.QtWidgets import *
-#from PyQt5.QtWidgets import QDockWidget, QAction, QMenu, QVBoxLayout, QTextEdit, QStackedWidget, QListWidget, QLabel
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
+from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtWidgets import *
+#from PySide6.QtWidgets import QDockWidget, QAction, QMenu, QVBoxLayout, QTextEdit, QStackedWidget, QListWidget, QLabel
+from PySide6.QtGui import *
+from PySide6.QtCore import *
 import pyqtgraph as pg
 import pyqtgraph.widgets.RemoteGraphicsView
 import sys  # We need sys so that we can pass argv to QApplication
@@ -29,7 +29,7 @@ class MainWindow(QtWidgets.QMainWindow):
         # Init stack widget and add widgets to it
         self.Stack = QStackedWidget(self)
         # self.Stack.setStyleSheet('background-color: rgb(85,85,85);')
-        self.homeWidget = QtGui.QWidget()
+        self.homeWidget = QtWidgets.QWidget()
         self.Stack.addWidget(self.homeWidget)
 
         # Main window set up
@@ -81,7 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def initDockButtons(self):
 
         # Init number of graph selection menu
-        self.numGraphs = QtGui.QWidget()
+        self.numGraphs = QtWidgets.QWidget()
         self.numGraphsLayout = QtGui.QVBoxLayout()
 
         self.numGraphLabel = QLabel('Select # of Graphs')
@@ -98,7 +98,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.numGraphs.setLayout(self.numGraphsLayout)
 
         # Data selection menu
-        self.data_list = QtGui.QWidget()
+        self.data_list = QtWidgets.QWidget()
         self.data_list_layout = QVBoxLayout()
 
         sensor_list = ('RPM', 'Speed')
@@ -109,7 +109,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Place buttons in dock widget section
         self.dock = QDockWidget("Graph Options", self)
-        self.dock_widget = QtGui.QWidget() # Set up widget to put buttons in
+        self.dock_widget = QtWidgets.QWidget() # Set up widget to put buttons in
         self.dock_layout = QtGui.QVBoxLayout() # Layout for buttons
 
         self.dock_layout.addWidget(self.numGraphs)
@@ -238,5 +238,5 @@ if __name__ == "__main__":
     timer.timeout.connect(showViewer)
     timer.start(5)
 
-    app.setAttribute(QtCore.Qt.AA_Use96Dpi) # Helps with window alignments
-    sys.exit(app.exec_())
+    # AA_Use96Dpi removed in Qt6 - high DPI scaling is automatic
+    sys.exit(app.exec())

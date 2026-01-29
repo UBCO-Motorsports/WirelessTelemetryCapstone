@@ -1,20 +1,20 @@
 import pyqtgraph as pg
 from datetime import datetime
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 import sys
 from RPM import RPMGauge
 from Speedo import SpeedoGauge
 from Serial import SerialModule     #dont comment or delete > needed for Serial communication
 
 
-class GraphManager(QtGui.QWidget):
+class GraphManager(QtWidgets.QWidget):
 
     def __init__(self, parentwidget):
         super(GraphManager, self).__init__(parentwidget)
         self.parentwidget = parentwidget
         self.SerialModule = SerialModule()
 
-        self.graph_layout = QtGui.QGridLayout()
+        self.graph_layout = QtWidgets.QGridLayout()
         self.setLayout(self.graph_layout)
 
         self.r = 255
@@ -271,14 +271,15 @@ class TimeAxisItem(pg.AxisItem):
 class CustomViewBox(pg.ViewBox):
     def __init__(self, parentwidget, parent=None):
         super(CustomViewBox, self).__init__(parent)
-        self.menu = pg.ViewBoxMenu.ViewBoxMenu(self)
         self.parentwidget = parentwidget
 
-        # Adds edit option to right click menu
-        self.menu.addSeparator()
-        self.editData = QtGui.QAction("Edit Data", self.menu)
-        self.editData.triggered.connect(self.parentwidget.configMenuCalled)
-        self.menu.addAction(self.editData)
+    def contextMenuEvent(self, event):
+        """Custom context menu for plot widgets (replaces deprecated ViewBoxMenu)."""
+        menu = QtWidgets.QMenu()
+        edit_action = menu.addAction("Edit Data")
+        edit_action.triggered.connect(self.parentwidget.configMenuCalled)
+        # Show menu at the cursor position
+        menu.exec(event.screenPos().toPoint())
 
 # app = QtWidgets.QApplication(sys.argv)
 # test = GraphManager()

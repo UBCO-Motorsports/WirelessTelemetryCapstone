@@ -1,17 +1,17 @@
 import sys
-from PyQt5 import QtWidgets, QtCore,QtGui
+from PySide6 import QtWidgets, QtCore, QtGui
 
 
 # GUI File
-from PyQt5.QtWidgets import QMenu
-from PyQt5.QtCore import Qt
+from PySide6.QtWidgets import QMenu
+from PySide6.QtCore import Qt
 from Speedoroot import Ui_Form
 
 newneedle=0
 
 
 class SpeedoGauge(QtWidgets.QWidget):
-    raisesignal = QtCore.pyqtSignal()
+    raisesignal = QtCore.Signal()
     def __init__(self, parent):
         # QtWidgets.QWidget.__init__(self)
         super(SpeedoGauge, self).__init__(parent)
@@ -67,7 +67,7 @@ class SpeedoGauge(QtWidgets.QWidget):
             value=0
         value=reMap(self.Speed,120, 0,239,0)
         t.rotate(value)
-        if newneedle is not 0:
+        if newneedle != 0:
             pixmap=newneedle
         else:
 
@@ -159,4 +159,4 @@ if __name__ == "__main__":
     window = splashScreen()
     mainwindow.setCentralWidget(window)
     mainwindow.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
